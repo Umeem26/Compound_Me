@@ -1,0 +1,47 @@
+name: compound_me
+description: A Personal Finance and Habit Tracker App.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # --- UI Utilities ---
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.1.0        # Agar font terlihat modern
+  intl: ^0.19.0               # Untuk format Rupiah (IDR) & Tanggal
+  fl_chart: ^0.66.0           # Untuk grafik keuangan (mirip Money Lover)
+  font_awesome_flutter: ^10.7.0 # Ikon kategori yang lengkap
+
+  # --- State Management ---
+  flutter_riverpod: ^2.4.9
+  riverpod_annotation: ^2.3.3
+
+  # --- Navigation ---
+  go_router: ^13.1.0
+
+  # --- Database (Drift/SQLite) ---
+  drift: ^2.14.0
+  sqlite3_flutter_libs: ^0.5.18
+  path_provider: ^2.1.2
+  path: ^1.8.3
+
+  # --- Utils ---
+  uuid: ^4.3.3               # Untuk generate ID unik
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  
+  # --- Code Generators ---
+  build_runner: ^2.4.8
+  riverpod_generator: ^2.3.9
+  drift_dev: ^2.14.0
+
+flutter:
+  uses-material-design: true
