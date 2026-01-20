@@ -1,8 +1,16 @@
+// main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// Import HomeView yang baru dibuat
+import 'package:compound_me/src/features/dashboard/presentation/home_view.dart'; 
+// Import untuk date formatting indonesia
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
-  // ProviderScope wajib untuk Riverpod
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Setup format tanggal Indonesia dulu
+  await initializeDateFormatting('id_ID', null);
+  
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -15,15 +23,11 @@ class MyApp extends StatelessWidget {
       title: 'CompoundMe',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF11998E)),
         useMaterial3: true,
+        scaffoldBackgroundColor: Colors.grey[50],
       ),
-      // Nanti kita ganti ini dengan DashboardPage saat sudah jadi
-      home: const Scaffold(
-        body: Center(
-          child: Text("CompoundMe: Database Ready. Waiting for UI."),
-        ),
-      ),
+      home: const HomeView(), // <--- Panggil HomeView disini
     );
   }
 }
