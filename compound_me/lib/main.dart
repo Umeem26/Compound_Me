@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  // ProviderScope diperlukan untuk Riverpod bekerja
+  // ProviderScope wajib untuk Riverpod
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -18,9 +18,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
+      // Nanti kita ganti ini dengan DashboardPage saat sudah jadi
       home: const Scaffold(
         body: Center(
-          child: Text("Setup Selesai! Ready to code."),
+          child: Text("CompoundMe: Database Ready. Waiting for UI."),
         ),
       ),
     );
