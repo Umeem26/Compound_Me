@@ -61,6 +61,11 @@ class FinanceRepositoryImpl implements FinanceRepository {
   Future<List<Category>> getCategories() async {
     return await _db.select(_db.categories).get();
   }
+
+  @override
+  Future<int> addCategory(CategoriesCompanion category) async {
+    return await _db.into(_db.categories).insert(category);
+  }
 }
 
 // --- PROVIDER ---

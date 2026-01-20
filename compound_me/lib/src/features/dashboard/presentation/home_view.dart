@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+
+// Import Controller & Utils
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
-import 'package:intl/intl.dart'; // <--- TAMBAHKAN INI
 
+// Import Screens untuk Navigasi
+import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
+import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -12,23 +17,23 @@ class HomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 1. Ambil data dari Controller (Riverpod)
-    // .watch artinya: Kalau data berubah, bangun ulang tampilan ini.
     final walletsAsync = ref.watch(walletListProvider);
     final transactionsAsync = ref.watch(transactionListProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey[100], // Background agak abu biar kontras
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: const Text("CompoundMe", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
+          // TOMBOL POJOK KANAN ATAS: Tambah Transaksi
           IconButton(
             icon: const Icon(Icons.add),
-            // Nanti tombol ini buat nambah transaksi
             onPressed: () {
-               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Fitur Tambah Transaksi akan dibuat nanti!")),
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
               );
             }, 
           ),
@@ -68,7 +73,7 @@ class HomeView extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF11998E), Color(0xFF38EF7D)], // Warna Money Lover-ish
+          colors: [Color(0xFF11998E), Color(0xFF38EF7D)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -84,7 +89,7 @@ class HomeView extends ConsumerWidget {
           const SizedBox(height: 8),
           walletsAsync.when(
             data: (wallets) {
-              // Hitung total saldo dari semua wallet
+              // Hitung total saldo
               final total = wallets.fold<double>(0, (sum, wallet) => sum + wallet.balance);
               return Text(
                 CurrencyFormatter.toRupiah(total),
@@ -102,17 +107,18 @@ class HomeView extends ConsumerWidget {
   // WIDGET: List Dompet Horizontal
   Widget _buildWalletList(AsyncValue<List<dynamic>> walletsAsync, WidgetRef ref) {
     return SizedBox(
-      height: 120, // Tinggi area scroll horizontal
+      height: 120, 
       child: walletsAsync.when(
         data: (wallets) {
-          if (wallets.isEmpty) {
-            return _buildAddWalletButton(ref); // Tombol tambah kalau kosong
-          }
+          // List.generate + 1 agar ada tempat untuk tombol tambah
           return ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: wallets.length + 1, // +1 untuk tombol tambah di ujung
+            itemCount: wallets.length + 1, 
             itemBuilder: (context, index) {
-              if (index == wallets.length) return _buildAddWalletButton(ref);
+              // Jika index terakhir, render tombol tambah
+              if (index == wallets.length) {
+                return _buildAddWalletButton(ref);
+              }
               
               final wallet = wallets[index];
               return Container(
@@ -122,6 +128,9 @@ class HomeView extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 5, offset: const Offset(0, 2)),
+                  ]
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +141,7 @@ class HomeView extends ConsumerWidget {
                       child: Icon(Icons.wallet, color: Color(wallet.color)),
                     ),
                     const Spacer(),
-                    Text(wallet.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(wallet.name, style: const TextStyle(fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
                     Text(CurrencyFormatter.toRupiah(wallet.balance), style: const TextStyle(fontSize: 12, color: Colors.grey)),
                   ],
                 ),
@@ -146,27 +155,30 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // Tombol Kecil buat tambah wallet (Dummy dulu)
+  // WIDGET: Tombol Tambah Wallet (Kotak Abu-abu)
   Widget _buildAddWalletButton(WidgetRef ref) {
-    return GestureDetector(
-      onTap: () {
-        // TEMPORARY: Langsung tambah wallet dummy biar kelihatan hasilnya
-        ref.read(walletListProvider.notifier).addWallet(
-          name: "BCA Tahapan",
-          initialBalance: 5000000,
-          color: Colors.blue.value,
+    return Builder(
+      builder: (context) {
+        return GestureDetector(
+          onTap: () {
+            // Navigasi ke Form Tambah Wallet
+            Navigator.push(
+              context, 
+              MaterialPageRoute(builder: (context) => const AddWalletScreen()),
+            );
+          },
+          child: Container(
+            width: 80,
+            margin: const EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.grey[300]!),
+            ),
+            child: const Center(child: Icon(Icons.add, color: Colors.grey)),
+          ),
         );
-      },
-      child: Container(
-        width: 80,
-        margin: const EdgeInsets.only(right: 12),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey[300]!),
-        ),
-        child: const Center(child: Icon(Icons.add, color: Colors.grey)),
-      ),
+      }
     );
   }
 
@@ -183,7 +195,7 @@ class HomeView extends ConsumerWidget {
         }
         return ListView.builder(
           shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(), // Biar bisa discroll bareng parent
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: transactions.length,
           itemBuilder: (context, index) {
             final trx = transactions[index];

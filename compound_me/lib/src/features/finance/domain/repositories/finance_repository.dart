@@ -15,4 +15,6 @@ abstract class FinanceRepository {
   
   // --- CATEGORY ---
   Future<List<Category>> getCategories();
+
+  Future<int> addCategory(CategoriesCompanion category);
 }
