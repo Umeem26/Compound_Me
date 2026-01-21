@@ -10,6 +10,7 @@ import 'package:compound_me/src/features/finance/presentation/controllers/wallet
 // Import Screens untuk Navigasi
 import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
+import 'package:compound_me/src/features/habits/presentation/screens/habits_screen.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -27,13 +28,15 @@ class HomeView extends ConsumerWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          // TOMBOL POJOK KANAN ATAS: Tambah Transaksi
+          // TOMBOL BARU: Ke Halaman Habits
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.list_alt), // Ikon checklist
+            tooltip: "Habits",
             onPressed: () {
+              // Pastikan import HabitsScreen di atas file
               Navigator.push(
                 context, 
-                MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+                MaterialPageRoute(builder: (context) => const HabitsScreen()),
               );
             }, 
           ),

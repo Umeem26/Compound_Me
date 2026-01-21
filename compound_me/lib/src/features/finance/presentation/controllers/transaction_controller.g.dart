@@ -21,7 +21,7 @@ final selectedDateProvider =
 );
 
 typedef _$SelectedDate = AutoDisposeNotifier<DateTime>;
-String _$transactionListHash() => r'7606a5ae8b36e1e15a12af2bb8670acdbae7ecce';
+String _$transactionListHash() => r'ebd612d966086d0f9df438ee279f3bfa60e51415';
 
 /// See also [TransactionList].
 @ProviderFor(TransactionList)
