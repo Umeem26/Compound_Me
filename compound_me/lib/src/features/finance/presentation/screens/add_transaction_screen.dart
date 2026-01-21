@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:compound_me/src/core/database/app_database.dart';
+
+// Import Controller & Utils
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/category_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
@@ -25,38 +26,50 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Ambil data untuk Dropdown
+    // Ambil data dari Riverpod
     final walletsAsync = ref.watch(walletListProvider);
     final categoriesAsync = ref.watch(categoryListProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Tambah Transaksi")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Tambah Transaksi"),
+        elevation: 0,
+        backgroundColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. INPUT NOMINAL (Besar)
+              // 1. INPUT NOMINAL (Besar & Jelas)
+              const Text("Berapa nominalnya?", style: TextStyle(color: Colors.grey)),
+              const SizedBox(height: 8),
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                  labelText: "Nominal (Rp)",
                   prefixText: "Rp ",
-                  border: OutlineInputBorder(),
-                  labelStyle: TextStyle(fontSize: 20),
+                  hintText: "0",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                  contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                 ),
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.teal),
                 validator: (val) => val!.isEmpty ? "Harus diisi" : null,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
-              // 2. TANGGAL
+              // 2. PILIH TANGGAL
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text("Tanggal: ${DateFormat('dd MMMM yyyy').format(_selectedDate)}"),
-                trailing: const Icon(Icons.calendar_today),
+                title: Text("Tanggal", style: TextStyle(color: Colors.grey[600])),
+                subtitle: Text(
+                  DateFormat('EEEE, dd MMMM yyyy', 'id_ID').format(_selectedDate),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                trailing: const Icon(Icons.calendar_today, color: Colors.teal),
                 onTap: () async {
                   final picked = await showDatePicker(
                     context: context,
@@ -69,7 +82,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               ),
               const Divider(),
 
-              // 3. DROPDOWN CATEGORY
+              // 3. PILIH KATEGORI (Dropdown)
               categoriesAsync.when(
                 data: (categories) => DropdownButtonFormField<int>(
                   decoration: const InputDecoration(labelText: "Kategori"),
@@ -77,33 +90,43 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                   items: categories.map((cat) {
                     return DropdownMenuItem(
                       value: cat.id,
-                      child: Text(cat.name + (cat.type == 1 ? " (Masuk)" : " (Keluar)")),
+                      child: Row(
+                        children: [
+                          Icon(
+                            cat.type == 0 ? Icons.arrow_upward : Icons.arrow_downward, 
+                            color: cat.type == 0 ? Colors.red : Colors.green,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(cat.name),
+                        ],
+                      ),
                     );
                   }).toList(),
                   onChanged: (val) => setState(() => _selectedCategoryId = val),
-                  validator: (val) => val == null ? "Pilih kategori" : null,
+                  validator: (val) => val == null ? "Pilih kategori dulu" : null,
                 ),
                 loading: () => const LinearProgressIndicator(),
-                error: (e, s) => Text("Error: $e"),
+                error: (e, s) => Text("Gagal load kategori: $e"),
               ),
               const SizedBox(height: 16),
 
-              // 4. DROPDOWN WALLET
+              // 4. PILIH DOMPET (Dropdown)
               walletsAsync.when(
                 data: (wallets) => DropdownButtonFormField<int>(
-                  decoration: const InputDecoration(labelText: "Dari Dompet"),
+                  decoration: const InputDecoration(labelText: "Pakai Dompet Mana?"),
                   value: _selectedWalletId,
                   items: wallets.map((w) {
                     return DropdownMenuItem(
                       value: w.id,
-                      child: Text("${w.name} (Sisa: ${CurrencyFormatter.toRupiah(w.balance)})"),
+                      child: Text("${w.name} (Saldo: ${CurrencyFormatter.toRupiah(w.balance)})"),
                     );
                   }).toList(),
                   onChanged: (val) => setState(() => _selectedWalletId = val),
-                  validator: (val) => val == null ? "Pilih dompet" : null,
+                  validator: (val) => val == null ? "Pilih dompet dulu" : null,
                 ),
                 loading: () => const LinearProgressIndicator(),
-                error: (e, s) => Text("Error: $e"),
+                error: (e, s) => Text("Gagal load dompet: $e"),
               ),
               const SizedBox(height: 16),
 
@@ -111,20 +134,21 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               TextFormField(
                 controller: _noteController,
                 decoration: const InputDecoration(
-                  labelText: "Catatan (Optional)",
-                  icon: Icon(Icons.notes),
+                  labelText: "Catatan (Opsional)",
+                  icon: Icon(Icons.edit_note),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 40),
 
               // 6. TOMBOL SIMPAN
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 55,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.teal,
                     foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   onPressed: _saveTransaction,
                   child: const Text("SIMPAN TRANSAKSI", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -141,7 +165,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     if (_formKey.currentState!.validate()) {
       final amount = double.tryParse(_amountController.text) ?? 0;
       
-      // Panggil Controller untuk simpan ke DB
+      // Simpan ke database via Controller
       await ref.read(transactionListProvider.notifier).addTransaction(
         amount: amount,
         note: _noteController.text,
@@ -150,10 +174,14 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         walletId: _selectedWalletId!,
       );
 
+      // Pastikan widget masih ada sebelum navigasi (Best Practice Flutter)
       if (mounted) {
-        Navigator.pop(context); // Kembali ke Home
+        Navigator.pop(context); 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Transaksi Berhasil Disimpan!")),
+          const SnackBar(
+            content: Text("Transaksi berhasil disimpan!"),
+            backgroundColor: Colors.teal,
+          ),
         );
       }
     }
