@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:compound_me/src/features/dashboard/presentation/home_view.dart'; 
 // Import untuk date formatting indonesia
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:compound_me/src/features/dashboard/presentation/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: Colors.grey[50],
       ),
-      home: const HomeView(), // <--- Panggil HomeView disini
+      home: const MainScreen(),
     );
   }
 }

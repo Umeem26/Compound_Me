@@ -7,10 +7,9 @@ import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
 
-// Import Screens untuk Navigasi
+// Import Screens
 import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
-import 'package:compound_me/src/features/habits/presentation/screens/habits_screen.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -28,15 +27,14 @@ class HomeView extends ConsumerWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          // TOMBOL BARU: Ke Halaman Habits
+          // HANYA SISA SATU TOMBOL: Tambah Transaksi
           IconButton(
-            icon: const Icon(Icons.list_alt), // Ikon checklist
-            tooltip: "Habits",
+            icon: const Icon(Icons.add),
+            tooltip: "Tambah Transaksi",
             onPressed: () {
-              // Pastikan import HabitsScreen di atas file
               Navigator.push(
                 context, 
-                MaterialPageRoute(builder: (context) => const HabitsScreen()),
+                MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
               );
             }, 
           ),
@@ -92,7 +90,6 @@ class HomeView extends ConsumerWidget {
           const SizedBox(height: 8),
           walletsAsync.when(
             data: (wallets) {
-              // Hitung total saldo
               final total = wallets.fold<double>(0, (sum, wallet) => sum + wallet.balance);
               return Text(
                 CurrencyFormatter.toRupiah(total),
@@ -113,12 +110,11 @@ class HomeView extends ConsumerWidget {
       height: 120, 
       child: walletsAsync.when(
         data: (wallets) {
-          // List.generate + 1 agar ada tempat untuk tombol tambah
           return ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: wallets.length + 1, 
             itemBuilder: (context, index) {
-              // Jika index terakhir, render tombol tambah
+              // Jika index terakhir, render tombol tambah wallet
               if (index == wallets.length) {
                 return _buildAddWalletButton(ref);
               }
@@ -164,7 +160,6 @@ class HomeView extends ConsumerWidget {
       builder: (context) {
         return GestureDetector(
           onTap: () {
-            // Navigasi ke Form Tambah Wallet
             Navigator.push(
               context, 
               MaterialPageRoute(builder: (context) => const AddWalletScreen()),
@@ -207,8 +202,11 @@ class HomeView extends ConsumerWidget {
               elevation: 0,
               color: Colors.white,
               child: ListTile(
-                leading: const CircleAvatar(backgroundColor: Colors.orange, child: Icon(Icons.fastfood, color: Colors.white)),
-                title: Text(trx.note ?? "Tanpa Catatan"),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.orange.withOpacity(0.2), 
+                  child: const Icon(Icons.fastfood, color: Colors.orange)
+                ),
+                title: Text(trx.note ?? "Auto-Habit"),
                 subtitle: Text(DateFormat('dd MMM yyyy').format(trx.date)),
                 trailing: Text(
                   "- ${CurrencyFormatter.toRupiah(trx.amount)}",
