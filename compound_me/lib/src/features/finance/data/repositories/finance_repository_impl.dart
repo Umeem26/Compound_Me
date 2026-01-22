@@ -29,18 +29,17 @@ class FinanceRepositoryImpl implements FinanceRepository {
 
   @override
   Future<int> deleteWallet(int id) async {
-    return await (_db.delete(_db.wallets)..where((tbl) => tbl.id.equals(id))).go();
+    return await (_db.delete(_db.wallets)..where((t) => t.id.equals(id))).go();
   }
 
   // --- TRANSACTION ---
   @override
   Future<List<Transaction>> getTransactionsByMonth(DateTime month) async {
-    // Logic: Ambil transaksi dari tanggal 1 s/d akhir bulan tersebut
     final start = DateTime(month.year, month.month, 1);
     final end = DateTime(month.year, month.month + 1, 1).subtract(const Duration(seconds: 1));
 
     return await (_db.select(_db.transactions)
-      ..where((tbl) => tbl.date.isBetweenValues(start, end))
+      ..where((t) => t.date.isBetweenValues(start, end))
       ..orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)]))
       .get();
   }
@@ -50,10 +49,10 @@ class FinanceRepositoryImpl implements FinanceRepository {
     return await _db.into(_db.transactions).insert(transaction);
   }
 
+  // PERBAIKAN: Implementasi Delete Transaction
   @override
-  Future<bool> deleteTransaction(int id) async {
-    final result = await (_db.delete(_db.transactions)..where((t) => t.id.equals(id))).go();
-    return result > 0;
+  Future<int> deleteTransaction(int id) async {
+    return await (_db.delete(_db.transactions)..where((t) => t.id.equals(id))).go();
   }
 
   // --- CATEGORY ---
@@ -68,8 +67,6 @@ class FinanceRepositoryImpl implements FinanceRepository {
   }
 }
 
-// --- PROVIDER ---
-// Ini agar Repository bisa dipanggil oleh UI nanti
 @riverpod
 FinanceRepository financeRepository(FinanceRepositoryRef ref) {
   final db = ref.watch(appDatabaseProvider);

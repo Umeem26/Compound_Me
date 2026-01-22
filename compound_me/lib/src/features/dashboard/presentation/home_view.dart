@@ -27,7 +27,7 @@ class HomeView extends ConsumerWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          // HANYA SISA SATU TOMBOL: Tambah Transaksi
+          // TOMBOL: Tambah Transaksi
           IconButton(
             icon: const Icon(Icons.add),
             tooltip: "Tambah Transaksi",
@@ -60,7 +60,9 @@ class HomeView extends ConsumerWidget {
             // --- BAGIAN 3: TRANSAKSI TERAKHIR ---
             const Text("Transaksi Bulan Ini", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            _buildTransactionList(transactionsAsync),
+            
+            // PENTING: Kita kirim 'ref' ke sini agar bisa panggil fungsi hapus
+            _buildTransactionList(transactionsAsync, ref, context),
           ],
         ),
       ),
@@ -114,7 +116,6 @@ class HomeView extends ConsumerWidget {
             scrollDirection: Axis.horizontal,
             itemCount: wallets.length + 1, 
             itemBuilder: (context, index) {
-              // Jika index terakhir, render tombol tambah wallet
               if (index == wallets.length) {
                 return _buildAddWalletButton(ref);
               }
@@ -154,7 +155,7 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // WIDGET: Tombol Tambah Wallet (Kotak Abu-abu)
+  // WIDGET: Tombol Tambah Wallet
   Widget _buildAddWalletButton(WidgetRef ref) {
     return Builder(
       builder: (context) {
@@ -180,8 +181,8 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // WIDGET: List Transaksi
-  Widget _buildTransactionList(AsyncValue<List<dynamic>> transactionsAsync) {
+  // WIDGET: List Transaksi (Updated dengan Swipe to Delete)
+  Widget _buildTransactionList(AsyncValue<List<dynamic>> transactionsAsync, WidgetRef ref, BuildContext context) {
     return transactionsAsync.when(
       data: (transactions) {
         if (transactions.isEmpty) {
@@ -197,20 +198,57 @@ class HomeView extends ConsumerWidget {
           itemCount: transactions.length,
           itemBuilder: (context, index) {
             final trx = transactions[index];
-            return Card(
-              margin: const EdgeInsets.only(bottom: 10),
-              elevation: 0,
-              color: Colors.white,
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.orange.withOpacity(0.2), 
-                  child: const Icon(Icons.fastfood, color: Colors.orange)
+            
+            // FITUR GESER UNTUK HAPUS
+            return Dismissible(
+              key: Key(trx.id.toString()), // ID Unik
+              direction: DismissDirection.endToStart, // Geser Kanan ke Kiri
+              background: Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(right: 20),
+                decoration: BoxDecoration(
+                  color: Colors.red[100],
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                title: Text(trx.note ?? "Auto-Habit"),
-                subtitle: Text(DateFormat('dd MMM yyyy').format(trx.date)),
-                trailing: Text(
-                  "- ${CurrencyFormatter.toRupiah(trx.amount)}",
-                  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                child: const Icon(Icons.delete, color: Colors.red),
+              ),
+              confirmDismiss: (direction) async {
+                // Konfirmasi Dialog
+                return await showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text("Hapus Transaksi?"),
+                    content: const Text("Saldo dompet akan dikembalikan seperti semula."),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Batal")),
+                      TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("Hapus", style: TextStyle(color: Colors.red))),
+                    ],
+                  ),
+                );
+              },
+              onDismissed: (direction) {
+                // EKSEKUSI HAPUS & REFUND
+                ref.read(transactionListProvider.notifier).deleteTransaction(trx);
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Transaksi dihapus & Saldo dikembalikan!")),
+                );
+              },
+              child: Card(
+                margin: const EdgeInsets.only(bottom: 10),
+                elevation: 0,
+                color: Colors.white,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.orange.withOpacity(0.2), 
+                    child: const Icon(Icons.fastfood, color: Colors.orange)
+                  ),
+                  title: Text(trx.note ?? "Auto-Habit"),
+                  subtitle: Text(DateFormat('dd MMM yyyy').format(trx.date)),
+                  trailing: Text(
+                    "- ${CurrencyFormatter.toRupiah(trx.amount)}",
+                    style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             );

@@ -2,13 +2,11 @@ import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:compound_me/src/core/database/app_database.dart';
 import 'package:compound_me/src/features/finance/data/repositories/finance_repository_impl.dart';
-
-// Kita butuh import WalletController agar bisa menyuruhnya refresh saldo
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
 
 part 'transaction_controller.g.dart';
 
-// 1. Provider untuk menyimpan "Bulan yang dipilih"
+// Provider untuk Filter Bulan
 @riverpod
 class SelectedDate extends _$SelectedDate {
   @override
@@ -17,7 +15,7 @@ class SelectedDate extends _$SelectedDate {
   void updateDate(DateTime newDate) => state = newDate;
 }
 
-// 2. Controller utama Transaksi
+// Controller Utama
 @riverpod
 class TransactionList extends _$TransactionList {
   @override
@@ -27,6 +25,7 @@ class TransactionList extends _$TransactionList {
     return repository.getTransactionsByMonth(selectedMonth);
   }
 
+  // FUNGSI TAMBAH (ADD)
   Future<void> addTransaction({
     required double amount,
     required String note,
@@ -36,9 +35,7 @@ class TransactionList extends _$TransactionList {
   }) async {
     final repository = ref.read(financeRepositoryProvider);
 
-    // --- LOGIKA BARU: UPDATE SALDO DOMPET ---
-    
-    // 1. Ambil data Wallet & Kategori dari database untuk dicek
+    // 1. Ambil data Wallet & Kategori
     final wallets = await repository.getWallets();
     final categories = await repository.getCategories();
     
@@ -48,21 +45,16 @@ class TransactionList extends _$TransactionList {
     // 2. Hitung Saldo Baru
     double newBalance = targetWallet.balance;
     if (targetCategory.type == 0) {
-      // Type 0 = Pengeluaran (Expense) -> KURANGI Saldo
-      newBalance -= amount;
+      newBalance -= amount; // Expense
     } else {
-      // Type 1 = Pemasukan (Income) -> TAMBAH Saldo
-      newBalance += amount;
+      newBalance += amount; // Income
     }
 
-    // 3. Simpan Perubahan Saldo ke Database Wallet
-    // copyWith adalah method bawaan Drift untuk duplikasi data dengan perubahan
+    // 3. Update Saldo Wallet
     final updatedWallet = targetWallet.copyWith(balance: newBalance);
     await repository.updateWallet(updatedWallet);
 
-    // --- AKHIR LOGIKA UPDATE SALDO ---
-
-    // 4. Simpan Transaksi (Struk)
+    // 4. Simpan Transaksi
     final newTransaction = TransactionsCompanion.insert(
       amount: amount,
       date: date,
@@ -74,7 +66,40 @@ class TransactionList extends _$TransactionList {
     await repository.addTransaction(newTransaction);
     
     // 5. Refresh UI
-    ref.invalidateSelf(); // Refresh list transaksi di bawah
-    ref.invalidate(walletListProvider); // Refresh kartu hijau & list dompet (PENTING!)
+    ref.invalidateSelf(); 
+    ref.invalidate(walletListProvider); 
+  }
+
+  // FUNGSI HAPUS (DELETE & REFUND)
+  Future<void> deleteTransaction(Transaction transaction) async {
+    final repo = ref.read(financeRepositoryProvider);
+
+    // 1. Ambil data terkait
+    final categories = await repo.getCategories();
+    final category = categories.firstWhere((c) => c.id == transaction.categoryId);
+
+    final wallets = await repo.getWallets();
+    final targetWallet = wallets.firstWhere((w) => w.id == transaction.walletId);
+
+    // 2. LOGIKA REFUND / REVERSE
+    double newBalance = targetWallet.balance;
+    
+    if (category.type == 0) {
+      // Dulu Pengeluaran, sekarang Uang Dibalikin (Ditambah)
+      newBalance += transaction.amount;
+    } else {
+      // Dulu Pemasukan, sekarang Dibatalkan (Dikurang)
+      newBalance -= transaction.amount;
+    }
+
+    // 3. Update Saldo
+    await repo.updateWallet(targetWallet.copyWith(balance: newBalance));
+
+    // 4. Hapus Data dari DB
+    await repo.deleteTransaction(transaction.id);
+
+    // 5. Refresh UI
+    ref.invalidateSelf();
+    ref.invalidate(walletListProvider);
   }
 }
