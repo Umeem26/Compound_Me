@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:compound_me/src/features/dashboard/presentation/home_view.dart';
 import 'package:compound_me/src/features/habits/presentation/screens/habits_screen.dart';
+// IMPORT HALAMAN BARU
+import 'package:compound_me/src/features/dashboard/presentation/screens/settings_screen.dart'; 
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,17 +14,16 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  // Daftar Halaman yang akan ditampilkan
+  // DAFTAR HALAMAN (Sekarang ada 3)
   final List<Widget> _pages = [
-    const HomeView(),     // Index 0: Dashboard
-    const HabitsScreen(), // Index 1: Habits
+    const HomeView(),     // 0
+    const HabitsScreen(), // 1
+    const SettingsScreen(), // 2
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // IndexedStack menjaga halaman tetap "hidup" saat pindah tab
-      // Jadi kalau scroll di Dashboard, pindah ke Habits, balik lagi posisinya gak reset.
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
@@ -44,6 +45,12 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.task_alt_outlined),
             selectedIcon: Icon(Icons.task_alt),
             label: 'Habits',
+          ),
+          // MENU KETIGA
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
