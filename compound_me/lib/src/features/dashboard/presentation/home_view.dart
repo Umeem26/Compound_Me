@@ -8,6 +8,8 @@ import 'package:compound_me/src/features/finance/presentation/controllers/wallet
 import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
 import 'package:compound_me/src/features/dashboard/presentation/widgets/expense_pie_chart.dart';
+// IMPORT BARU
+import 'package:compound_me/src/features/dashboard/presentation/widgets/month_picker.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -38,18 +40,24 @@ class HomeView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // --- BAGIAN 0: PILIH BULAN (TIME TRAVEL) ---
+            const Center(child: MonthPicker()), 
+            const SizedBox(height: 20),
+
+            // --- BAGIAN 1: TOTAL SALDO ---
             _buildTotalBalanceCard(walletsAsync),
+
             const SizedBox(height: 24),
             const Text("Dompet Saya", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             _buildWalletList(walletsAsync, ref),
-            const SizedBox(height: 24),
             
-            // Pie Chart
+            const SizedBox(height: 24),
+            // Pie Chart (Otomatis ikut berubah sesuai bulan yg dipilih)
             const ExpensePieChart(),
             
             const SizedBox(height: 24),
-            const Text("Transaksi Bulan Ini", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text("Transaksi", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             _buildTransactionList(transactionsAsync, ref, context),
           ],
@@ -58,6 +66,9 @@ class HomeView extends ConsumerWidget {
     );
   }
 
+  // ... (SISA KODE KE BAWAH TETAP SAMA SEPERTI SEBELUMNYA) ...
+  // (Copy saja method _buildTotalBalanceCard, _buildWalletList, _buildTransactionList dari kode sebelumnya)
+  
   Widget _buildTotalBalanceCard(AsyncValue<List<dynamic>> walletsAsync) {
     return Container(
       width: double.infinity,
@@ -170,7 +181,7 @@ class HomeView extends ConsumerWidget {
           return Container(
             padding: const EdgeInsets.all(30),
             alignment: Alignment.center,
-            child: const Text("Belum ada transaksi bulan ini.", style: TextStyle(color: Colors.grey)),
+            child: const Text("Belum ada transaksi di bulan ini.", style: TextStyle(color: Colors.grey)),
           );
         }
         return ListView.builder(
@@ -179,7 +190,7 @@ class HomeView extends ConsumerWidget {
           itemCount: transactions.length,
           itemBuilder: (context, index) {
             final trx = transactions[index];
-            final isExpense = trx.amount < 0; // Cek apakah pengeluaran
+            final isExpense = trx.amount < 0; 
 
             return Dismissible(
               key: Key(trx.id.toString()),
@@ -213,10 +224,9 @@ class HomeView extends ConsumerWidget {
                 color: Colors.white,
                 child: ListTile(
                   leading: CircleAvatar(
-                    // WARNA MERAH JIKA EXPENSE, HIJAU JIKA INCOME
                     backgroundColor: isExpense ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1),
                     child: Icon(
-                      isExpense ? Icons.arrow_upward : Icons.arrow_downward, // Merah Naik (Keluar), Hijau Turun (Masuk)
+                      isExpense ? Icons.arrow_upward : Icons.arrow_downward, 
                       color: isExpense ? Colors.red : Colors.green,
                     )
                   ),
