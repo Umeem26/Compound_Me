@@ -6,16 +6,13 @@ import 'package:compound_me/src/features/finance/presentation/controllers/wallet
 
 part 'transaction_controller.g.dart';
 
-// Provider untuk Filter Bulan
 @riverpod
 class SelectedDate extends _$SelectedDate {
   @override
   DateTime build() => DateTime.now();
-
   void updateDate(DateTime newDate) => state = newDate;
 }
 
-// Controller Utama
 @riverpod
 class TransactionList extends _$TransactionList {
   @override
@@ -25,7 +22,7 @@ class TransactionList extends _$TransactionList {
     return repository.getTransactionsByMonth(selectedMonth);
   }
 
-  // FUNGSI TAMBAH (ADD)
+  // FUNGSI TAMBAH TRANSAKSI (Logic Baru +/-)
   Future<void> addTransaction({
     required double amount,
     required String note,
@@ -35,28 +32,32 @@ class TransactionList extends _$TransactionList {
   }) async {
     final repository = ref.read(financeRepositoryProvider);
 
-    // 1. Ambil data Wallet & Kategori
     final wallets = await repository.getWallets();
     final categories = await repository.getCategories();
     
     final targetWallet = wallets.firstWhere((w) => w.id == walletId);
     final targetCategory = categories.firstWhere((c) => c.id == categoryId);
 
-    // 2. Hitung Saldo Baru
     double newBalance = targetWallet.balance;
+    double finalAmount = amount; 
+
+    // LOGIKA PENTING: Tentukan Positif/Negatif
     if (targetCategory.type == 0) {
-      newBalance -= amount; // Expense
+      // Type 0 = Pengeluaran (Expense)
+      newBalance -= amount;       // Kurangi Saldo
+      finalAmount = -amount;      // Simpan sebagai MINUS
     } else {
-      newBalance += amount; // Income
+      // Type 1 = Pemasukan (Income)
+      newBalance += amount;       // Tambah Saldo
+      finalAmount = amount;       // Simpan sebagai PLUS
     }
 
-    // 3. Update Saldo Wallet
-    final updatedWallet = targetWallet.copyWith(balance: newBalance);
-    await repository.updateWallet(updatedWallet);
+    // Update Saldo Wallet
+    await repository.updateWallet(targetWallet.copyWith(balance: newBalance));
 
-    // 4. Simpan Transaksi
+    // Simpan Transaksi dengan finalAmount (yg sudah ada minusnya)
     final newTransaction = TransactionsCompanion.insert(
-      amount: amount,
+      amount: finalAmount, 
       date: date,
       note: Value(note),
       categoryId: categoryId,
@@ -65,40 +66,29 @@ class TransactionList extends _$TransactionList {
 
     await repository.addTransaction(newTransaction);
     
-    // 5. Refresh UI
     ref.invalidateSelf(); 
     ref.invalidate(walletListProvider); 
   }
 
-  // FUNGSI HAPUS (DELETE & REFUND)
+  // FUNGSI HAPUS TRANSAKSI (Logic Universal)
   Future<void> deleteTransaction(Transaction transaction) async {
     final repo = ref.read(financeRepositoryProvider);
-
-    // 1. Ambil data terkait
-    final categories = await repo.getCategories();
-    final category = categories.firstWhere((c) => c.id == transaction.categoryId);
-
     final wallets = await repo.getWallets();
-    final targetWallet = wallets.firstWhere((w) => w.id == transaction.walletId);
-
-    // 2. LOGIKA REFUND / REVERSE
-    double newBalance = targetWallet.balance;
     
-    if (category.type == 0) {
-      // Dulu Pengeluaran, sekarang Uang Dibalikin (Ditambah)
-      newBalance += transaction.amount;
-    } else {
-      // Dulu Pemasukan, sekarang Dibatalkan (Dikurang)
-      newBalance -= transaction.amount;
-    }
+    // Cari wallet, kalau gak ketemu (misal udah dihapus) return
+    final targetWallet = wallets.firstWhere((w) => w.id == transaction.walletId, orElse: () => wallets.first);
 
-    // 3. Update Saldo
+    // LOGIKA REFUND PINTAR:
+    // Saldo Baru = Saldo Lama - (Nilai Transaksi)
+    // Matematika: 
+    // Jika hapus pengeluaran (-5000): Saldo - (-5000) = Saldo + 5000 (Uang balik)
+    // Jika hapus pemasukan (+5000): Saldo - (5000) = Saldo - 5000 (Uang ditarik)
+    
+    double newBalance = targetWallet.balance - transaction.amount;
+    
     await repo.updateWallet(targetWallet.copyWith(balance: newBalance));
-
-    // 4. Hapus Data dari DB
     await repo.deleteTransaction(transaction.id);
-
-    // 5. Refresh UI
+    
     ref.invalidateSelf();
     ref.invalidate(walletListProvider);
   }

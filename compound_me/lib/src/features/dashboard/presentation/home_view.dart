@@ -2,21 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-// Import Controller & Utils
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
-
-// Import Screens
 import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
+import 'package:compound_me/src/features/dashboard/presentation/widgets/expense_pie_chart.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Ambil data dari Controller (Riverpod)
     final walletsAsync = ref.watch(walletListProvider);
     final transactionsAsync = ref.watch(transactionListProvider);
 
@@ -27,15 +24,11 @@ class HomeView extends ConsumerWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          // TOMBOL: Tambah Transaksi
           IconButton(
             icon: const Icon(Icons.add),
             tooltip: "Tambah Transaksi",
             onPressed: () {
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const AddTransactionScreen()));
             }, 
           ),
         ],
@@ -45,23 +38,19 @@ class HomeView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- BAGIAN 1: TOTAL SALDO CARD ---
             _buildTotalBalanceCard(walletsAsync),
-
             const SizedBox(height: 24),
-            
-            // --- BAGIAN 2: DAFTAR DOMPET ---
             const Text("Dompet Saya", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             _buildWalletList(walletsAsync, ref),
-
             const SizedBox(height: 24),
-
-            // --- BAGIAN 3: TRANSAKSI TERAKHIR ---
+            
+            // Pie Chart
+            const ExpensePieChart(),
+            
+            const SizedBox(height: 24),
             const Text("Transaksi Bulan Ini", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            
-            // PENTING: Kita kirim 'ref' ke sini agar bisa panggil fungsi hapus
             _buildTransactionList(transactionsAsync, ref, context),
           ],
         ),
@@ -69,7 +58,6 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // WIDGET: Kartu Total Saldo
   Widget _buildTotalBalanceCard(AsyncValue<List<dynamic>> walletsAsync) {
     return Container(
       width: double.infinity,
@@ -106,7 +94,6 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // WIDGET: List Dompet Horizontal
   Widget _buildWalletList(AsyncValue<List<dynamic>> walletsAsync, WidgetRef ref) {
     return SizedBox(
       height: 120, 
@@ -119,7 +106,6 @@ class HomeView extends ConsumerWidget {
               if (index == wallets.length) {
                 return _buildAddWalletButton(ref);
               }
-              
               final wallet = wallets[index];
               return Container(
                 width: 150,
@@ -155,16 +141,12 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // WIDGET: Tombol Tambah Wallet
   Widget _buildAddWalletButton(WidgetRef ref) {
     return Builder(
       builder: (context) {
         return GestureDetector(
           onTap: () {
-            Navigator.push(
-              context, 
-              MaterialPageRoute(builder: (context) => const AddWalletScreen()),
-            );
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const AddWalletScreen()));
           },
           child: Container(
             width: 80,
@@ -181,7 +163,6 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // WIDGET: List Transaksi (Updated dengan Swipe to Delete)
   Widget _buildTransactionList(AsyncValue<List<dynamic>> transactionsAsync, WidgetRef ref, BuildContext context) {
     return transactionsAsync.when(
       data: (transactions) {
@@ -198,22 +179,18 @@ class HomeView extends ConsumerWidget {
           itemCount: transactions.length,
           itemBuilder: (context, index) {
             final trx = transactions[index];
-            
-            // FITUR GESER UNTUK HAPUS
+            final isExpense = trx.amount < 0; // Cek apakah pengeluaran
+
             return Dismissible(
-              key: Key(trx.id.toString()), // ID Unik
-              direction: DismissDirection.endToStart, // Geser Kanan ke Kiri
+              key: Key(trx.id.toString()),
+              direction: DismissDirection.endToStart,
               background: Container(
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.only(right: 20),
-                decoration: BoxDecoration(
-                  color: Colors.red[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                decoration: BoxDecoration(color: Colors.red[100], borderRadius: BorderRadius.circular(12)),
                 child: const Icon(Icons.delete, color: Colors.red),
               ),
               confirmDismiss: (direction) async {
-                // Konfirmasi Dialog
                 return await showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
@@ -227,12 +204,8 @@ class HomeView extends ConsumerWidget {
                 );
               },
               onDismissed: (direction) {
-                // EKSEKUSI HAPUS & REFUND
                 ref.read(transactionListProvider.notifier).deleteTransaction(trx);
-                
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Transaksi dihapus & Saldo dikembalikan!")),
-                );
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Transaksi dihapus & Saldo dikembalikan!")));
               },
               child: Card(
                 margin: const EdgeInsets.only(bottom: 10),
@@ -240,14 +213,21 @@ class HomeView extends ConsumerWidget {
                 color: Colors.white,
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: Colors.orange.withOpacity(0.2), 
-                    child: const Icon(Icons.fastfood, color: Colors.orange)
+                    // WARNA MERAH JIKA EXPENSE, HIJAU JIKA INCOME
+                    backgroundColor: isExpense ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1),
+                    child: Icon(
+                      isExpense ? Icons.arrow_upward : Icons.arrow_downward, // Merah Naik (Keluar), Hijau Turun (Masuk)
+                      color: isExpense ? Colors.red : Colors.green,
+                    )
                   ),
                   title: Text(trx.note ?? "Auto-Habit"),
                   subtitle: Text(DateFormat('dd MMM yyyy').format(trx.date)),
                   trailing: Text(
-                    "- ${CurrencyFormatter.toRupiah(trx.amount)}",
-                    style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                    CurrencyFormatter.toRupiah(trx.amount),
+                    style: TextStyle(
+                      color: isExpense ? Colors.red : Colors.green,
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                 ),
               ),
