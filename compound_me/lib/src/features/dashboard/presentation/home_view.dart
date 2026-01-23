@@ -5,10 +5,11 @@ import 'package:intl/intl.dart';
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
-import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
 import 'package:compound_me/src/features/dashboard/presentation/widgets/expense_pie_chart.dart';
 import 'package:compound_me/src/features/dashboard/presentation/widgets/month_picker.dart';
+
+// Hapus import add_transaction_screen karena sudah pindah ke main_screen
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -17,22 +18,13 @@ class HomeView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final walletsAsync = ref.watch(walletListProvider);
     final transactionsAsync = ref.watch(transactionListProvider);
-    // Cek Dark Mode untuk penyesuaian warna border/text kecil
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("CompoundMe", style: TextStyle(fontWeight: FontWeight.bold)),
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: "Tambah Transaksi",
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const AddTransactionScreen()));
-            }, 
-          ),
-        ],
+        // TOMBOL TAMBAH DIHAPUS DARI SINI
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -47,7 +39,7 @@ class HomeView extends ConsumerWidget {
             const SizedBox(height: 24),
             const Text("Dompet Saya", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            _buildWalletList(walletsAsync, ref, context), // Pass Context
+            _buildWalletList(walletsAsync, ref, context),
             
             const SizedBox(height: 24),
             const ExpensePieChart(),
@@ -56,11 +48,18 @@ class HomeView extends ConsumerWidget {
             const Text("Transaksi", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             _buildTransactionList(transactionsAsync, ref, context),
+            
+            // Tambahan ruang di bawah agar list paling bawah tidak tertutup tombol FAB
+            const SizedBox(height: 80), 
           ],
         ),
       ),
     );
   }
+
+  // ... (SISA KODE WIDGET KE BAWAH SAMA PERSIS SEPERTI SEBELUMNYA) ...
+  // _buildTotalBalanceCard, _buildWalletList, _buildTransactionList, _buildAddWalletButton
+  // Pastikan copy function-function tersebut dari kode sebelumnya.
 
   Widget _buildTotalBalanceCard(AsyncValue<List<dynamic>> walletsAsync) {
     return Container(
@@ -116,7 +115,6 @@ class HomeView extends ConsumerWidget {
                 margin: const EdgeInsets.only(right: 12),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  // PERBAIKAN: Gunakan cardColor (Gelap saat Dark Mode, Putih saat Light Mode)
                   color: Theme.of(context).cardColor, 
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
@@ -133,7 +131,6 @@ class HomeView extends ConsumerWidget {
                     ),
                     const Spacer(),
                     Text(wallet.name, style: const TextStyle(fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
-                    // Warna text saldo agak redup
                     Text(
                       CurrencyFormatter.toRupiah(wallet.balance), 
                       style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color)
@@ -162,7 +159,6 @@ class HomeView extends ConsumerWidget {
             width: 80,
             margin: const EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
-              // Tombol tambah menyesuaikan tema
               color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.grey.withOpacity(0.3)),
@@ -221,7 +217,6 @@ class HomeView extends ConsumerWidget {
               child: Card(
                 margin: const EdgeInsets.only(bottom: 10),
                 elevation: 0,
-                // PERBAIKAN: Gunakan cardColor agar gelap
                 color: Theme.of(context).cardColor, 
                 child: ListTile(
                   leading: CircleAvatar(
