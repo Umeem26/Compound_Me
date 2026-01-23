@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart'; // Pake Font Baru
 
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
 import 'package:compound_me/src/features/dashboard/presentation/widgets/month_picker.dart';
-
-// Hapus import add_transaction_screen karena sudah pindah ke main_screen
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -17,121 +16,209 @@ class HomeView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final walletsAsync = ref.watch(walletListProvider);
     final transactionsAsync = ref.watch(transactionListProvider);
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
+    
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("CompoundMe", style: TextStyle(fontWeight: FontWeight.bold)),
-        elevation: 0,
-        // TOMBOL TAMBAH DIHAPUS DARI SINI
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(child: MonthPicker()), 
-            const SizedBox(height: 20),
+      // Kita pakai SafeArea + Column custom sbg pengganti AppBar standar
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 1. HEADER CUSTOM (Greeting)
+              _buildHeader(context),
+              
+              const SizedBox(height: 24),
+              
+              // 2. MONTH PICKER (Clean Style)
+              const Center(child: MonthPicker()), 
+              const SizedBox(height: 20),
 
-            _buildTotalBalanceCard(walletsAsync),
+              // 3. PREMIUM BALANCE CARD
+              _buildPremiumTotalCard(walletsAsync, context),
 
-            const SizedBox(height: 24),
-            const Text("Dompet Saya", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            _buildWalletList(walletsAsync, ref, context),
-            
-            const SizedBox(height: 24),
-            
-            const SizedBox(height: 24),
-            const Text("Transaksi", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            _buildTransactionList(transactionsAsync, ref, context),
-            
-            // Tambahan ruang di bawah agar list paling bawah tidak tertutup tombol FAB
-            const SizedBox(height: 80), 
-          ],
+              const SizedBox(height: 30),
+              
+              // 4. WALLETS HEADER
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Dompet Saya", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600)),
+                  GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AddWalletScreen())),
+                    child: Text("+ Tambah", style: GoogleFonts.poppins(color: Colors.teal, fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildWalletList(walletsAsync, ref, context),
+              
+              const SizedBox(height: 30),
+              
+              // 5. TRANSACTIONS HEADER
+              Text("Riwayat Transaksi", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 16),
+              _buildTransactionList(transactionsAsync, ref, context),
+              
+              const SizedBox(height: 80), 
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // ... (SISA KODE WIDGET KE BAWAH SAMA PERSIS SEPERTI SEBELUMNYA) ...
-  // _buildTotalBalanceCard, _buildWalletList, _buildTransactionList, _buildAddWalletButton
-  // Pastikan copy function-function tersebut dari kode sebelumnya.
+  // WIDGET: Header Greeting
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Selamat Datang, 👋", style: GoogleFonts.poppins(color: Colors.grey, fontSize: 14)),
+            Text(
+              "Hisyam K.U", // Ganti Nama Panggilanmu
+              style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+          ),
+          child: const Icon(Icons.notifications_none_rounded),
+        )
+      ],
+    );
+  }
 
-  Widget _buildTotalBalanceCard(AsyncValue<List<dynamic>> walletsAsync) {
+  // WIDGET: Kartu Saldo "Premium"
+  Widget _buildPremiumTotalCard(AsyncValue<List<dynamic>> walletsAsync, BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      height: 180,
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
+        // Gradasi Elegan
         gradient: const LinearGradient(
-          colors: [Color(0xFF11998E), Color(0xFF38EF7D)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          colors: [Color(0xFF00695C), Color(0xFF4DB6AC)], // Teal Tua ke Muda
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: Colors.green.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 5)),
+          BoxShadow(
+            color: const Color(0xFF00695C).withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          const Text("Total Aset", style: TextStyle(color: Colors.white70, fontSize: 14)),
-          const SizedBox(height: 8),
-          walletsAsync.when(
-            data: (wallets) {
-              final total = wallets.fold<double>(0, (sum, wallet) => sum + wallet.balance);
-              return Text(
-                CurrencyFormatter.toRupiah(total),
-                style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
-              );
-            },
-            loading: () => const CircularProgressIndicator(color: Colors.white),
-            error: (err, stack) => Text("Error: $err", style: const TextStyle(color: Colors.white)),
+          // Dekorasi Lingkaran Transparan (Pattern)
+          Positioned(
+            right: -20,
+            top: -20,
+            child: CircleAvatar(radius: 60, backgroundColor: Colors.white.withOpacity(0.1)),
+          ),
+          Positioned(
+            bottom: -40,
+            right: 40,
+            child: CircleAvatar(radius: 40, backgroundColor: Colors.white.withOpacity(0.1)),
+          ),
+
+          // Konten Utama
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.account_balance_wallet, color: Colors.white.withOpacity(0.8), size: 18),
+                  const SizedBox(width: 8),
+                  Text("Total Aset Bersih", style: GoogleFonts.poppins(color: Colors.white70, fontSize: 14)),
+                ],
+              ),
+              const SizedBox(height: 8),
+              walletsAsync.when(
+                data: (wallets) {
+                  final total = wallets.fold<double>(0, (sum, wallet) => sum + wallet.balance);
+                  return FittedBox( // Agar teks tidak terpotong kalau angkanya miliaran
+                    child: Text(
+                      CurrencyFormatter.toRupiah(total),
+                      style: GoogleFonts.poppins(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                },
+                loading: () => const SizedBox(height: 30, width: 30, child: CircularProgressIndicator(color: Colors.white)),
+                error: (_, __) => const Text("---", style: TextStyle(color: Colors.white)),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text("Financial Freedom 🚀", style: GoogleFonts.poppins(color: Colors.white, fontSize: 12)),
+              )
+            ],
           ),
         ],
       ),
     );
   }
 
+  // WIDGET: List Wallet (Clean Style)
   Widget _buildWalletList(AsyncValue<List<dynamic>> walletsAsync, WidgetRef ref, BuildContext context) {
     return SizedBox(
-      height: 120, 
+      height: 140, 
       child: walletsAsync.when(
         data: (wallets) {
+          if (wallets.isEmpty) {
+             return Center(child: Text("Belum ada dompet", style: GoogleFonts.poppins(color: Colors.grey)));
+          }
           return ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: wallets.length + 1, 
+            itemCount: wallets.length, 
             itemBuilder: (context, index) {
-              if (index == wallets.length) {
-                return _buildAddWalletButton(ref, context);
-              }
               final wallet = wallets[index];
               return Container(
-                width: 150,
-                margin: const EdgeInsets.only(right: 12),
+                width: 160,
+                margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor, 
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey.withOpacity(0.05)),
                   boxShadow: [
-                    BoxShadow(color: Colors.grey.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, 2)),
+                    BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 5)),
                   ]
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CircleAvatar(
-                      backgroundColor: Color(wallet.color).withOpacity(0.2),
+                      backgroundColor: Color(wallet.color).withOpacity(0.15),
                       child: Icon(Icons.wallet, color: Color(wallet.color)),
                     ),
-                    const Spacer(),
-                    Text(wallet.name, style: const TextStyle(fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
-                    Text(
-                      CurrencyFormatter.toRupiah(wallet.balance), 
-                      style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(wallet.name, style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14), overflow: TextOverflow.ellipsis),
+                        const SizedBox(height: 4),
+                        Text(
+                          CurrencyFormatter.toRupiah(wallet.balance), 
+                          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -140,42 +227,26 @@ class HomeView extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Text("Gagal memuat dompet"),
+        error: (_, __) => const SizedBox(),
       ),
     );
   }
 
-  Widget _buildAddWalletButton(WidgetRef ref, BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    return Builder(
-      builder: (context) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const AddWalletScreen()));
-          },
-          child: Container(
-            width: 80,
-            margin: const EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
-              color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.grey.withOpacity(0.3)),
-            ),
-            child: const Center(child: Icon(Icons.add, color: Colors.grey)),
-          ),
-        );
-      }
-    );
-  }
-
+  // WIDGET: Transaction List (Grouped Feel)
   Widget _buildTransactionList(AsyncValue<List<dynamic>> transactionsAsync, WidgetRef ref, BuildContext context) {
     return transactionsAsync.when(
       data: (transactions) {
         if (transactions.isEmpty) {
           return Container(
-            padding: const EdgeInsets.all(30),
+            padding: const EdgeInsets.all(40),
             alignment: Alignment.center,
-            child: const Text("Belum ada transaksi di bulan ini.", style: TextStyle(color: Colors.grey)),
+            child: Column(
+              children: [
+                Icon(Icons.receipt_long_rounded, size: 60, color: Colors.grey[300]),
+                const SizedBox(height: 16),
+                Text("Belum ada transaksi bulan ini", style: GoogleFonts.poppins(color: Colors.grey)),
+              ],
+            ),
           );
         }
         return ListView.builder(
@@ -190,17 +261,18 @@ class HomeView extends ConsumerWidget {
               key: Key(trx.id.toString()),
               direction: DismissDirection.endToStart,
               background: Container(
+                margin: const EdgeInsets.only(bottom: 12),
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.only(right: 20),
-                decoration: BoxDecoration(color: Colors.red[100], borderRadius: BorderRadius.circular(12)),
-                child: const Icon(Icons.delete, color: Colors.red),
+                decoration: BoxDecoration(color: Colors.red[100], borderRadius: BorderRadius.circular(16)),
+                child: const Icon(Icons.delete_outline, color: Colors.red, size: 28),
               ),
               confirmDismiss: (direction) async {
                 return await showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text("Hapus Transaksi?"),
-                    content: const Text("Saldo dompet akan dikembalikan seperti semula."),
+                    title: const Text("Hapus?"),
+                    content: const Text("Saldo akan dikembalikan."),
                     actions: [
                       TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Batal")),
                       TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("Hapus", style: TextStyle(color: Colors.red))),
@@ -210,27 +282,38 @@ class HomeView extends ConsumerWidget {
               },
               onDismissed: (direction) {
                 ref.read(transactionListProvider.notifier).deleteTransaction(trx);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Transaksi dihapus & Saldo dikembalikan!")));
               },
-              child: Card(
-                margin: const EdgeInsets.only(bottom: 10),
-                elevation: 0,
-                color: Theme.of(context).cardColor, 
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
+                  ]
+                ),
                 child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: isExpense ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  leading: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isExpense ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Icon(
-                      isExpense ? Icons.arrow_upward : Icons.arrow_downward, 
+                      isExpense ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded, 
                       color: isExpense ? Colors.red : Colors.green,
-                    )
+                      size: 20,
+                    ),
                   ),
-                  title: Text(trx.note ?? "Auto-Habit"),
-                  subtitle: Text(DateFormat('dd MMM yyyy').format(trx.date)),
+                  title: Text(trx.note?.isNotEmpty == true ? trx.note! : "Transaksi", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                  subtitle: Text(DateFormat('dd MMM yyyy, HH:mm').format(trx.date), style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
                   trailing: Text(
                     CurrencyFormatter.toRupiah(trx.amount),
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: isExpense ? Colors.red : Colors.green,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14
                     ),
                   ),
                 ),
@@ -240,7 +323,7 @@ class HomeView extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => const Text("Gagal memuat transaksi"),
+      error: (_, __) => const Text("Error"),
     );
   }
 }

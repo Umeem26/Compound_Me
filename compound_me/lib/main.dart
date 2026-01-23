@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:google_fonts/google_fonts.dart'; 
 import 'package:compound_me/src/features/dashboard/presentation/main_screen.dart';
-// IMPORT PROVIDER TEMA
 import 'package:compound_me/src/core/theme/theme_provider.dart';
 
 void main() async {
@@ -21,45 +21,86 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 1. DENGARKAN SAKLAR TEMA
     final currentTheme = ref.watch(themeProvider);
+
+    // 1. Text Theme (Poppins)
+    final textTheme = GoogleFonts.poppinsTextTheme();
+
+    // 2. Input Decoration (Kotak Input Bulat)
+    final inputDecorationTheme = InputDecorationTheme(
+      filled: true,
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Colors.teal, width: 2),
+      ),
+    );
+
+    // 3. Button Theme
+    final elevatedButtonTheme = ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        textStyle: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+    );
 
     return MaterialApp(
       title: 'CompoundMe',
       debugShowCheckedModeBanner: false,
       
-      // 2. SETTING TEMA LIGHT (TERANG)
+      // --- LIGHT THEME ---
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
-        scaffoldBackgroundColor: Colors.grey[50], 
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black, 
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.light),
+        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+        textTheme: textTheme,
+        inputDecorationTheme: inputDecorationTheme.copyWith(fillColor: Colors.grey[200]),
+        elevatedButtonTheme: elevatedButtonTheme,
+        
+        // HAPUS CARD THEME AGAR TIDAK ERROR (Material 3 sudah otomatis rounded)
+        
+        appBarTheme: AppBarTheme(
+          backgroundColor: const Color(0xFFF8F9FA),
+          elevation: 0,
+          titleTextStyle: GoogleFonts.poppins(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
       ),
 
-      // 3. SETTING TEMA DARK (GELAP)
+      // --- DARK THEME ---
       darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.teal, 
-          brightness: Brightness.dark // Kunci Dark Mode
-        ),
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFF121212), // Background gelap
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1E1E1E),
-          foregroundColor: Colors.white, 
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.dark),
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        textTheme: textTheme.apply(bodyColor: Colors.white, displayColor: Colors.white),
+        inputDecorationTheme: inputDecorationTheme.copyWith(fillColor: const Color(0xFF2C2C2C)),
+        elevatedButtonTheme: elevatedButtonTheme,
+        
+        // HAPUS CARD THEME DARI SINI JUGA
+        
+        appBarTheme: AppBarTheme(
+          backgroundColor: const Color(0xFF121212),
+          elevation: 0,
+          titleTextStyle: GoogleFonts.poppins(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        // Bagian CardTheme dihapus karena otomatis dihandle Material 3
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Color(0xFF1E1E1E),
+          selectedItemColor: Colors.tealAccent,
         )
       ),
 
-      // 4. TERAPKAN PILIHAN USER
       themeMode: currentTheme, 
-      
       home: const MainScreen(),
     );
   }

@@ -12,7 +12,7 @@ dependencies:
 
   # --- UI Utilities ---
   cupertino_icons: ^1.0.6
-  google_fonts: ^6.1.0        # Agar font terlihat modern
+  google_fonts: ^8.0.0        # Agar font terlihat modern
   intl: ^0.19.0               # Untuk format Rupiah (IDR) & Tanggal
   fl_chart: ^1.1.1           # Untuk grafik keuangan (mirip Money Lover)
   font_awesome_flutter: ^10.7.0 # Ikon kategori yang lengkap
