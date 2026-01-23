@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:compound_me/src/core/database/app_database.dart';
 
-// --- IMPORT YANG TADI KURANG ---
-import 'package:compound_me/src/core/database/database_provider.dart'; // Untuk akses Database langsung
-import 'package:compound_me/src/features/finance/presentation/controllers/category_controller.dart'; // Untuk refresh Kategori
-// ------------------------------
+// --- IMPORT DATABASE & PROVIDER ---
+import 'package:compound_me/src/core/database/app_database.dart'; 
+import 'package:compound_me/src/core/database/database_provider.dart'; 
+import 'package:compound_me/src/core/theme/theme_provider.dart'; // <--- IMPORT TEMA
 
+// --- IMPORT CONTROLLERS ---
+import 'package:compound_me/src/features/finance/presentation/controllers/category_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
 import 'package:compound_me/src/features/habits/presentation/controllers/habit_controller.dart';
@@ -16,19 +17,23 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Cek status tema saat ini (untuk Switch)
+    final isDarkMode = ref.watch(themeProvider) == ThemeMode.dark;
+
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      // Warna background menyesuaikan tema otomatis
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text("Pengaturan"),
-        backgroundColor: Colors.white,
         elevation: 0,
+        // Hapus backgroundColor manual agar ikut tema AppBarTheme di main.dart
       ),
       body: ListView(
         children: [
           const SizedBox(height: 20),
           // 1. KARTU PROFIL
           Container(
-            color: Colors.white,
+            color: Theme.of(context).cardColor, // Warna kartu ikut tema
             padding: const EdgeInsets.all(20),
             child: Row(
               children: [
@@ -41,8 +46,8 @@ class SettingsScreen extends ConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text("Hisyam Khaeru Umam", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), // Update Nama Kamu
-                    Text("241511078", style: TextStyle(color: Colors.grey)), // Update NIM Kamu
+                    Text("Hisyam Khaeru Umam", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), 
+                    Text("241511078", style: TextStyle(color: Colors.grey)), 
                   ],
                 ),
               ],
@@ -53,17 +58,21 @@ class SettingsScreen extends ConsumerWidget {
           
           // 2. MENU PENGATURAN
           Container(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             child: Column(
               children: [
+                // SAKLAR DARK MODE (SUDAH AKTIF)
                 ListTile(
                   leading: const Icon(Icons.dark_mode),
                   title: const Text("Tema Gelap"),
-                  trailing: Switch(value: false, onChanged: (val) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Fitur Dark Mode akan hadir segera!")),
-                    );
-                  }),
+                  trailing: Switch(
+                    value: isDarkMode, 
+                    onChanged: (val) {
+                      // Ubah state global
+                      ref.read(themeProvider.notifier).state = 
+                          val ? ThemeMode.dark : ThemeMode.light;
+                    }
+                  ),
                 ),
                 const Divider(height: 1),
                 ListTile(
@@ -113,7 +122,6 @@ class SettingsScreen extends ConsumerWidget {
             onPressed: () async {
               Navigator.pop(ctx);
               
-              // LOGIKA MENGHAPUS SEMUA TABEL
               final db = ref.read(appDatabaseProvider);
               
               await db.delete(db.transactions).go();
@@ -122,11 +130,10 @@ class SettingsScreen extends ConsumerWidget {
               await db.delete(db.wallets).go();
               await db.delete(db.categories).go();
               
-              // Refresh semua provider agar UI kembali kosong
               ref.invalidate(transactionListProvider);
               ref.invalidate(walletListProvider);
               ref.invalidate(habitListProvider);
-              ref.invalidate(categoryListProvider); // Ini akan memicu Seeder ulang otomatis!
+              ref.invalidate(categoryListProvider); 
 
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(

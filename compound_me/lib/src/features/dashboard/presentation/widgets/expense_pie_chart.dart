@@ -67,7 +67,7 @@ class ExpensePieChart extends ConsumerWidget {
               height: 250,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardColor, // <--- GANTI INI
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(

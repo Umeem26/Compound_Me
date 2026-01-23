@@ -8,7 +8,6 @@ import 'package:compound_me/src/features/finance/presentation/controllers/wallet
 import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
 import 'package:compound_me/src/features/dashboard/presentation/widgets/expense_pie_chart.dart';
-// IMPORT BARU
 import 'package:compound_me/src/features/dashboard/presentation/widgets/month_picker.dart';
 
 class HomeView extends ConsumerWidget {
@@ -18,12 +17,12 @@ class HomeView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final walletsAsync = ref.watch(walletListProvider);
     final transactionsAsync = ref.watch(transactionListProvider);
+    // Cek Dark Mode untuk penyesuaian warna border/text kecil
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: const Text("CompoundMe", style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
         elevation: 0,
         actions: [
           IconButton(
@@ -40,20 +39,17 @@ class HomeView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- BAGIAN 0: PILIH BULAN (TIME TRAVEL) ---
             const Center(child: MonthPicker()), 
             const SizedBox(height: 20),
 
-            // --- BAGIAN 1: TOTAL SALDO ---
             _buildTotalBalanceCard(walletsAsync),
 
             const SizedBox(height: 24),
             const Text("Dompet Saya", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            _buildWalletList(walletsAsync, ref),
+            _buildWalletList(walletsAsync, ref, context), // Pass Context
             
             const SizedBox(height: 24),
-            // Pie Chart (Otomatis ikut berubah sesuai bulan yg dipilih)
             const ExpensePieChart(),
             
             const SizedBox(height: 24),
@@ -66,9 +62,6 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // ... (SISA KODE KE BAWAH TETAP SAMA SEPERTI SEBELUMNYA) ...
-  // (Copy saja method _buildTotalBalanceCard, _buildWalletList, _buildTransactionList dari kode sebelumnya)
-  
   Widget _buildTotalBalanceCard(AsyncValue<List<dynamic>> walletsAsync) {
     return Container(
       width: double.infinity,
@@ -105,7 +98,7 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  Widget _buildWalletList(AsyncValue<List<dynamic>> walletsAsync, WidgetRef ref) {
+  Widget _buildWalletList(AsyncValue<List<dynamic>> walletsAsync, WidgetRef ref, BuildContext context) {
     return SizedBox(
       height: 120, 
       child: walletsAsync.when(
@@ -115,7 +108,7 @@ class HomeView extends ConsumerWidget {
             itemCount: wallets.length + 1, 
             itemBuilder: (context, index) {
               if (index == wallets.length) {
-                return _buildAddWalletButton(ref);
+                return _buildAddWalletButton(ref, context);
               }
               final wallet = wallets[index];
               return Container(
@@ -123,10 +116,11 @@ class HomeView extends ConsumerWidget {
                 margin: const EdgeInsets.only(right: 12),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  // PERBAIKAN: Gunakan cardColor (Gelap saat Dark Mode, Putih saat Light Mode)
+                  color: Theme.of(context).cardColor, 
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
-                    BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 5, offset: const Offset(0, 2)),
+                    BoxShadow(color: Colors.grey.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, 2)),
                   ]
                 ),
                 child: Column(
@@ -139,7 +133,11 @@ class HomeView extends ConsumerWidget {
                     ),
                     const Spacer(),
                     Text(wallet.name, style: const TextStyle(fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
-                    Text(CurrencyFormatter.toRupiah(wallet.balance), style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                    // Warna text saldo agak redup
+                    Text(
+                      CurrencyFormatter.toRupiah(wallet.balance), 
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color)
+                    ),
                   ],
                 ),
               );
@@ -152,7 +150,8 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  Widget _buildAddWalletButton(WidgetRef ref) {
+  Widget _buildAddWalletButton(WidgetRef ref, BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Builder(
       builder: (context) {
         return GestureDetector(
@@ -163,9 +162,10 @@ class HomeView extends ConsumerWidget {
             width: 80,
             margin: const EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              // Tombol tambah menyesuaikan tema
+              color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.grey[300]!),
+              border: Border.all(color: Colors.grey.withOpacity(0.3)),
             ),
             child: const Center(child: Icon(Icons.add, color: Colors.grey)),
           ),
@@ -221,7 +221,8 @@ class HomeView extends ConsumerWidget {
               child: Card(
                 margin: const EdgeInsets.only(bottom: 10),
                 elevation: 0,
-                color: Colors.white,
+                // PERBAIKAN: Gunakan cardColor agar gelap
+                color: Theme.of(context).cardColor, 
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundColor: isExpense ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1),

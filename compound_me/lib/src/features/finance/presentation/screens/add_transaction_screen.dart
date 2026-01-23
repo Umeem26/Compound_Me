@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-// Import Controller & Utils
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/category_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
@@ -26,16 +25,18 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Ambil data dari Riverpod
     final walletsAsync = ref.watch(walletListProvider);
     final categoriesAsync = ref.watch(categoryListProvider);
+    
+    // Cek tema untuk warna teks
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      // HAPUS backgroundColor manual, ikut tema
       appBar: AppBar(
         title: const Text("Tambah Transaksi"),
         elevation: 0,
-        backgroundColor: Colors.white,
+        // HAPUS backgroundColor manual
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -44,17 +45,18 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. INPUT NOMINAL (Besar & Jelas)
-              const Text("Berapa nominalnya?", style: TextStyle(color: Colors.grey)),
+              // 1. INPUT NOMINAL
+              Text("Berapa nominalnya?", style: TextStyle(color: isDarkMode ? Colors.white70 : Colors.grey)),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   prefixText: "Rp ",
                   hintText: "0",
-                  border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                  contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  // Warna border ikut tema otomatis
                 ),
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.teal),
                 validator: (val) => val!.isEmpty ? "Harus diisi" : null,
@@ -64,7 +66,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               // 2. PILIH TANGGAL
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text("Tanggal", style: TextStyle(color: Colors.grey[600])),
+                title: Text("Tanggal", style: TextStyle(color: isDarkMode ? Colors.white70 : Colors.grey[600])),
                 subtitle: Text(
                   DateFormat('EEEE, dd MMMM yyyy', 'id_ID').format(_selectedDate),
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -76,6 +78,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                     initialDate: _selectedDate,
                     firstDate: DateTime(2020),
                     lastDate: DateTime(2030),
+                    // DatePicker otomatis gelap di Dark Mode
                   );
                   if (picked != null) setState(() => _selectedDate = picked);
                 },
@@ -86,6 +89,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               categoriesAsync.when(
                 data: (categories) => DropdownButtonFormField<int>(
                   decoration: const InputDecoration(labelText: "Kategori"),
+                  dropdownColor: isDarkMode ? Colors.grey[850] : Colors.white, // Warna menu dropdown
                   value: _selectedCategoryId,
                   items: categories.map((cat) {
                     return DropdownMenuItem(
@@ -98,7 +102,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                             size: 16,
                           ),
                           const SizedBox(width: 8),
-                          Text(cat.name),
+                          Text(cat.name), // Text otomatis putih di dark mode
                         ],
                       ),
                     );
@@ -115,6 +119,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               walletsAsync.when(
                 data: (wallets) => DropdownButtonFormField<int>(
                   decoration: const InputDecoration(labelText: "Pakai Dompet Mana?"),
+                  dropdownColor: isDarkMode ? Colors.grey[850] : Colors.white,
                   value: _selectedWalletId,
                   items: wallets.map((w) {
                     return DropdownMenuItem(
@@ -165,7 +170,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     if (_formKey.currentState!.validate()) {
       final amount = double.tryParse(_amountController.text) ?? 0;
       
-      // Simpan ke database via Controller
       await ref.read(transactionListProvider.notifier).addTransaction(
         amount: amount,
         note: _noteController.text,
@@ -174,7 +178,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         walletId: _selectedWalletId!,
       );
 
-      // Pastikan widget masih ada sebelum navigasi (Best Practice Flutter)
       if (mounted) {
         Navigator.pop(context); 
         ScaffoldMessenger.of(context).showSnackBar(

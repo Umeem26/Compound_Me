@@ -8,31 +8,26 @@ class MonthPicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Ambil Tanggal yang Sedang Dipilih
     final selectedDate = ref.watch(selectedDateProvider);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor, // <--- IKUT TEMA
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min, // Agar lebarnya mengikuti konten
+        mainAxisSize: MainAxisSize.min, 
         children: [
-          // TOMBOL MUNDUR (Bulan Lalu)
           IconButton(
             icon: const Icon(Icons.chevron_left),
             onPressed: () {
               final newDate = DateTime(selectedDate.year, selectedDate.month - 1);
               ref.read(selectedDateProvider.notifier).updateDate(newDate);
-              // Kita harus refresh transaksi saat bulan berubah
               ref.invalidate(transactionListProvider);
             },
           ),
-
-          // TEKS BULAN & TAHUN
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
@@ -40,8 +35,6 @@ class MonthPicker extends ConsumerWidget {
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
-
-          // TOMBOL MAJU (Bulan Depan)
           IconButton(
             icon: const Icon(Icons.chevron_right),
             onPressed: () {
