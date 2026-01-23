@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:compound_me/src/features/dashboard/presentation/home_view.dart';
 import 'package:compound_me/src/features/habits/presentation/screens/habits_screen.dart';
 import 'package:compound_me/src/features/dashboard/presentation/screens/settings_screen.dart';
-import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart'; // Import Add Screen
+import 'package:compound_me/src/features/dashboard/presentation/screens/stats_screen.dart'; // IMPORT BARU
+import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -18,7 +19,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   final List<Widget> _pages = [
     const HomeView(),     // 0
     const HabitsScreen(), // 1
-    const SettingsScreen(), // 2
+    const StatsScreen(),  // 2 (POSISI BARU: LAPORAN)
+    const SettingsScreen(), // 3 (GESER JADI NOMOR 3)
   ];
 
   void _onItemTapped(int index) {
@@ -29,7 +31,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Cek Dark Mode untuk warna Nav Bar
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final navBarColor = isDarkMode ? const Color(0xFF1E1E1E) : Colors.white;
     final selectedColor = Colors.teal;
@@ -41,28 +42,24 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         children: _pages,
       ),
       
-      // TOMBOL TENGAH (MENGAMBANG)
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Aksi Tombol Tengah: Buka Layar Tambah Transaksi
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
           );
         },
-        backgroundColor: Colors.teal, // Warna Hijau Gojek-style
+        backgroundColor: Colors.teal,
         elevation: 4,
-        shape: const CircleBorder(), // Bulat sempurna
+        shape: const CircleBorder(),
         child: const Icon(Icons.add, color: Colors.white, size: 32),
       ),
       
-      // LOKASI TOMBOL: DITANCAP DI TENGAH
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       
-      // NAVIGASI BAWAH
       bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(), // Coak untuk tombol
-        notchMargin: 8.0, // Jarak coak
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
         color: navBarColor,
         elevation: 10,
         height: 65,
@@ -70,33 +67,28 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            // KIRI: Dashboard & Habits
-            _buildNavItem(Icons.dashboard, "Home", 0, selectedColor, unselectedColor),
-            _buildNavItem(Icons.task_alt, "Habits", 1, selectedColor, unselectedColor),
+            // KIRI (2 Item)
+            _buildNavItem(Icons.dashboard_rounded, "Home", 0, selectedColor, unselectedColor),
+            _buildNavItem(Icons.task_alt_rounded, "Habits", 1, selectedColor, unselectedColor),
             
-            // SPASI KOSONG DI TENGAH (UNTUK TOMBOL ADD)
-            const SizedBox(width: 48), 
+            const SizedBox(width: 48), // SPASI TENGAH
             
-            // KANAN: Settings (Dan mungkin future feature)
-            _buildNavItem(Icons.settings, "Settings", 2, selectedColor, unselectedColor),
-            // Dummy item biar seimbang (Opsional, saat ini 2 kiri 1 kanan)
-            // Kalau mau seimbang sempurna, bisa tambah menu 'Laporan' di masa depan
-             const SizedBox(width: 40), // Penyeimbang visual
+            // KANAN (2 Item - SEIMBANG!)
+            _buildNavItem(Icons.pie_chart_rounded, "Laporan", 2, selectedColor, unselectedColor), // MENU BARU
+            _buildNavItem(Icons.settings_rounded, "Settings", 3, selectedColor, unselectedColor),
           ],
         ),
       ),
     );
   }
 
-  // Widget Helper untuk Item Navigasi
   Widget _buildNavItem(IconData icon, String label, int index, Color selectedColor, Color unselectedColor) {
     final isSelected = _currentIndex == index;
-    
     return InkWell(
       onTap: () => _onItemTapped(index),
       borderRadius: BorderRadius.circular(30),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), // Padding sedikit dikecilkan biar muat
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,

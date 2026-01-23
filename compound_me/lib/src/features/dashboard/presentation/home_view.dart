@@ -6,7 +6,6 @@ import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
-import 'package:compound_me/src/features/dashboard/presentation/widgets/expense_pie_chart.dart';
 import 'package:compound_me/src/features/dashboard/presentation/widgets/month_picker.dart';
 
 // Hapus import add_transaction_screen karena sudah pindah ke main_screen
@@ -42,7 +41,6 @@ class HomeView extends ConsumerWidget {
             _buildWalletList(walletsAsync, ref, context),
             
             const SizedBox(height: 24),
-            const ExpensePieChart(),
             
             const SizedBox(height: 24),
             const Text("Transaksi", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
