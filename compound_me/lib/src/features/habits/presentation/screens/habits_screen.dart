@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart'; // Import Wajib
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
+import 'package:compound_me/src/core/utils/currency_input_formatter.dart'; // Import Formatter
 import 'package:compound_me/src/features/habits/presentation/controllers/habit_controller.dart';
 
 class HabitsScreen extends ConsumerWidget {
@@ -10,12 +12,9 @@ class HabitsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final habitsAsync = ref.watch(habitListProvider);
     final todayLogsAsync = ref.watch(todayHabitLogsProvider);
-    
-    // Cek apakah Dark Mode
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      // Hapus background manual
       appBar: AppBar(
         title: const Text("Daily Habits"),
         elevation: 0,
@@ -33,13 +32,10 @@ class HabitsScreen extends ConsumerWidget {
               final habit = habits[index];
               final isDone = todayLogsAsync.value?.any((log) => log.habitId == habit.id) ?? false;
 
-              // Logika Warna Kartu yang Lebih Pintar
               Color cardColor;
               if (isDone) {
-                 // Kalau selesai: Hijau Gelap (Dark Mode) atau Hijau Muda (Light Mode)
                  cardColor = isDarkMode ? Colors.green.shade900.withOpacity(0.3) : Colors.green[50]!;
               } else {
-                 // Kalau belum: Warna Kartu Tema
                  cardColor = Theme.of(context).cardColor;
               }
 
@@ -48,7 +44,6 @@ class HabitsScreen extends ConsumerWidget {
                 color: cardColor, 
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  // Border hijau jika selesai
                   side: isDone ? const BorderSide(color: Colors.green) : BorderSide.none
                 ),
                 margin: const EdgeInsets.only(bottom: 12),
@@ -75,7 +70,7 @@ class HabitsScreen extends ConsumerWidget {
                     ? const Icon(Icons.check_circle, color: Colors.green)
                     : ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isDarkMode ? Colors.white : Colors.black, // Tombol kontras
+                          backgroundColor: isDarkMode ? Colors.white : Colors.black, 
                           foregroundColor: isDarkMode ? Colors.black : Colors.white,
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(12)
@@ -103,8 +98,6 @@ class HabitsScreen extends ConsumerWidget {
     );
   }
 
-  // ... (Sisa fungsi _showAddHabitDialog biarkan sama, atau hapus background putihnya jika ada)
-  // Untuk amannya, copy ulang fungsi dialog ini agar warnanya benar:
   void _showAddHabitDialog(BuildContext context, WidgetRef ref) {
     final nameController = TextEditingController();
     final costController = TextEditingController(text: "0"); 
@@ -124,7 +117,15 @@ class HabitsScreen extends ConsumerWidget {
             TextField(
               controller: costController,
               keyboardType: TextInputType.number,
+              
+              // PASANG FORMATTER DI SINI
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                CurrencyInputFormatter(),
+              ],
+
               decoration: const InputDecoration(
+                prefixText: "Rp ",
                 labelText: "Biaya per kali (Opsional)",
                 helperText: "Isi 0 jika gratis. Isi harga jika berbayar (cth: Rokok)",
               ),
@@ -135,9 +136,12 @@ class HabitsScreen extends ConsumerWidget {
           TextButton(onPressed: () => Navigator.pop(context), child: const Text("Batal")),
           ElevatedButton(
             onPressed: () {
+              // BERSIHKAN FORMAT TITIK
+              final cost = CurrencyInputFormatter.toDouble(costController.text);
+              
               ref.read(habitListProvider.notifier).addHabit(
                 name: nameController.text,
-                cost: double.tryParse(costController.text) ?? 0,
+                cost: cost,
                 color: Colors.blue.value, 
               );
               Navigator.pop(context);

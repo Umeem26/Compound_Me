@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart'; // Import Wajib
+import 'package:compound_me/src/core/utils/currency_input_formatter.dart'; // Import Formatter
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
 
 class AddWalletScreen extends ConsumerStatefulWidget {
@@ -21,6 +23,8 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Tambah Dompet"),
@@ -50,6 +54,13 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
               TextFormField(
                 controller: _balanceController,
                 keyboardType: TextInputType.number,
+                
+                // PASANG FORMATTER
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  CurrencyInputFormatter(),
+                ],
+
                 decoration: const InputDecoration(
                   prefixText: "Rp ",
                   hintText: "0",
@@ -102,15 +113,14 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
   void _saveWallet() async {
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
-      final balance = double.tryParse(_balanceController.text) ?? 0;
+      // BERSIHKAN FORMAT TITIK
+      final balance = CurrencyInputFormatter.toDouble(_balanceController.text);
       
-      // PERBAIKAN: Ambil value int dari warna untuk disimpan ke DB
       final colorInt = _colors[_selectedColorIndex].value; 
 
-      // PERBAIKAN: Gunakan 'initialBalance' (bukan 'balance') sesuai Controller
       await ref.read(walletListProvider.notifier).addWallet(
         name: name, 
-        initialBalance: balance, // <--- INI PERBAIKANNYA
+        initialBalance: balance, 
         color: colorInt
       );
 
