@@ -43,6 +43,7 @@ dev_dependencies:
   build_runner: ^2.4.8
   riverpod_generator: ^2.3.9
   drift_dev: ^2.14.0
+  flutter_native_splash: ^2.3.10
 
 # Konfigurasi Icon (Harus Rata Kiri Paling Luar)
 flutter_launcher_icons:
@@ -55,3 +56,12 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icon/
+
+flutter_native_splash:
+  color: "#11998E"  # Warna Latar Teal (Sesuai Tema)
+  image: "assets/icon/app_icon.png" # Logo di tengah
+  android_12:
+    image: "assets/icon/app_icon.png"
+    icon_background_color: "#11998E"
