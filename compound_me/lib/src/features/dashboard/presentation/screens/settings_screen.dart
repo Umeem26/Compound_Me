@@ -1,149 +1,194 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// --- IMPORT DATABASE & PROVIDER ---
-import 'package:compound_me/src/core/database/app_database.dart'; 
-import 'package:compound_me/src/core/database/database_provider.dart'; 
-import 'package:compound_me/src/core/theme/theme_provider.dart'; // <--- IMPORT TEMA
-
-// --- IMPORT CONTROLLERS ---
-import 'package:compound_me/src/features/finance/presentation/controllers/category_controller.dart';
-import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
-import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
-import 'package:compound_me/src/features/habits/presentation/controllers/habit_controller.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:compound_me/src/core/theme/theme_provider.dart';
+import 'package:compound_me/src/core/utils/bounce_button.dart'; // Import Bounce Button
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Cek status tema saat ini (untuk Switch)
-    final isDarkMode = ref.watch(themeProvider) == ThemeMode.dark;
+    final themeMode = ref.watch(themeProvider);
+    final isDarkMode = themeMode == ThemeMode.dark;
 
     return Scaffold(
-      // Warna background menyesuaikan tema otomatis
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text("Pengaturan"),
+        title: Text("Pengaturan", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        centerTitle: true,
         elevation: 0,
-        // Hapus backgroundColor manual agar ikut tema AppBarTheme di main.dart
       ),
-      body: ListView(
-        children: [
-          const SizedBox(height: 20),
-          // 1. KARTU PROFIL
-          Container(
-            color: Theme.of(context).cardColor, // Warna kartu ikut tema
-            padding: const EdgeInsets.all(20),
-            child: Row(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // GROUP 1: TAMPILAN
+            _buildSectionTitle("Tampilan Aplikasi"),
+            const SizedBox(height: 10),
+            _buildSettingCard(
+              context,
               children: [
-                const CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.teal,
-                  child: Icon(Icons.person, size: 30, color: Colors.white),
-                ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text("Hisyam Khaeru Umam", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), 
-                    Text("241511078", style: TextStyle(color: Colors.grey)), 
-                  ],
+                _buildSwitchTile(
+                  context,
+                  icon: isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                  color: Colors.purple,
+                  title: "Mode Gelap",
+                  subtitle: isDarkMode ? "Aktif" : "Nonaktif",
+                  value: isDarkMode,
+                  onChanged: (val) {
+                    ref.read(themeProvider.notifier).state = val ? ThemeMode.dark : ThemeMode.light;
+                  },
                 ),
               ],
             ),
-          ),
-          
-          const SizedBox(height: 20),
-          
-          // 2. MENU PENGATURAN
-          Container(
-            color: Theme.of(context).cardColor,
-            child: Column(
+
+            const SizedBox(height: 30),
+
+            // GROUP 2: KEAMANAN & DATA
+            _buildSectionTitle("Keamanan & Data"),
+            const SizedBox(height: 10),
+            _buildSettingCard(
+              context,
               children: [
-                // SAKLAR DARK MODE (SUDAH AKTIF)
-                ListTile(
-                  leading: const Icon(Icons.dark_mode),
-                  title: const Text("Tema Gelap"),
-                  trailing: Switch(
-                    value: isDarkMode, 
-                    onChanged: (val) {
-                      // Ubah state global
-                      ref.read(themeProvider.notifier).state = 
-                          val ? ThemeMode.dark : ThemeMode.light;
-                    }
-                  ),
+                _buildActionTile(
+                  context,
+                  icon: Icons.fingerprint,
+                  color: Colors.blue,
+                  title: "Kunci Biometrik",
+                  subtitle: "Segera Hadir",
+                  onTap: () {},
                 ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(Icons.info),
-                  title: const Text("Tentang Aplikasi"),
-                  subtitle: const Text("CompoundMe v1.0.0"),
+                const Divider(height: 1, indent: 60), // Garis pemisah
+                _buildActionTile(
+                  context,
+                  icon: Icons.picture_as_pdf,
+                  color: Colors.red,
+                  title: "Export Laporan",
+                  subtitle: "Download PDF (Segera Hadir)",
+                  onTap: () {},
+                ),
+                const Divider(height: 1, indent: 60),
+                _buildActionTile(
+                  context,
+                  icon: Icons.backup,
+                  color: Colors.orange,
+                  title: "Backup Database",
+                  subtitle: "Simpan data ke Google Drive",
+                  onTap: () {},
                 ),
               ],
             ),
-          ),
 
-          const SizedBox(height: 40),
+            const SizedBox(height: 30),
 
-          // 3. DANGER ZONE (Tombol Reset)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[50],
-                foregroundColor: Colors.red,
-                padding: const EdgeInsets.all(16),
-                elevation: 0,
+            // GROUP 3: TENTANG
+            _buildSectionTitle("Tentang"),
+            const SizedBox(height: 10),
+            _buildSettingCard(
+              context,
+              children: [
+                _buildActionTile(
+                  context,
+                  icon: Icons.info_outline,
+                  color: Colors.grey,
+                  title: "Versi Aplikasi",
+                  subtitle: "v1.0.0 (Beta)",
+                  onTap: () {},
+                ),
+                const Divider(height: 1, indent: 60),
+                _buildActionTile(
+                  context,
+                  icon: Icons.code,
+                  color: Colors.teal,
+                  title: "Developer",
+                  subtitle: "Dibuat oleh Hisyam K.U",
+                  onTap: () {},
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 50),
+            Center(
+              child: Text(
+                "CompoundMe © 2026",
+                style: GoogleFonts.poppins(color: Colors.grey[400], fontSize: 12),
               ),
-              icon: const Icon(Icons.delete_forever),
-              label: const Text("Reset Semua Data (Bahaya)"),
-              onPressed: () => _showResetDialog(context, ref),
-            ),
-          ),
-          
-          const SizedBox(height: 20),
-          const Center(child: Text("Made with ❤️ by CompoundMe Team", style: TextStyle(color: Colors.grey))),
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
 
-  void _showResetDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text("Hapus SEMUA Data?"),
-        content: const Text("Tindakan ini tidak bisa dibatalkan. Dompet, Transaksi, dan Habits akan hilang selamanya."),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Batal")),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-            onPressed: () async {
-              Navigator.pop(ctx);
-              
-              final db = ref.read(appDatabaseProvider);
-              
-              await db.delete(db.transactions).go();
-              await db.delete(db.habitLogs).go();
-              await db.delete(db.habits).go();
-              await db.delete(db.wallets).go();
-              await db.delete(db.categories).go();
-              
-              ref.invalidate(transactionListProvider);
-              ref.invalidate(walletListProvider);
-              ref.invalidate(habitListProvider);
-              ref.invalidate(categoryListProvider); 
+  // --- WIDGET HELPER BIAR RAPI ---
 
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Aplikasi telah di-reset ke kondisi awal.")),
-                );
-              }
-            }, 
-            child: const Text("Ya, Hapus Semuanya"),
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: Text(
+        title.toUpperCase(),
+        style: GoogleFonts.poppins(
+          fontSize: 12, 
+          fontWeight: FontWeight.bold, 
+          color: Colors.grey,
+          letterSpacing: 1.2
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingCard(BuildContext context, {required List<Widget> children}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 5))
+        ]
+      ),
+      child: Column(children: children),
+    );
+  }
+
+  Widget _buildSwitchTile(BuildContext context, {
+    required IconData icon, required Color color, required String title, required String subtitle, required bool value, required Function(bool) onChanged
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      leading: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+        child: Icon(icon, color: color, size: 22),
+      ),
+      title: Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+      subtitle: Text(subtitle, style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
+      trailing: Switch(
+        value: value,
+        onChanged: onChanged,
+        activeColor: Colors.teal,
+      ),
+    );
+  }
+
+  Widget _buildActionTile(BuildContext context, {
+    required IconData icon, required Color color, required String title, required String subtitle, required VoidCallback onTap
+  }) {
+    return BounceButton( // Pakai Efek Mental
+      onTap: onTap,
+      child: Container(
+        color: Colors.transparent, // Penting agar InkWell bekerja
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          leading: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+            child: Icon(icon, color: color, size: 22),
           ),
-        ],
+          title: Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+          subtitle: Text(subtitle, style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+        ),
       ),
     );
   }

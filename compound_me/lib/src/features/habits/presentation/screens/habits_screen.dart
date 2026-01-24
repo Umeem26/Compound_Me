@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/services.dart'; // Import Wajib
+import 'package:google_fonts/google_fonts.dart';
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
-import 'package:compound_me/src/core/utils/currency_input_formatter.dart'; // Import Formatter
+import 'package:compound_me/src/core/utils/currency_input_formatter.dart';
 import 'package:compound_me/src/features/habits/presentation/controllers/habit_controller.dart';
+import 'package:flutter/services.dart';
+import 'package:compound_me/src/core/utils/bounce_button.dart'; // Import Bounce Button
 
 class HabitsScreen extends ConsumerWidget {
   const HabitsScreen({super.key});
@@ -16,70 +18,127 @@ class HabitsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daily Habits"),
+        title: Text("Daily Goals 🔥", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        centerTitle: true,
         elevation: 0,
       ),
       body: habitsAsync.when(
         data: (habits) {
           if (habits.isEmpty) {
-             return const Center(child: Text("Belum ada kebiasaan. Tambah dulu!"));
+             return Center(
+               child: Column(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 children: [
+                   Icon(Icons.track_changes, size: 80, color: Colors.grey[300]),
+                   const SizedBox(height: 16),
+                   Text("Mulai kebiasaan baik sekarang!", style: GoogleFonts.poppins(color: Colors.grey)),
+                 ],
+               ),
+             );
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             itemCount: habits.length,
             itemBuilder: (context, index) {
               final habit = habits[index];
               final isDone = todayLogsAsync.value?.any((log) => log.habitId == habit.id) ?? false;
 
-              Color cardColor;
-              if (isDone) {
-                 cardColor = isDarkMode ? Colors.green.shade900.withOpacity(0.3) : Colors.green[50]!;
-              } else {
-                 cardColor = Theme.of(context).cardColor;
-              }
-
-              return Card(
-                elevation: 0,
-                color: cardColor, 
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: isDone ? const BorderSide(color: Colors.green) : BorderSide.none
+              // ANIMASI PERUBAHAN WARNA (AnimatedContainer)
+              return Dismissible(
+                key: Key(habit.id.toString()),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) {
+                  ref.read(habitListProvider.notifier).deleteHabit(habit.id);
+                },
+                background: Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(color: Colors.red[100], borderRadius: BorderRadius.circular(20)),
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  child: const Icon(Icons.delete, color: Colors.red),
                 ),
-                margin: const EdgeInsets.only(bottom: 12),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Color(habit.color).withOpacity(0.2),
-                    child: Icon(
-                      isDone ? Icons.check : Icons.timer, 
-                      color: Color(habit.color)
+                child: BounceButton( // EFEK MENTAL SAAT DIKLIK
+                  onTap: () {
+                     ref.read(todayHabitLogsProvider.notifier).checkHabit(habit);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300), // Durasi Transisi Warna
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: isDone 
+                          ? Colors.teal 
+                          : Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDone ? Colors.teal.withOpacity(0.4) : Colors.black.withOpacity(0.05),
+                          blurRadius: isDone ? 15 : 10,
+                          offset: const Offset(0, 5),
+                        )
+                      ],
+                      border: isDone ? null : Border.all(color: Colors.grey.withOpacity(0.1)),
                     ),
-                  ),
-                  title: Text(
-                    habit.name,
-                    style: TextStyle(
-                      decoration: isDone ? TextDecoration.lineThrough : null,
-                      color: isDone ? Colors.green : null,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  subtitle: habit.costPerUnit > 0 
-                    ? Text("Biaya: ${CurrencyFormatter.toRupiah(habit.costPerUnit)}")
-                    : const Text("Good Habit (Gratis)"),
-                  trailing: isDone 
-                    ? const Icon(Icons.check_circle, color: Colors.green)
-                    : ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isDarkMode ? Colors.white : Colors.black, 
-                          foregroundColor: isDarkMode ? Colors.black : Colors.white,
-                          shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(12)
+                    child: Row(
+                      children: [
+                        // Icon Bulat
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: isDone ? Colors.white.withOpacity(0.2) : Color(habit.color).withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            isDone ? Icons.check : Icons.timer_outlined, 
+                            color: isDone ? Colors.white : Color(habit.color),
+                            size: 24,
+                          ),
                         ),
-                        onPressed: () {
-                          ref.read(todayHabitLogsProvider.notifier).checkHabit(habit);
-                        },
-                        child: const Icon(Icons.check),
-                      ),
+                        const SizedBox(width: 16),
+                        
+                        // Teks
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                habit.name,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDone ? Colors.white : null,
+                                  decoration: isDone ? TextDecoration.lineThrough : null,
+                                ),
+                              ),
+                              if (habit.costPerUnit > 0)
+                                Text(
+                                  "Biaya: ${CurrencyFormatter.toRupiah(habit.costPerUnit)}",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12, 
+                                    color: isDone ? Colors.white70 : Colors.grey
+                                  ),
+                                )
+                              else
+                                Text(
+                                  "Good Habit",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12, 
+                                    color: isDone ? Colors.white70 : Colors.grey
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        
+                        // Checkbox Custom
+                        if (isDone)
+                          const Icon(Icons.check_circle, color: Colors.white, size: 28)
+                        else
+                          Icon(Icons.radio_button_unchecked, color: Colors.grey[300], size: 28),
+                      ],
+                    ),
+                  ),
                 ),
               );
             },
@@ -91,21 +150,22 @@ class HabitsScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.teal,
         child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () {
-          _showAddHabitDialog(context, ref);
-        },
+        onPressed: () => _showAddHabitDialog(context, ref),
       ),
     );
   }
 
-  void _showAddHabitDialog(BuildContext context, WidgetRef ref) {
+  // ... (Fungsi _showAddHabitDialog tetap sama, copy dari sebelumnya atau biarkan saja)
+  // Biar kode tidak terlalu panjang, saya asumsikan fungsi dialognya sama.
+  // Jika hilang, kabari saya ya!
+   void _showAddHabitDialog(BuildContext context, WidgetRef ref) {
     final nameController = TextEditingController();
     final costController = TextEditingController(text: "0"); 
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Tambah Kebiasaan"),
+        title: Text("Tambah Kebiasaan", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -117,17 +177,14 @@ class HabitsScreen extends ConsumerWidget {
             TextField(
               controller: costController,
               keyboardType: TextInputType.number,
-              
-              // PASANG FORMATTER DI SINI
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 CurrencyInputFormatter(),
               ],
-
               decoration: const InputDecoration(
                 prefixText: "Rp ",
-                labelText: "Biaya per kali (Opsional)",
-                helperText: "Isi 0 jika gratis. Isi harga jika berbayar (cth: Rokok)",
+                labelText: "Biaya (Opsional)",
+                helperText: "Isi jika kebiasaan ini keluar uang",
               ),
             ),
           ],
@@ -135,10 +192,9 @@ class HabitsScreen extends ConsumerWidget {
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text("Batal")),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, foregroundColor: Colors.white),
             onPressed: () {
-              // BERSIHKAN FORMAT TITIK
               final cost = CurrencyInputFormatter.toDouble(costController.text);
-              
               ref.read(habitListProvider.notifier).addHabit(
                 name: nameController.text,
                 cost: cost,
