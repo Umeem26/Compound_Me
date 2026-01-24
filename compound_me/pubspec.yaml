@@ -37,6 +37,15 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.1
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  min_sdk_android: 21 # Penting untuk Android modern
+  adaptive_icon_background: "#11998E" # Warna background icon (Hijau Teal)
+  adaptive_icon_foreground: "assets/icon/app_icon.png"
   
   # --- Code Generators ---
   build_runner: ^2.4.8
