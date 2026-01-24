@@ -3,18 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// Import Utilities & Controllers
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
+
+// Import Screens
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
-import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart'; // Import Wajib
+import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 import 'package:compound_me/src/features/dashboard/presentation/widgets/month_picker.dart';
+import 'package:compound_me/src/features/dashboard/presentation/screens/notification_screen.dart'; // IMPORT LAYAR NOTIFIKASI
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Ambil data dari Provider
     final walletsAsync = ref.watch(walletListProvider);
     final transactionsAsync = ref.watch(transactionListProvider);
     
@@ -25,12 +30,22 @@ class HomeView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 1. HEADER (Greeting & Notifikasi)
               _buildHeader(context),
+              
               const SizedBox(height: 24),
+              
+              // 2. FILTER BULAN
               const Center(child: MonthPicker()), 
+              
               const SizedBox(height: 20),
+
+              // 3. KARTU TOTAL SALDO (Premium Style)
               _buildPremiumTotalCard(walletsAsync, context),
+
               const SizedBox(height: 30),
+              
+              // 4. HEADER DOMPET
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -42,11 +57,20 @@ class HomeView extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 16),
+              
+              // 5. LIST DOMPET (Horizontal)
               _buildWalletList(walletsAsync, ref, context),
+              
               const SizedBox(height: 30),
+              
+              // 6. HEADER TRANSAKSI
               Text("Riwayat Transaksi", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600)),
               const SizedBox(height: 16),
+              
+              // 7. LIST TRANSAKSI (Vertical & Editable)
               _buildTransactionList(transactionsAsync, ref, context),
+              
+              // Ruang kosong di bawah agar tidak tertutup tombol FAB
               const SizedBox(height: 80), 
             ],
           ),
@@ -55,10 +79,7 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // ... (Bagian _buildHeader, _buildPremiumTotalCard, _buildWalletList TETAP SAMA SEPERTI SEBELUMNYA)
-  // Biar hemat tempat, saya hanya tulis _buildTransactionList yang berubah.
-  // Pastikan Anda tidak menghapus fungsi helper lainnya!
-  // Jika ragu, copy ulang fungsi-fungsi helper dari kode HomeView sebelumnya.
+  // --- WIDGET HELPER ---
 
   Widget _buildHeader(BuildContext context) {
     return Row(
@@ -68,17 +89,52 @@ class HomeView extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Selamat Datang, 👋", style: GoogleFonts.poppins(color: Colors.grey, fontSize: 14)),
-            Text("Hisyam K.U", style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold)),
+            Text(
+              "Hisyam K.U", 
+              style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+        
+        // TOMBOL NOTIFIKASI INTERAKTIF
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+            onTap: () {
+              // Navigasi ke Halaman Notifikasi
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const NotificationScreen()),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.withOpacity(0.1)),
+              ),
+              // Stack untuk ikon + titik merah
+              child: Stack(
+                children: [
+                  const Icon(Icons.notifications_none_rounded),
+                  Positioned(
+                    right: 2,
+                    top: 2,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
-          child: const Icon(Icons.notifications_none_rounded),
         )
       ],
     );
@@ -91,7 +147,7 @@ class HomeView extends ConsumerWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF00695C), Color(0xFF4DB6AC)], 
+          colors: [Color(0xFF00695C), Color(0xFF4DB6AC)], // Teal Gradient
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
@@ -106,8 +162,10 @@ class HomeView extends ConsumerWidget {
       ),
       child: Stack(
         children: [
+          // Pattern Hiasan
           Positioned(right: -20, top: -20, child: CircleAvatar(radius: 60, backgroundColor: Colors.white.withOpacity(0.1))),
           Positioned(bottom: -40, right: 40, child: CircleAvatar(radius: 40, backgroundColor: Colors.white.withOpacity(0.1))),
+          
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -124,7 +182,10 @@ class HomeView extends ConsumerWidget {
                 data: (wallets) {
                   final total = wallets.fold<double>(0, (sum, wallet) => sum + wallet.balance);
                   return FittedBox( 
-                    child: Text(CurrencyFormatter.toRupiah(total), style: GoogleFonts.poppins(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      CurrencyFormatter.toRupiah(total), 
+                      style: GoogleFonts.poppins(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
+                    ),
                   );
                 },
                 loading: () => const SizedBox(height: 30, width: 30, child: CircularProgressIndicator(color: Colors.white)),
@@ -199,7 +260,6 @@ class HomeView extends ConsumerWidget {
     );
   }
 
-  // --- PERUBAHAN UTAMA DI SINI ---
   Widget _buildTransactionList(AsyncValue<List<dynamic>> transactionsAsync, WidgetRef ref, BuildContext context) {
     return transactionsAsync.when(
       data: (transactions) {
@@ -224,6 +284,7 @@ class HomeView extends ConsumerWidget {
             final trx = transactions[index];
             final isExpense = trx.amount < 0; 
 
+            // GESER UNTUK MENGHAPUS
             return Dismissible(
               key: Key(trx.id.toString()),
               direction: DismissDirection.endToStart,
@@ -251,10 +312,9 @@ class HomeView extends ConsumerWidget {
                 ref.read(transactionListProvider.notifier).deleteTransaction(trx);
               },
               
-              // INI DIA: BUNGKUS DENGAN INKWELL/GESTUREDETECTOR UNTUK EDIT
+              // KLIK UNTUK MENGEDIT
               child: GestureDetector(
                 onTap: () {
-                  // BUKA LAYAR EDIT (Kirim data trx lama)
                   Navigator.push(
                     context, 
                     MaterialPageRoute(
