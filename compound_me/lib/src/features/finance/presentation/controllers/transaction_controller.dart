@@ -1,28 +1,42 @@
-import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:drift/drift.dart';
 import 'package:compound_me/src/core/database/app_database.dart';
-import 'package:compound_me/src/features/finance/data/repositories/finance_repository_impl.dart';
-import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
+import 'package:compound_me/src/core/database/database_provider.dart';
 
 part 'transaction_controller.g.dart';
 
+// State Provider untuk Filter Tanggal (Month Picker)
 @riverpod
 class SelectedDate extends _$SelectedDate {
   @override
-  DateTime build() => DateTime.now();
-  void updateDate(DateTime newDate) => state = newDate;
+  DateTime build() {
+    return DateTime.now();
+  }
+
+  void updateDate(DateTime date) {
+    state = date;
+  }
 }
 
+// Controller Utama Transaksi
 @riverpod
 class TransactionList extends _$TransactionList {
   @override
   Future<List<Transaction>> build() async {
-    final repository = ref.watch(financeRepositoryProvider);
-    final selectedMonth = ref.watch(selectedDateProvider);
-    return repository.getTransactionsByMonth(selectedMonth);
+    final db = ref.watch(appDatabaseProvider);
+    final selectedDate = ref.watch(selectedDateProvider);
+
+    // Ambil data berdasarkan bulan & tahun yang dipilih
+    final startOfMonth = DateTime(selectedDate.year, selectedDate.month, 1);
+    final endOfMonth = DateTime(selectedDate.year, selectedDate.month + 1, 0, 23, 59, 59);
+
+    return (db.select(db.transactions)
+      ..where((t) => t.date.isBetweenValues(startOfMonth, endOfMonth))
+      ..orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)]))
+      .get();
   }
 
-  // FUNGSI TAMBAH TRANSAKSI (Logic Baru +/-)
+  // 1. TAMBAH TRANSAKSI BARU
   Future<void> addTransaction({
     required double amount,
     required String note,
@@ -30,66 +44,92 @@ class TransactionList extends _$TransactionList {
     required int categoryId,
     required int walletId,
   }) async {
-    final repository = ref.read(financeRepositoryProvider);
+    final db = ref.read(appDatabaseProvider);
 
-    final wallets = await repository.getWallets();
-    final categories = await repository.getCategories();
+    // Cek Tipe Kategori (0 = Pengeluaran, 1 = Pemasukan)
+    final category = await (db.select(db.categories)..where((c) => c.id.equals(categoryId))).getSingle();
     
-    final targetWallet = wallets.firstWhere((w) => w.id == walletId);
-    final targetCategory = categories.firstWhere((c) => c.id == categoryId);
+    // Jika Pengeluaran (0), jadikan negatif. Jika Pemasukan (1), positif.
+    final finalAmount = category.type == 0 ? -amount.abs() : amount.abs();
 
-    double newBalance = targetWallet.balance;
-    double finalAmount = amount; 
-
-    // LOGIKA PENTING: Tentukan Positif/Negatif
-    if (targetCategory.type == 0) {
-      // Type 0 = Pengeluaran (Expense)
-      newBalance -= amount;       // Kurangi Saldo
-      finalAmount = -amount;      // Simpan sebagai MINUS
-    } else {
-      // Type 1 = Pemasukan (Income)
-      newBalance += amount;       // Tambah Saldo
-      finalAmount = amount;       // Simpan sebagai PLUS
-    }
-
-    // Update Saldo Wallet
-    await repository.updateWallet(targetWallet.copyWith(balance: newBalance));
-
-    // Simpan Transaksi dengan finalAmount (yg sudah ada minusnya)
-    final newTransaction = TransactionsCompanion.insert(
-      amount: finalAmount, 
-      date: date,
-      note: Value(note),
-      categoryId: categoryId,
-      walletId: walletId,
+    await db.into(db.transactions).insert(
+      TransactionsCompanion.insert(
+        amount: finalAmount,
+        note: Value(note),
+        date: date,
+        categoryId: categoryId,
+        walletId: walletId,
+      ),
     );
 
-    await repository.addTransaction(newTransaction);
+    // Update Saldo Dompet
+    await _updateWalletBalance(walletId, finalAmount);
     
-    ref.invalidateSelf(); 
-    ref.invalidate(walletListProvider); 
+    ref.invalidateSelf(); // Refresh UI
   }
 
-  // FUNGSI HAPUS TRANSAKSI (Logic Universal)
-  Future<void> deleteTransaction(Transaction transaction) async {
-    final repo = ref.read(financeRepositoryProvider);
-    final wallets = await repo.getWallets();
-    
-    // Cari wallet, kalau gak ketemu (misal udah dihapus) return
-    final targetWallet = wallets.firstWhere((w) => w.id == transaction.walletId, orElse: () => wallets.first);
+  // 2. EDIT TRANSAKSI (FITUR BARU)
+  Future<void> editTransaction({
+    required int id,
+    required double newAmount,
+    required String newNote,
+    required DateTime newDate,
+    required int newCategoryId,
+    required int newWalletId,
+    required double oldAmount, // Butuh saldo lama untuk koreksi dompet
+    required int oldWalletId,
+  }) async {
+    final db = ref.read(appDatabaseProvider);
 
-    // LOGIKA REFUND PINTAR:
-    // Saldo Baru = Saldo Lama - (Nilai Transaksi)
-    // Matematika: 
-    // Jika hapus pengeluaran (-5000): Saldo - (-5000) = Saldo + 5000 (Uang balik)
-    // Jika hapus pemasukan (+5000): Saldo - (5000) = Saldo - 5000 (Uang ditarik)
+    // Cek Tipe Kategori Baru
+    final category = await (db.select(db.categories)..where((c) => c.id.equals(newCategoryId))).getSingle();
+    final finalAmount = category.type == 0 ? -newAmount.abs() : newAmount.abs();
+
+    // Update Transaksi di DB
+    await (db.update(db.transactions)..where((t) => t.id.equals(id))).write(
+      TransactionsCompanion(
+        amount: Value(finalAmount),
+        note: Value(newNote),
+        date: Value(newDate),
+        categoryId: Value(newCategoryId),
+        walletId: Value(newWalletId),
+      ),
+    );
+
+    // KOREKSI SALDO DOMPET (Penting!)
+    // 1. Kembalikan saldo lama (Undo efek transaksi sebelumnya)
+    await _updateWalletBalance(oldWalletId, -oldAmount); 
+    // 2. Terapkan saldo baru
+    await _updateWalletBalance(newWalletId, finalAmount);
+
+    ref.invalidateSelf();
+  }
+
+  // 3. HAPUS TRANSAKSI
+  Future<void> deleteTransaction(Transaction trx) async {
+    final db = ref.read(appDatabaseProvider);
     
-    double newBalance = targetWallet.balance - transaction.amount;
+    await db.delete(db.transactions).delete(trx);
     
-    await repo.updateWallet(targetWallet.copyWith(balance: newBalance));
-    await repo.deleteTransaction(transaction.id);
+    // Kembalikan Saldo (Minus ketemu Minus jadi Plus)
+    await _updateWalletBalance(trx.walletId, -trx.amount);
     
     ref.invalidateSelf();
-    ref.invalidate(walletListProvider);
+  }
+
+  // Helper untuk update saldo dompet
+  Future<void> _updateWalletBalance(int walletId, double amountDiff) async {
+    final db = ref.read(appDatabaseProvider);
+    final wallet = await (db.select(db.wallets)..where((w) => w.id.equals(walletId))).getSingle();
+    
+    final newBalance = wallet.balance + amountDiff;
+    
+    await (db.update(db.wallets)..where((w) => w.id.equals(walletId))).write(
+      WalletsCompanion(balance: Value(newBalance)),
+    );
+    
+    // Refresh Provider Wallet di UI lain
+    // Catatan: Karena WalletListProvider ada di file lain, kita tidak bisa invalidate langsung dari sini
+    // kecuali kita import. Tapi biarkan UI yang handle refresh via watch.
   }
 }

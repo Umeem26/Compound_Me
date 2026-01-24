@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/services.dart'; // Import Wajib
-
-// Import Formatter Baru
+import 'package:flutter/services.dart'; 
+import 'package:compound_me/src/core/database/app_database.dart'; // Import DB
 import 'package:compound_me/src/core/utils/currency_input_formatter.dart'; 
 
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
@@ -12,7 +11,10 @@ import 'package:compound_me/src/features/finance/presentation/controllers/transa
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
-  const AddTransactionScreen({super.key});
+  // Tambahkan parameter opsional untuk mode EDIT
+  final Transaction? transactionToEdit;
+  
+  const AddTransactionScreen({super.key, this.transactionToEdit});
 
   @override
   ConsumerState<AddTransactionScreen> createState() => _AddTransactionScreenState();
@@ -28,14 +30,37 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   int? _selectedCategoryId;
 
   @override
+  void initState() {
+    super.initState();
+    // JIKA MODE EDIT: Isi form dengan data lama
+    if (widget.transactionToEdit != null) {
+      final trx = widget.transactionToEdit!;
+      
+      // Format angka (hapus minus jika ada, karena input selalu positif)
+      final positiveAmount = trx.amount.abs();
+      _amountController.text = NumberFormat('#,###', 'id_ID').format(positiveAmount);
+      
+      _noteController.text = trx.note ?? "";
+      _selectedDate = trx.date;
+      _selectedWalletId = trx.walletId;
+      _selectedCategoryId = trx.categoryId;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final walletsAsync = ref.watch(walletListProvider);
     final categoriesAsync = ref.watch(categoryListProvider);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    
+    // Ubah Judul jika sedang Edit
+    final isEditMode = widget.transactionToEdit != null;
+    final title = isEditMode ? "Edit Transaksi" : "Tambah Transaksi";
+    final buttonText = isEditMode ? "UPDATE PERUBAHAN" : "SIMPAN TRANSAKSI";
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tambah Transaksi"),
+        title: Text(title),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -50,13 +75,10 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                
-                // PASANG FORMATTER DI SINI
                 inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly, // Hanya angka
-                  CurrencyInputFormatter(), // Format Titik Otomatis
+                  FilteringTextInputFormatter.digitsOnly, 
+                  CurrencyInputFormatter(), 
                 ],
-
                 decoration: const InputDecoration(
                   prefixText: "Rp ",
                   hintText: "0",
@@ -155,7 +177,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   onPressed: _saveTransaction,
-                  child: const Text("SIMPAN TRANSAKSI", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: Text(buttonText, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -167,22 +189,42 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   void _saveTransaction() async {
     if (_formKey.currentState!.validate()) {
-      // BERSIHKAN FORMAT: "5.000.000" -> 5000000.0
       final amount = CurrencyInputFormatter.toDouble(_amountController.text);
+      final note = _noteController.text;
       
-      await ref.read(transactionListProvider.notifier).addTransaction(
-        amount: amount,
-        note: _noteController.text,
-        date: _selectedDate,
-        categoryId: _selectedCategoryId!,
-        walletId: _selectedWalletId!,
-      );
+      // LOGIKA SIMPAN
+      if (widget.transactionToEdit != null) {
+        // --- MODE EDIT ---
+        await ref.read(transactionListProvider.notifier).editTransaction(
+          id: widget.transactionToEdit!.id,
+          newAmount: amount,
+          newNote: note,
+          newDate: _selectedDate,
+          newCategoryId: _selectedCategoryId!,
+          newWalletId: _selectedWalletId!,
+          // Kirim data lama untuk koreksi saldo dompet
+          oldAmount: widget.transactionToEdit!.amount,
+          oldWalletId: widget.transactionToEdit!.walletId,
+        );
+      } else {
+        // --- MODE TAMBAH BARU ---
+        await ref.read(transactionListProvider.notifier).addTransaction(
+          amount: amount,
+          note: note,
+          date: _selectedDate,
+          categoryId: _selectedCategoryId!,
+          walletId: _selectedWalletId!,
+        );
+      }
+
+      // Refresh data dompet juga biar sinkron
+      ref.invalidate(walletListProvider);
 
       if (mounted) {
         Navigator.pop(context); 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Transaksi berhasil disimpan!"),
+          SnackBar(
+            content: Text(widget.transactionToEdit != null ? "Data berhasil di-update!" : "Transaksi berhasil disimpan!"),
             backgroundColor: Colors.teal,
           ),
         );
