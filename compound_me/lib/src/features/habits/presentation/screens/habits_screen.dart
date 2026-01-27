@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
+
+// Import Utilities & Colors
+import 'package:compound_me/src/core/theme/theme_provider.dart'; // Import AppColors
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/core/utils/currency_input_formatter.dart';
 import 'package:compound_me/src/features/habits/presentation/controllers/habit_controller.dart';
-import 'package:flutter/services.dart';
-import 'package:compound_me/src/core/utils/bounce_button.dart'; // Import Bounce Button
+import 'package:compound_me/src/core/utils/bounce_button.dart';
 
 class HabitsScreen extends ConsumerWidget {
   const HabitsScreen({super.key});
@@ -44,7 +47,6 @@ class HabitsScreen extends ConsumerWidget {
               final habit = habits[index];
               final isDone = todayLogsAsync.value?.any((log) => log.habitId == habit.id) ?? false;
 
-              // ANIMASI PERUBAHAN WARNA (AnimatedContainer)
               return Dismissible(
                 key: Key(habit.id.toString()),
                 direction: DismissDirection.endToStart,
@@ -58,22 +60,24 @@ class HabitsScreen extends ConsumerWidget {
                   padding: const EdgeInsets.only(right: 20),
                   child: const Icon(Icons.delete, color: Colors.red),
                 ),
-                child: BounceButton( // EFEK MENTAL SAAT DIKLIK
+                child: BounceButton( 
                   onTap: () {
                      ref.read(todayHabitLogsProvider.notifier).checkHabit(habit);
                   },
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300), // Durasi Transisi Warna
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
                     margin: const EdgeInsets.only(bottom: 16),
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: isDone 
-                          ? Colors.teal 
-                          : Theme.of(context).cardColor,
+                      // WARNA SULTAN: Jika selesai jadi Gradient Emas
+                      gradient: isDone ? AppColors.goldGradient : null,
+                      color: isDone ? null : Theme.of(context).cardColor,
+                      
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: isDone ? Colors.teal.withOpacity(0.4) : Colors.black.withOpacity(0.05),
+                          color: isDone ? AppColors.goldPrimary.withOpacity(0.4) : Colors.black.withOpacity(0.05),
                           blurRadius: isDone ? 15 : 10,
                           offset: const Offset(0, 5),
                         )
@@ -86,18 +90,17 @@ class HabitsScreen extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: isDone ? Colors.white.withOpacity(0.2) : Color(habit.color).withOpacity(0.1),
+                            color: isDone ? Colors.white.withOpacity(0.3) : Color(habit.color).withOpacity(0.1),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            isDone ? Icons.check : Icons.timer_outlined, 
+                            isDone ? Icons.star_rounded : Icons.timer_outlined, 
                             color: isDone ? Colors.white : Color(habit.color),
                             size: 24,
                           ),
                         ),
                         const SizedBox(width: 16),
                         
-                        // Teks
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,8 +110,8 @@ class HabitsScreen extends ConsumerWidget {
                                 style: GoogleFonts.poppins(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: isDone ? Colors.white : null,
-                                  decoration: isDone ? TextDecoration.lineThrough : null,
+                                  color: isDone ? AppColors.tealDark : null, // Warna Kontras
+                                  decoration: isDone ? TextDecoration.none : null,
                                 ),
                               ),
                               if (habit.costPerUnit > 0)
@@ -116,7 +119,7 @@ class HabitsScreen extends ConsumerWidget {
                                   "Biaya: ${CurrencyFormatter.toRupiah(habit.costPerUnit)}",
                                   style: GoogleFonts.poppins(
                                     fontSize: 12, 
-                                    color: isDone ? Colors.white70 : Colors.grey
+                                    color: isDone ? AppColors.tealDark.withOpacity(0.7) : Colors.grey
                                   ),
                                 )
                               else
@@ -124,14 +127,13 @@ class HabitsScreen extends ConsumerWidget {
                                   "Good Habit",
                                   style: GoogleFonts.poppins(
                                     fontSize: 12, 
-                                    color: isDone ? Colors.white70 : Colors.grey
+                                    color: isDone ? AppColors.tealDark.withOpacity(0.7) : Colors.grey
                                   ),
                                 ),
                             ],
                           ),
                         ),
                         
-                        // Checkbox Custom
                         if (isDone)
                           const Icon(Icons.check_circle, color: Colors.white, size: 28)
                         else
@@ -148,16 +150,13 @@ class HabitsScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text("Error: $e")),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.teal,
+        backgroundColor: AppColors.tealPrimary,
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () => _showAddHabitDialog(context, ref),
       ),
     );
   }
 
-  // ... (Fungsi _showAddHabitDialog tetap sama, copy dari sebelumnya atau biarkan saja)
-  // Biar kode tidak terlalu panjang, saya asumsikan fungsi dialognya sama.
-  // Jika hilang, kabari saya ya!
    void _showAddHabitDialog(BuildContext context, WidgetRef ref) {
     final nameController = TextEditingController();
     final costController = TextEditingController(text: "0"); 
@@ -192,7 +191,7 @@ class HabitsScreen extends ConsumerWidget {
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text("Batal")),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.tealPrimary, foregroundColor: Colors.white),
             onPressed: () {
               final cost = CurrencyInputFormatter.toDouble(costController.text);
               ref.read(habitListProvider.notifier).addHabit(

@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Import Utilities & Controllers
+// Import Utilities & Colors
+import 'package:compound_me/src/core/theme/theme_provider.dart'; // Import AppColors
 import 'package:compound_me/src/core/utils/currency_formatter.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/transaction_controller.dart';
 import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
@@ -12,14 +13,13 @@ import 'package:compound_me/src/features/finance/presentation/controllers/wallet
 import 'package:compound_me/src/features/finance/presentation/screens/add_wallet_screen.dart';
 import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 import 'package:compound_me/src/features/dashboard/presentation/widgets/month_picker.dart';
-import 'package:compound_me/src/features/dashboard/presentation/screens/notification_screen.dart'; // IMPORT LAYAR NOTIFIKASI
+import 'package:compound_me/src/features/dashboard/presentation/screens/notification_screen.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Ambil data dari Provider
     final walletsAsync = ref.watch(walletListProvider);
     final transactionsAsync = ref.watch(transactionListProvider);
     
@@ -30,47 +30,32 @@ class HomeView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. HEADER (Greeting & Notifikasi)
               _buildHeader(context),
-              
               const SizedBox(height: 24),
-              
-              // 2. FILTER BULAN
               const Center(child: MonthPicker()), 
-              
               const SizedBox(height: 20),
-
-              // 3. KARTU TOTAL SALDO (Premium Style)
+              
+              // KARTU SALDO SULTAN
               _buildPremiumTotalCard(walletsAsync, context),
 
               const SizedBox(height: 30),
               
-              // 4. HEADER DOMPET
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Dompet Saya", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600)),
                   GestureDetector(
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AddWalletScreen())),
-                    child: Text("+ Tambah", style: GoogleFonts.poppins(color: Colors.teal, fontWeight: FontWeight.bold)),
+                    child: Text("+ Tambah", style: GoogleFonts.poppins(color: AppColors.tealPrimary, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              
-              // 5. LIST DOMPET (Horizontal)
               _buildWalletList(walletsAsync, ref, context),
-              
               const SizedBox(height: 30),
-              
-              // 6. HEADER TRANSAKSI
               Text("Riwayat Transaksi", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600)),
               const SizedBox(height: 16),
-              
-              // 7. LIST TRANSAKSI (Vertical & Editable)
               _buildTransactionList(transactionsAsync, ref, context),
-              
-              // Ruang kosong di bawah agar tidak tertutup tombol FAB
               const SizedBox(height: 80), 
             ],
           ),
@@ -78,8 +63,6 @@ class HomeView extends ConsumerWidget {
       ),
     );
   }
-
-  // --- WIDGET HELPER ---
 
   Widget _buildHeader(BuildContext context) {
     return Row(
@@ -95,14 +78,11 @@ class HomeView extends ConsumerWidget {
             ),
           ],
         ),
-        
-        // TOMBOL NOTIFIKASI INTERAKTIF
         Material(
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () {
-              // Navigasi ke Halaman Notifikasi
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const NotificationScreen()),
@@ -115,20 +95,14 @@ class HomeView extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.grey.withOpacity(0.1)),
               ),
-              // Stack untuk ikon + titik merah
               child: Stack(
                 children: [
                   const Icon(Icons.notifications_none_rounded),
                   Positioned(
-                    right: 2,
-                    top: 2,
+                    right: 2, top: 2,
                     child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
+                      width: 8, height: 8,
+                      decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
                     ),
                   )
                 ],
@@ -140,21 +114,24 @@ class HomeView extends ConsumerWidget {
     );
   }
 
+  // --- KARTU SULTAN (UPDATE DISINI) ---
   Widget _buildPremiumTotalCard(AsyncValue<List<dynamic>> walletsAsync, BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 180,
+      height: 200, 
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF00695C), Color(0xFF4DB6AC)], // Teal Gradient
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
-        ),
+        // Background Gradient Teal
+        gradient: AppColors.tealGradient,
         borderRadius: BorderRadius.circular(24),
+        // Border Emas Tipis (Kesan Mahal)
+        border: Border.all(
+          color: AppColors.goldPrimary.withOpacity(0.5), 
+          width: 1.5
+        ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00695C).withOpacity(0.4),
+            color: AppColors.tealDark.withOpacity(0.4),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -162,9 +139,9 @@ class HomeView extends ConsumerWidget {
       ),
       child: Stack(
         children: [
-          // Pattern Hiasan
-          Positioned(right: -20, top: -20, child: CircleAvatar(radius: 60, backgroundColor: Colors.white.withOpacity(0.1))),
-          Positioned(bottom: -40, right: 40, child: CircleAvatar(radius: 40, backgroundColor: Colors.white.withOpacity(0.1))),
+          // Dekorasi Lingkaran Emas Transparan
+          Positioned(right: -30, top: -30, child: CircleAvatar(radius: 70, backgroundColor: AppColors.goldPrimary.withOpacity(0.15))),
+          Positioned(bottom: -50, right: 20, child: CircleAvatar(radius: 50, backgroundColor: AppColors.goldPrimary.withOpacity(0.1))),
           
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,33 +149,53 @@ class HomeView extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.account_balance_wallet, color: Colors.white.withOpacity(0.8), size: 18),
-                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), shape: BoxShape.circle),
+                    child: const Icon(Icons.account_balance_wallet, color: AppColors.goldPrimary, size: 20),
+                  ),
+                  const SizedBox(width: 10),
                   Text("Total Aset Bersih", style: GoogleFonts.poppins(color: Colors.white70, fontSize: 14)),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               walletsAsync.when(
                 data: (wallets) {
                   final total = wallets.fold<double>(0, (sum, wallet) => sum + wallet.balance);
                   return FittedBox( 
                     child: Text(
                       CurrencyFormatter.toRupiah(total), 
-                      style: GoogleFonts.poppins(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(
+                        color: Colors.white, 
+                        fontSize: 38, // Lebih Besar
+                        fontWeight: FontWeight.bold,
+                        shadows: [const Shadow(color: Colors.black26, offset: Offset(0, 2), blurRadius: 4)]
+                      ),
                     ),
                   );
                 },
-                loading: () => const SizedBox(height: 30, width: 30, child: CircularProgressIndicator(color: Colors.white)),
+                loading: () => const SizedBox(height: 30, width: 30, child: CircularProgressIndicator(color: AppColors.goldPrimary)),
                 error: (_, __) => const Text("---", style: TextStyle(color: Colors.white)),
               ),
               const Spacer(),
+              
+              // Badge Financial Freedom (Gradient Emas)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  gradient: AppColors.goldGradient, 
                   borderRadius: BorderRadius.circular(20),
+                  boxShadow: [BoxShadow(color: AppColors.goldDark.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))]
                 ),
-                child: Text("Financial Freedom 🚀", style: GoogleFonts.poppins(color: Colors.white, fontSize: 12)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Financial Freedom 🚀", 
+                      style: GoogleFonts.poppins(color: AppColors.tealDark, fontSize: 12, fontWeight: FontWeight.bold)
+                    ),
+                  ],
+                ),
               )
             ],
           ),
@@ -284,7 +281,6 @@ class HomeView extends ConsumerWidget {
             final trx = transactions[index];
             final isExpense = trx.amount < 0; 
 
-            // GESER UNTUK MENGHAPUS
             return Dismissible(
               key: Key(trx.id.toString()),
               direction: DismissDirection.endToStart,
@@ -312,24 +308,16 @@ class HomeView extends ConsumerWidget {
                 ref.read(transactionListProvider.notifier).deleteTransaction(trx);
               },
               
-              // KLIK UNTUK MENGEDIT
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(
-                      builder: (context) => AddTransactionScreen(transactionToEdit: trx)
-                    )
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddTransactionScreen(transactionToEdit: trx)));
                 },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2)),
-                    ]
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2))],
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -349,11 +337,7 @@ class HomeView extends ConsumerWidget {
                     subtitle: Text(DateFormat('dd MMM yyyy, HH:mm').format(trx.date), style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
                     trailing: Text(
                       CurrencyFormatter.toRupiah(trx.amount),
-                      style: GoogleFonts.poppins(
-                        color: isExpense ? Colors.red : Colors.green,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14
-                      ),
+                      style: GoogleFonts.poppins(color: isExpense ? Colors.red : Colors.green, fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ),
                 ),
