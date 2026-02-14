@@ -14,6 +14,7 @@ import 'package:compound_me/src/features/finance/presentation/screens/add_wallet
 import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
 import 'package:compound_me/src/features/dashboard/presentation/widgets/month_picker.dart';
 import 'package:compound_me/src/features/dashboard/presentation/screens/notification_screen.dart';
+import 'package:compound_me/src/features/dashboard/presentation/screens/stats_screen.dart'; // Import Stats
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -79,37 +80,23 @@ class HomeView extends ConsumerWidget {
           ],
         ),
         Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const NotificationScreen()),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
+              color: Colors.transparent,
+              child: InkWell(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.withOpacity(0.1)),
-              ),
-              child: Stack(
-                children: [
-                  const Icon(Icons.notifications_none_rounded),
-                  Positioned(
-                    right: 2, top: 2,
-                    child: Container(
-                      width: 8, height: 8,
-                      decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                    ),
-                  )
-                ],
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const StatsScreen())),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.tealPrimary.withOpacity(0.1), // Background Hijau Tipis
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.tealPrimary.withOpacity(0.2)),
+                  ),
+                  child: const Icon(Icons.pie_chart_rounded, color: AppColors.tealPrimary),
+                ),
               ),
             ),
-          ),
-        )
+
+            const SizedBox(width: 12), // Jarak
       ],
     );
   }
