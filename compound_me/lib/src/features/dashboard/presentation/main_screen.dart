@@ -1,115 +1,92 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:compound_me/src/features/dashboard/presentation/home_view.dart';
-import 'package:compound_me/src/features/habits/presentation/screens/habits_screen.dart';
-import 'package:compound_me/src/features/dashboard/presentation/screens/settings_screen.dart';
-import 'package:compound_me/src/features/dashboard/presentation/screens/stats_screen.dart'; // IMPORT BARU
-import 'package:compound_me/src/features/finance/presentation/screens/add_transaction_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class MainScreen extends ConsumerStatefulWidget {
-  const MainScreen({super.key});
+// Import Screens & Themes & Controller
+import 'package:compound_me/src/core/theme/theme_provider.dart';
+import 'package:compound_me/src/features/dashboard/presentation/screens/splash_screen.dart'; // PASTIKAN BARIS INI ADA
+import 'package:compound_me/src/features/dashboard/presentation/screens/lock_screen.dart'; 
+import 'package:compound_me/src/features/dashboard/presentation/controllers/biometric_controller.dart'; 
 
-  @override
-  ConsumerState<MainScreen> createState() => _MainScreenState();
+void main() {
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class _MainScreenState extends ConsumerState<MainScreen> {
-  int _currentIndex = 0;
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
 
-  final List<Widget> _pages = [
-    const HomeView(),     // 0
-    const HabitsScreen(), // 1
-    const StatsScreen(),  // 2 (POSISI BARU: LAPORAN)
-    const SettingsScreen(), // 3 (GESER JADI NOMOR 3)
-  ];
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeProvider);
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    return MaterialApp(
+      title: 'CompoundMe',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
+      // BUNGKUS DENGAN APP LIFECYCLE MANAGER
+      home: const AppLifecycleManager(child: SplashScreen()),
+    );
+  }
+}
+
+// WIDGET KHUSUS UNTUK MEMANTAU STATUS APLIKASI (Buka/Tutup)
+class AppLifecycleManager extends ConsumerStatefulWidget {
+  final Widget child;
+  const AppLifecycleManager({super.key, required this.child});
+
+  @override
+  ConsumerState<AppLifecycleManager> createState() => _AppLifecycleManagerState();
+}
+
+class _AppLifecycleManagerState extends ConsumerState<AppLifecycleManager> with WidgetsBindingObserver {
+  bool _isLocked = false; 
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkInitialLock();
+  }
+
+  void _checkInitialLock() {
+    // Cek apakah user mengaktifkan fitur biometrik
+    final isEnabled = ref.read(biometricEnabledProvider);
+    if (isEnabled) {
+      setState(() => _isLocked = true);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Kalau aplikasi masuk background (di-minimize/pindah app)
+    if (state == AppLifecycleState.paused) {
+      final isEnabled = ref.read(biometricEnabledProvider);
+      if (isEnabled) {
+        setState(() => _isLocked = true); // KUNCI OTOMATIS
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final navBarColor = isDarkMode ? const Color(0xFF1E1E1E) : Colors.white;
-    final selectedColor = Colors.teal;
-    final unselectedColor = Colors.grey;
-
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-      
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
-          );
+    // Kalau terkunci, tampilkan LockScreen
+    if (_isLocked) {
+      return LockScreen(
+        onUnlock: () {
+          setState(() => _isLocked = false); // Buka Kunci
         },
-        backgroundColor: Colors.teal,
-        elevation: 4,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
-      ),
-      
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
-        color: navBarColor,
-        elevation: 10,
-        height: 65,
-        padding: EdgeInsets.zero,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            // KIRI (2 Item)
-            _buildNavItem(Icons.dashboard_rounded, "Home", 0, selectedColor, unselectedColor),
-            _buildNavItem(Icons.task_alt_rounded, "Habits", 1, selectedColor, unselectedColor),
-            
-            const SizedBox(width: 48), // SPASI TENGAH
-            
-            // KANAN (2 Item - SEIMBANG!)
-            _buildNavItem(Icons.pie_chart_rounded, "Laporan", 2, selectedColor, unselectedColor), // MENU BARU
-            _buildNavItem(Icons.settings_rounded, "Settings", 3, selectedColor, unselectedColor),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, int index, Color selectedColor, Color unselectedColor) {
-    final isSelected = _currentIndex == index;
-    return InkWell(
-      onTap: () => _onItemTapped(index),
-      borderRadius: BorderRadius.circular(30),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), // Padding sedikit dikecilkan biar muat
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon, 
-              color: isSelected ? selectedColor : unselectedColor,
-              size: 26,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? selectedColor : unselectedColor,
-                fontSize: 10,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+      );
+    }
+    
+    // Kalau tidak, tampilkan aplikasi normal
+    return widget.child; 
   }
 }

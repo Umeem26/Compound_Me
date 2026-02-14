@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:google_fonts/google_fonts.dart'; 
-import 'package:compound_me/src/core/theme/theme_provider.dart';
-import 'package:compound_me/src/features/dashboard/presentation/screens/splash_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('id_ID', null);
-  
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+// Import Screens & Themes & Controller
+import 'package:compound_me/src/core/theme/theme_provider.dart';
+import 'package:compound_me/src/features/dashboard/presentation/screens/splash_screen.dart'; // PASTIKAN BARIS INI ADA
+import 'package:compound_me/src/features/dashboard/presentation/screens/lock_screen.dart'; 
+import 'package:compound_me/src/features/dashboard/presentation/controllers/biometric_controller.dart'; 
+import 'package:compound_me/src/features/dashboard/presentation/screens/splash_screen.dart'; // <--- WAJIB ADA
+
+void main() {
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -21,101 +18,76 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentTheme = ref.watch(themeProvider);
-
-    // 1. Text Theme (Poppins)
-    final textTheme = GoogleFonts.poppinsTextTheme();
-
-    // 2. Input Decoration (Kotak Input Bulat)
-    final inputDecorationTheme = InputDecorationTheme(
-      filled: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Colors.teal, width: 2),
-      ),
-    );
-
-    // 3. Button Theme
-    final elevatedButtonTheme = ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        textStyle: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16),
-      ),
-    );
+    final themeMode = ref.watch(themeProvider);
 
     return MaterialApp(
       title: 'CompoundMe',
       debugShowCheckedModeBanner: false,
-      
-      // --- LIGHT THEME ---
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.light),
-        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
-        textTheme: textTheme,
-        inputDecorationTheme: inputDecorationTheme.copyWith(fillColor: Colors.grey[200]),
-        elevatedButtonTheme: elevatedButtonTheme,
-        
-        // HAPUS CARD THEME AGAR TIDAK ERROR (Material 3 sudah otomatis rounded)
-        
-        appBarTheme: AppBarTheme(
-          backgroundColor: const Color(0xFFF8F9FA),
-          elevation: 0,
-          titleTextStyle: GoogleFonts.poppins(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-          iconTheme: const IconThemeData(color: Colors.black),
-        ),
-
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: ZoomPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
-        ),
-      ),
-
-      // --- DARK THEME ---
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.dark),
-        scaffoldBackgroundColor: const Color(0xFF121212),
-        textTheme: textTheme.apply(bodyColor: Colors.white, displayColor: Colors.white),
-        inputDecorationTheme: inputDecorationTheme.copyWith(fillColor: const Color(0xFF2C2C2C)),
-        elevatedButtonTheme: elevatedButtonTheme,
-        
-        // HAPUS CARD THEME DARI SINI JUGA
-        
-        appBarTheme: AppBarTheme(
-          backgroundColor: const Color(0xFF121212),
-          elevation: 0,
-          titleTextStyle: GoogleFonts.poppins(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-          iconTheme: const IconThemeData(color: Colors.white),
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Color(0xFF1E1E1E),
-          selectedItemColor: Colors.tealAccent,
-        ),
-
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: ZoomPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
-        ),
-      ),
-
-      themeMode: currentTheme, 
-      home: const SplashScreen(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
+      // BUNGKUS DENGAN APP LIFECYCLE MANAGER
+      home: const AppLifecycleManager(child: SplashScreen()),
     );
+  }
+}
+
+// WIDGET KHUSUS UNTUK MEMANTAU STATUS APLIKASI (Buka/Tutup)
+class AppLifecycleManager extends ConsumerStatefulWidget {
+  final Widget child;
+  const AppLifecycleManager({super.key, required this.child});
+
+  @override
+  ConsumerState<AppLifecycleManager> createState() => _AppLifecycleManagerState();
+}
+
+class _AppLifecycleManagerState extends ConsumerState<AppLifecycleManager> with WidgetsBindingObserver {
+  bool _isLocked = false; 
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkInitialLock();
+  }
+
+  void _checkInitialLock() {
+    // Cek apakah user mengaktifkan fitur biometrik
+    final isEnabled = ref.read(biometricEnabledProvider);
+    if (isEnabled) {
+      setState(() => _isLocked = true);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Kalau aplikasi masuk background (di-minimize/pindah app)
+    if (state == AppLifecycleState.paused) {
+      final isEnabled = ref.read(biometricEnabledProvider);
+      if (isEnabled) {
+        setState(() => _isLocked = true); // KUNCI OTOMATIS
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Kalau terkunci, tampilkan LockScreen
+    if (_isLocked) {
+      return LockScreen(
+        onUnlock: () {
+          setState(() => _isLocked = false); // Buka Kunci
+        },
+      );
+    }
+    
+    // Kalau tidak, tampilkan aplikasi normal
+    return widget.child; 
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:compound_me/src/features/dashboard/presentation/main_screen.dart';
-import 'package:compound_me/src/core/theme/theme_provider.dart'; // Import AppColors
+import 'package:compound_me/src/core/theme/theme_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -43,7 +43,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     if (mounted) {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const MainScreen(),
+          pageBuilder: (_, __, ___) => const MyApp(),
           transitionsBuilder: (_, animation, __, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -64,7 +64,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          // GRADIENT TEAL (SESUAI TEMA BARU)
+          // GRADIENT TEAL (SESUAI TEMA SULTAN)
           gradient: AppColors.tealGradient, 
         ),
         child: Center(
@@ -79,7 +79,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(25),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
@@ -91,11 +91,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                             ),
                           ],
                         ),
-                        child: Image.asset(
-                          'assets/icon/app_icon.png',
-                          width: 80,
-                          height: 80,
+                        // --- PERBAIKAN DISINI ---
+                        // Kita ganti Image.asset (yang error) menjadi Icon (yang aman)
+                        child: const Icon(
+                          Icons.account_balance_wallet_rounded, // Icon Dompet
+                          size: 60,
+                          color: AppColors.goldPrimary, // Warna Emas
                         ),
+                        // ------------------------
                       ),
                       const SizedBox(height: 24),
                       

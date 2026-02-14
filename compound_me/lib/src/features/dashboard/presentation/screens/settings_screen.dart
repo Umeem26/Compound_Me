@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+// Import Utilities & Theme
 import 'package:compound_me/src/core/theme/theme_provider.dart';
-import 'package:compound_me/src/core/utils/bounce_button.dart'; // Import Bounce Button
+import 'package:compound_me/src/core/utils/bounce_button.dart';
+
+// IMPORT CONTROLLER BIOMETRIK
+import 'package:compound_me/src/features/dashboard/presentation/controllers/biometric_controller.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 1. Ambil Status Tema (Dark/Light)
     final themeMode = ref.watch(themeProvider);
     final isDarkMode = themeMode == ThemeMode.dark;
+
+    // 2. Ambil Status Biometrik (Hidup/Mati)
+    final isBiometricEnabled = ref.watch(biometricEnabledProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -23,7 +32,7 @@ class SettingsScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // GROUP 1: TAMPILAN
+            // --- GROUP 1: TAMPILAN ---
             _buildSectionTitle("Tampilan Aplikasi"),
             const SizedBox(height: 10),
             _buildSettingCard(
@@ -45,30 +54,50 @@ class SettingsScreen extends ConsumerWidget {
 
             const SizedBox(height: 30),
 
-            // GROUP 2: KEAMANAN & DATA
+            // --- GROUP 2: KEAMANAN & DATA ---
             _buildSectionTitle("Keamanan & Data"),
             const SizedBox(height: 10),
             _buildSettingCard(
               context,
               children: [
-                _buildActionTile(
+                _buildSwitchTile(
                   context,
                   icon: Icons.fingerprint,
-                  color: Colors.blue,
+                  color: AppColors.goldPrimary, 
                   title: "Kunci Biometrik",
-                  subtitle: "Segera Hadir",
-                  onTap: () {},
+                  subtitle: isBiometricEnabled ? "Aplikasi Terkunci Otomatis" : "Tidak Aktif",
+                  value: isBiometricEnabled,
+                  onChanged: (val) {
+                    ref.read(biometricEnabledProvider.notifier).toggle(val);
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          val ? "Keamanan Diaktifkan 🔒" : "Keamanan Dinonaktifkan 🔓",
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        backgroundColor: val ? AppColors.tealPrimary : Colors.grey,
+                        duration: const Duration(seconds: 1),
+                      )
+                    );
+                  },
                 ),
-                const Divider(height: 1, indent: 60), // Garis pemisah
+                const Divider(height: 1, indent: 60), 
+                
                 _buildActionTile(
                   context,
                   icon: Icons.picture_as_pdf,
                   color: Colors.red,
                   title: "Export Laporan",
                   subtitle: "Download PDF (Segera Hadir)",
-                  onTap: () {},
+                  onTap: () {
+                     ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Fitur Export PDF segera hadir di update berikutnya!"))
+                    );
+                  },
                 ),
                 const Divider(height: 1, indent: 60),
+                
                 _buildActionTile(
                   context,
                   icon: Icons.backup,
@@ -82,7 +111,7 @@ class SettingsScreen extends ConsumerWidget {
 
             const SizedBox(height: 30),
 
-            // GROUP 3: TENTANG
+            // --- GROUP 3: TENTANG ---
             _buildSectionTitle("Tentang"),
             const SizedBox(height: 10),
             _buildSettingCard(
@@ -93,14 +122,14 @@ class SettingsScreen extends ConsumerWidget {
                   icon: Icons.info_outline,
                   color: Colors.grey,
                   title: "Versi Aplikasi",
-                  subtitle: "v1.0.0 (Beta)",
+                  subtitle: "v1.0.0 (Release)",
                   onTap: () {},
                 ),
                 const Divider(height: 1, indent: 60),
                 _buildActionTile(
                   context,
                   icon: Icons.code,
-                  color: Colors.teal,
+                  color: AppColors.tealPrimary,
                   title: "Developer",
                   subtitle: "Dibuat oleh Hisyam K.U",
                   onTap: () {},
@@ -121,7 +150,7 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  // --- WIDGET HELPER BIAR RAPI ---
+  // --- WIDGET HELPER ---
 
   Widget _buildSectionTitle(String title) {
     return Padding(
@@ -166,7 +195,8 @@ class SettingsScreen extends ConsumerWidget {
       trailing: Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: Colors.teal,
+        activeColor: AppColors.tealPrimary,
+        activeTrackColor: AppColors.tealLight.withOpacity(0.5),
       ),
     );
   }
@@ -174,10 +204,10 @@ class SettingsScreen extends ConsumerWidget {
   Widget _buildActionTile(BuildContext context, {
     required IconData icon, required Color color, required String title, required String subtitle, required VoidCallback onTap
   }) {
-    return BounceButton( // Pakai Efek Mental
+    return BounceButton( 
       onTap: onTap,
       child: Container(
-        color: Colors.transparent, // Penting agar InkWell bekerja
+        color: Colors.transparent, 
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           leading: Container(

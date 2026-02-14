@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  local_auth: ^2.1.6       # Untuk Sensor Biometrik
+  shared_preferences: ^2.2.2
 
   # --- UI Utilities ---
   cupertino_icons: ^1.0.6

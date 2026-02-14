@@ -1,5 +1,6 @@
-package com.umem.compound_me
+package com.example.compound_me // Sesuaikan jika nama paketmu beda
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity()
+class MainActivity: FlutterFragmentActivity() {
+}
