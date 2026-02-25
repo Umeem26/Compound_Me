@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-// Import Utilities & Theme
 import 'package:compound_me/src/core/theme/theme_provider.dart';
 import 'package:compound_me/src/core/utils/bounce_button.dart';
-
-// IMPORT CONTROLLER BIOMETRIK
-import 'package:compound_me/src/features/dashboard/presentation/controllers/biometric_controller.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Ambil Status Tema (Dark/Light)
     final themeMode = ref.watch(themeProvider);
     final isDarkMode = themeMode == ThemeMode.dark;
-
-    // 2. Ambil Status Biometrik (Hidup/Mati)
-    final isBiometricEnabled = ref.watch(biometricEnabledProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -54,36 +45,12 @@ class SettingsScreen extends ConsumerWidget {
 
             const SizedBox(height: 30),
 
-            // --- GROUP 2: KEAMANAN & DATA ---
-            _buildSectionTitle("Keamanan & Data"),
+            // --- GROUP 2: DATA (Biometrik Dihapus) ---
+            _buildSectionTitle("Data & Backup"),
             const SizedBox(height: 10),
             _buildSettingCard(
               context,
               children: [
-                _buildSwitchTile(
-                  context,
-                  icon: Icons.fingerprint,
-                  color: AppColors.goldPrimary, 
-                  title: "Kunci Biometrik",
-                  subtitle: isBiometricEnabled ? "Aplikasi Terkunci Otomatis" : "Tidak Aktif",
-                  value: isBiometricEnabled,
-                  onChanged: (val) {
-                    ref.read(biometricEnabledProvider.notifier).toggle(val);
-                    
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          val ? "Keamanan Diaktifkan 🔒" : "Keamanan Dinonaktifkan 🔓",
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-                        ),
-                        backgroundColor: val ? AppColors.tealPrimary : Colors.grey,
-                        duration: const Duration(seconds: 1),
-                      )
-                    );
-                  },
-                ),
-                const Divider(height: 1, indent: 60), 
-                
                 _buildActionTile(
                   context,
                   icon: Icons.picture_as_pdf,
@@ -151,18 +118,12 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   // --- WIDGET HELPER ---
-
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 8),
       child: Text(
         title.toUpperCase(),
-        style: GoogleFonts.poppins(
-          fontSize: 12, 
-          fontWeight: FontWeight.bold, 
-          color: Colors.grey,
-          letterSpacing: 1.2
-        ),
+        style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2),
       ),
     );
   }
@@ -172,17 +133,13 @@ class SettingsScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 5))
-        ]
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 5))]
       ),
       child: Column(children: children),
     );
   }
 
-  Widget _buildSwitchTile(BuildContext context, {
-    required IconData icon, required Color color, required String title, required String subtitle, required bool value, required Function(bool) onChanged
-  }) {
+  Widget _buildSwitchTile(BuildContext context, {required IconData icon, required Color color, required String title, required String subtitle, required bool value, required Function(bool) onChanged}) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       leading: Container(
@@ -196,14 +153,11 @@ class SettingsScreen extends ConsumerWidget {
         value: value,
         onChanged: onChanged,
         activeColor: AppColors.tealPrimary,
-        activeTrackColor: AppColors.tealLight.withOpacity(0.5),
       ),
     );
   }
 
-  Widget _buildActionTile(BuildContext context, {
-    required IconData icon, required Color color, required String title, required String subtitle, required VoidCallback onTap
-  }) {
+  Widget _buildActionTile(BuildContext context, {required IconData icon, required Color color, required String title, required String subtitle, required VoidCallback onTap}) {
     return BounceButton( 
       onTap: onTap,
       child: Container(

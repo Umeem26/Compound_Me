@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:compound_me/src/features/dashboard/presentation/main_screen.dart';
 import 'package:compound_me/src/core/theme/theme_provider.dart';
+import 'package:compound_me/main.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -43,7 +44,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     if (mounted) {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const MyApp(),
+          pageBuilder: (_, __, ___) => MyApp(),
           transitionsBuilder: (_, animation, __, child) {
             return FadeTransition(opacity: animation, child: child);
           },
