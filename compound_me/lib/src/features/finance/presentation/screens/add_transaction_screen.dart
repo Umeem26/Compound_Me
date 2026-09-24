@@ -217,9 +217,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         );
       }
 
-      // Refresh data dompet juga biar sinkron
-      ref.invalidate(walletListProvider);
-
       if (mounted) {
         Navigator.pop(context); 
         ScaffoldMessenger.of(context).showSnackBar(

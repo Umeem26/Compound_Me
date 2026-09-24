@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:drift/drift.dart';
 import 'package:compound_me/src/core/database/app_database.dart';
 import 'package:compound_me/src/core/database/database_provider.dart';
+import 'package:compound_me/src/features/finance/presentation/controllers/wallet_controller.dart';
 
 part 'transaction_controller.g.dart';
 
@@ -70,6 +71,7 @@ class TransactionList extends _$TransactionList {
     });
 
     ref.invalidateSelf(); // Refresh UI
+    ref.invalidate(walletListProvider); // Refresh saldo di Home
   }
 
   // 2. EDIT TRANSAKSI (FITUR BARU)
@@ -109,6 +111,7 @@ class TransactionList extends _$TransactionList {
     });
 
     ref.invalidateSelf();
+    ref.invalidate(walletListProvider); // Refresh saldo di Home
   }
 
   // 3. HAPUS TRANSAKSI
@@ -123,6 +126,7 @@ class TransactionList extends _$TransactionList {
     });
 
     ref.invalidateSelf();
+    ref.invalidate(walletListProvider); // Refresh saldo di Home
   }
 
   // Helper untuk update saldo dompet secara atomik (relative update, bukan read-modify-write)
