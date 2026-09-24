@@ -51,49 +51,65 @@ class TodayHabitLogs extends _$TodayHabitLogs {
     return repo.getHabitLogsByDate(DateTime.now());
   }
 
-  // --- FUNGSI UTAMA: CHECKLIST HABIT + AUTO TRANSAKSI ---
+  // --- FUNGSI UTAMA: TOGGLE CHECKLIST HABIT + AUTO TRANSAKSI ---
   Future<void> checkHabit(Habit habit) async {
     final habitRepo = ref.read(habitRepositoryProvider);
-    
-    // 1. Catat di Log Habit (Bahwa hari ini sudah dilakukan)
-    await habitRepo.logHabit(HabitLogsCompanion.insert(
-      habitId: habit.id,
-      completedAt: DateTime.now(),
-    ));
+    final today = DateTime.now();
 
-    // 2. Refresh Checklist UI biar jadi hijau dulu
-    ref.invalidateSelf();
+    final existingLog = await habitRepo.getHabitLogForHabitOnDate(habit.id, today);
 
-    // 3. LOGIKA COMPOUND EFFECT:
-    // Jika habit ini punya biaya (misal: Ngopi 25rb), kita buat transaksi otomatis.
-    if (habit.costPerUnit > 0) {
-      final financeRepo = ref.read(financeRepositoryProvider);
-      
-      // A. Cari Dompet & Kategori untuk dipotong
-      // (Karena kita belum setting spesifik, kita ambil dompet pertama saja sebagai default)
-      final wallets = await financeRepo.getWallets();
-      final categories = await financeRepo.getCategories();
+    if (existingLog == null) {
+      // BELUM dicentang hari ini -> centang + buat transaksi otomatis (jika berbiaya)
+      final logId = await habitRepo.logHabit(HabitLogsCompanion.insert(
+        habitId: habit.id,
+        completedAt: today,
+      ));
 
-      if (wallets.isNotEmpty && categories.isNotEmpty) {
-        // Ambil dompet pertama (Main Wallet)
-        final targetWallet = wallets.first; 
-        
-        // Cari kategori 'Jajan' atau 'Makanan', kalau gak ada ambil Expense pertama
-        final targetCategory = categories.firstWhere(
-          (c) => c.name.contains('Jajan') || c.name.contains('Makanan') || c.type == 0,
-          orElse: () => categories.first,
-        );
+      if (habit.costPerUnit > 0) {
+        final financeRepo = ref.read(financeRepositoryProvider);
 
-        // B. Panggil TransactionController untuk Eksekusi Pemotongan Saldo
-        // Kita pakai fungsi addTransaction yang sudah cerdas kemarin
-        await ref.read(transactionListProvider.notifier).addTransaction(
-          amount: habit.costPerUnit,
-          note: "Auto-Habit: ${habit.name}", // Catatan otomatis
-          date: DateTime.now(),
-          categoryId: targetCategory.id,
-          walletId: targetWallet.id,
-        );
+        // Cari Dompet & Kategori untuk dipotong
+        // (Karena kita belum setting spesifik, kita ambil dompet pertama saja sebagai default)
+        final wallets = await financeRepo.getWallets();
+        final categories = await financeRepo.getCategories();
+
+        if (wallets.isNotEmpty && categories.isNotEmpty) {
+          // Ambil dompet pertama (Main Wallet)
+          final targetWallet = wallets.first;
+
+          // Cari kategori 'Jajan' atau 'Makanan', kalau gak ada ambil Expense pertama
+          final targetCategory = categories.firstWhere(
+            (c) => c.name.contains('Jajan') || c.name.contains('Makanan') || c.type == 0,
+            orElse: () => categories.first,
+          );
+
+          // Panggil TransactionController untuk Eksekusi Pemotongan Saldo,
+          // ditautkan ke log ini lewat habitLogId supaya bisa di-uncheck nanti.
+          await ref.read(transactionListProvider.notifier).addTransaction(
+            amount: habit.costPerUnit,
+            note: "Auto-Habit: ${habit.name}", // Catatan otomatis
+            date: today,
+            categoryId: targetCategory.id,
+            walletId: targetWallet.id,
+            habitLogId: logId,
+          );
+        }
       }
+    } else {
+      // SUDAH dicentang hari ini -> uncheck: hapus log + transaksi otomatis terkait
+      if (habit.costPerUnit > 0) {
+        final financeRepo = ref.read(financeRepositoryProvider);
+        final linkedTransaction = await financeRepo.getTransactionByHabitLogId(existingLog.id);
+
+        if (linkedTransaction != null) {
+          // Lewat TransactionController supaya saldo dompet dikembalikan
+          await ref.read(transactionListProvider.notifier).deleteTransaction(linkedTransaction);
+        }
+      }
+
+      await habitRepo.deleteHabitLog(existingLog.id);
     }
+
+    ref.invalidateSelf();
   }
 }

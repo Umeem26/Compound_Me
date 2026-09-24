@@ -21,7 +21,7 @@ final habitListProvider =
 );
 
 typedef _$HabitList = AutoDisposeAsyncNotifier<List<Habit>>;
-String _$todayHabitLogsHash() => r'ea498d7722a5c79d66e6d056871f6af13ab5a220';
+String _$todayHabitLogsHash() => r'bde6bebd01afbb3034a3a10028d10bdb4f4fe535';
 
 /// See also [TodayHabitLogs].
 @ProviderFor(TodayHabitLogs)

@@ -42,6 +42,21 @@ class HabitRepositoryImpl implements HabitRepository {
       ..where((tbl) => tbl.completedAt.isBetweenValues(start, end)))
       .get();
   }
+
+  @override
+  Future<HabitLog?> getHabitLogForHabitOnDate(int habitId, DateTime date) async {
+    final start = DateTime(date.year, date.month, date.day);
+    final end = DateTime(date.year, date.month, date.day, 23, 59, 59);
+
+    return await (_db.select(_db.habitLogs)
+      ..where((tbl) => tbl.habitId.equals(habitId) & tbl.completedAt.isBetweenValues(start, end)))
+      .getSingleOrNull();
+  }
+
+  @override
+  Future<int> deleteHabitLog(int id) async {
+    return await (_db.delete(_db.habitLogs)..where((tbl) => tbl.id.equals(id))).go();
+  }
 }
 
 // --- PROVIDER ---

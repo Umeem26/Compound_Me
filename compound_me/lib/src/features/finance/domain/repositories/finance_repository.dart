@@ -15,6 +15,9 @@ abstract class FinanceRepository {
   // PERBAIKAN: Hanya ada SATU fungsi deleteTransaction (tipe int)
   Future<int> deleteTransaction(int id);
 
+  // Cari transaksi otomatis yang tertaut ke sebuah habit log (untuk uncheck habit)
+  Future<Transaction?> getTransactionByHabitLogId(int habitLogId);
+
   // --- CATEGORY ---
   Future<List<Category>> getCategories();
   Future<int> addCategory(CategoriesCompanion category);

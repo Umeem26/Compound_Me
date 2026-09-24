@@ -6,7 +6,7 @@ part of 'transaction_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$selectedDateHash() => r'fe52788ffad38de4e851229789f194885b889980';
+String _$selectedDateHash() => r'9457f7a70403527bee24a21ccc5f12c006befb49';
 
 /// See also [SelectedDate].
 @ProviderFor(SelectedDate)
@@ -21,7 +21,7 @@ final selectedDateProvider =
 );
 
 typedef _$SelectedDate = AutoDisposeNotifier<DateTime>;
-String _$transactionListHash() => r'ebd612d966086d0f9df438ee279f3bfa60e51415';
+String _$transactionListHash() => r'81bfb99e12f5929217d2f8d8beb1f5e96b745255';
 
 /// See also [TransactionList].
 @ProviderFor(TransactionList)

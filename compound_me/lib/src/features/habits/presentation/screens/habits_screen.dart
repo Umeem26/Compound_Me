@@ -159,51 +159,67 @@ class HabitsScreen extends ConsumerWidget {
 
    void _showAddHabitDialog(BuildContext context, WidgetRef ref) {
     final nameController = TextEditingController();
-    final costController = TextEditingController(text: "0"); 
+    final costController = TextEditingController(text: "0");
+    String? nameError;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Tambah Kebiasaan", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: "Nama (cth: Lari, Ngopi)"),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: costController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                CurrencyInputFormatter(),
-              ],
-              decoration: const InputDecoration(
-                prefixText: "Rp ",
-                labelText: "Biaya (Opsional)",
-                helperText: "Isi jika kebiasaan ini keluar uang",
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text("Tambah Kebiasaan", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: "Nama (cth: Lari, Ngopi)",
+                  errorText: nameError,
+                ),
               ),
-            ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: costController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  CurrencyInputFormatter(),
+                ],
+                decoration: const InputDecoration(
+                  prefixText: "Rp ",
+                  labelText: "Biaya (Opsional)",
+                  helperText: "Isi jika kebiasaan ini keluar uang",
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text("Batal")),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.tealPrimary, foregroundColor: Colors.white),
+              onPressed: () {
+                final name = nameController.text.trim();
+                if (name.isEmpty) {
+                  setDialogState(() => nameError = "Nama tidak boleh kosong");
+                  return;
+                }
+                if (name.length > 50) {
+                  setDialogState(() => nameError = "Nama maksimal 50 karakter");
+                  return;
+                }
+
+                final cost = CurrencyInputFormatter.toDouble(costController.text);
+                ref.read(habitListProvider.notifier).addHabit(
+                  name: name,
+                  cost: cost,
+                  color: Colors.blue.value,
+                );
+                Navigator.pop(context);
+              },
+              child: const Text("Simpan"),
+            )
           ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Batal")),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.tealPrimary, foregroundColor: Colors.white),
-            onPressed: () {
-              final cost = CurrencyInputFormatter.toDouble(costController.text);
-              ref.read(habitListProvider.notifier).addHabit(
-                name: nameController.text,
-                cost: cost,
-                color: Colors.blue.value, 
-              );
-              Navigator.pop(context);
-            },
-            child: const Text("Simpan"),
-          )
-        ],
       ),
     );
   }
