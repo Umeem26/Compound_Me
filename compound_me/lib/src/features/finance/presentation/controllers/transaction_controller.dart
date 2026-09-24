@@ -53,19 +53,21 @@ class TransactionList extends _$TransactionList {
     // Jika Pengeluaran (0), jadikan negatif. Jika Pemasukan (1), positif.
     final finalAmount = category.type == 0 ? -amount.abs() : amount.abs();
 
-    await db.into(db.transactions).insert(
-      TransactionsCompanion.insert(
-        amount: finalAmount,
-        note: Value(note),
-        date: date,
-        categoryId: categoryId,
-        walletId: walletId,
-        habitLogId: habitLogId == null ? const Value.absent() : Value(habitLogId),
-      ),
-    );
+    await db.transaction(() async {
+      await db.into(db.transactions).insert(
+        TransactionsCompanion.insert(
+          amount: finalAmount,
+          note: Value(note),
+          date: date,
+          categoryId: categoryId,
+          walletId: walletId,
+          habitLogId: habitLogId == null ? const Value.absent() : Value(habitLogId),
+        ),
+      );
 
-    // Update Saldo Dompet
-    await _updateWalletBalance(walletId, finalAmount);
+      // Update Saldo Dompet
+      await _updateWalletBalance(walletId, finalAmount);
+    });
 
     ref.invalidateSelf(); // Refresh UI
   }
@@ -87,22 +89,24 @@ class TransactionList extends _$TransactionList {
     final category = await (db.select(db.categories)..where((c) => c.id.equals(newCategoryId))).getSingle();
     final finalAmount = category.type == 0 ? -newAmount.abs() : newAmount.abs();
 
-    // Update Transaksi di DB
-    await (db.update(db.transactions)..where((t) => t.id.equals(id))).write(
-      TransactionsCompanion(
-        amount: Value(finalAmount),
-        note: Value(newNote),
-        date: Value(newDate),
-        categoryId: Value(newCategoryId),
-        walletId: Value(newWalletId),
-      ),
-    );
+    await db.transaction(() async {
+      // Update Transaksi di DB
+      await (db.update(db.transactions)..where((t) => t.id.equals(id))).write(
+        TransactionsCompanion(
+          amount: Value(finalAmount),
+          note: Value(newNote),
+          date: Value(newDate),
+          categoryId: Value(newCategoryId),
+          walletId: Value(newWalletId),
+        ),
+      );
 
-    // KOREKSI SALDO DOMPET (Penting!)
-    // 1. Kembalikan saldo lama (Undo efek transaksi sebelumnya)
-    await _updateWalletBalance(oldWalletId, -oldAmount); 
-    // 2. Terapkan saldo baru
-    await _updateWalletBalance(newWalletId, finalAmount);
+      // KOREKSI SALDO DOMPET (Penting!)
+      // 1. Kembalikan saldo lama (Undo efek transaksi sebelumnya)
+      await _updateWalletBalance(oldWalletId, -oldAmount);
+      // 2. Terapkan saldo baru
+      await _updateWalletBalance(newWalletId, finalAmount);
+    });
 
     ref.invalidateSelf();
   }
@@ -110,26 +114,25 @@ class TransactionList extends _$TransactionList {
   // 3. HAPUS TRANSAKSI
   Future<void> deleteTransaction(Transaction trx) async {
     final db = ref.read(appDatabaseProvider);
-    
-    await db.delete(db.transactions).delete(trx);
-    
-    // Kembalikan Saldo (Minus ketemu Minus jadi Plus)
-    await _updateWalletBalance(trx.walletId, -trx.amount);
-    
+
+    await db.transaction(() async {
+      await db.delete(db.transactions).delete(trx);
+
+      // Kembalikan Saldo (Minus ketemu Minus jadi Plus)
+      await _updateWalletBalance(trx.walletId, -trx.amount);
+    });
+
     ref.invalidateSelf();
   }
 
-  // Helper untuk update saldo dompet
+  // Helper untuk update saldo dompet secara atomik (relative update, bukan read-modify-write)
   Future<void> _updateWalletBalance(int walletId, double amountDiff) async {
     final db = ref.read(appDatabaseProvider);
-    final wallet = await (db.select(db.wallets)..where((w) => w.id.equals(walletId))).getSingle();
-    
-    final newBalance = wallet.balance + amountDiff;
-    
+
     await (db.update(db.wallets)..where((w) => w.id.equals(walletId))).write(
-      WalletsCompanion(balance: Value(newBalance)),
+      WalletsCompanion.custom(balance: db.wallets.balance + Variable(amountDiff)),
     );
-    
+
     // Refresh Provider Wallet di UI lain
     // Catatan: Karena WalletListProvider ada di file lain, kita tidak bisa invalidate langsung dari sini
     // kecuali kita import. Tapi biarkan UI yang handle refresh via watch.
