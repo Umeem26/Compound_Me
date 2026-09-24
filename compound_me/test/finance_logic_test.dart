@@ -49,7 +49,7 @@ void main() {
           ),
         );
 
-    // Kategori default sudah di-seed lewat MigrationStrategy.onCreate.
+    // Kategori default sudah di-seed lewat MigrationStrategy.beforeOpen.
     final categories = await db.select(db.categories).get();
     expenseCategoryId = categories.firstWhere((c) => c.type == 0).id;
     incomeCategoryId = categories.firstWhere((c) => c.type == 1).id;
@@ -158,5 +158,42 @@ void main() {
     expect(totalAfterSecondCheck, initialTotal);
     expect(await db.select(db.habitLogs).get(), isEmpty);
     expect(await db.select(db.transactions).get(), isEmpty);
+  });
+
+  test('dua checkHabit bersamaan (Future.wait) untuk habit yang sama tetap menghasilkan maksimal 1 log dan saldo terpotong sekali', () async {
+    final initialTotal = (await walletBalance(walletAId)) + (await walletBalance(walletBId));
+
+    final habitId = await db.into(db.habits).insert(
+          HabitsCompanion.insert(
+            name: 'Ngopi',
+            costPerUnit: const Value(15000),
+            color: 0xFF000000,
+          ),
+        );
+    final habit = await (db.select(db.habits)..where((h) => h.id.equals(habitId))).getSingle();
+
+    final notifier = container.read(todayHabitLogsProvider.notifier);
+
+    // Dua panggilan checkHabit() untuk habit yang sama, "bersamaan" (tanpa
+    // menunggu satu selesai sebelum memulai yang lain). Tanpa guard in-flight,
+    // ini bisa memicu toggle dobel (log ganda / saldo terpotong dua kali atau
+    // malah balik ke 0 kali kalau keduanya saling silang check-uncheck).
+    await Future.wait([
+      notifier.checkHabit(habit),
+      notifier.checkHabit(habit),
+    ]);
+
+    final logsAfter = await db.select(db.habitLogs).get();
+    expect(logsAfter.length, lessThanOrEqualTo(1));
+
+    final transactionsAfter = await db.select(db.transactions).get();
+    expect(transactionsAfter.length, logsAfter.length);
+
+    final totalAfter = (await walletBalance(walletAId)) + (await walletBalance(walletBId));
+    // Guard in-flight memastikan panggilan kedua di-skip selagi yang pertama
+    // masih berjalan, jadi hasil akhirnya deterministik: tepat 1 log & saldo
+    // terpotong tepat sekali (bukan 0 kali, bukan 2 kali).
+    expect(logsAfter, hasLength(1));
+    expect(totalAfter, initialTotal - 15000);
   });
 }

@@ -44,13 +44,13 @@ class HabitRepositoryImpl implements HabitRepository {
   }
 
   @override
-  Future<HabitLog?> getHabitLogForHabitOnDate(int habitId, DateTime date) async {
+  Future<List<HabitLog>> getHabitLogsForHabitOnDate(int habitId, DateTime date) async {
     final start = DateTime(date.year, date.month, date.day);
     final end = DateTime(date.year, date.month, date.day, 23, 59, 59);
 
     return await (_db.select(_db.habitLogs)
       ..where((tbl) => tbl.habitId.equals(habitId) & tbl.completedAt.isBetweenValues(start, end)))
-      .getSingleOrNull();
+      .get();
   }
 
   @override

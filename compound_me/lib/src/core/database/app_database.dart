@@ -19,11 +19,20 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (Migrator m) async {
           await m.createAll();
-          await _seedDefaultCategories();
         },
         onUpgrade: (Migrator m, int from, int to) async {
           if (from < 2) {
             await m.addColumn(transactions, transactions.habitLogId);
+          }
+        },
+        beforeOpen: (details) async {
+          // Jalan setiap kali DB dibuka (baik instalasi baru maupun pengguna lama
+          // yang upgrade dari skema lebih tua). Seed kategori default hanya kalau
+          // tabel categories memang masih kosong, supaya tidak dobel dan supaya
+          // pengguna lama yang belum sempat ter-seed tetap dapat kategori default.
+          final existingCategories = await select(categories).get();
+          if (existingCategories.isEmpty) {
+            await _seedDefaultCategories();
           }
         },
       );
