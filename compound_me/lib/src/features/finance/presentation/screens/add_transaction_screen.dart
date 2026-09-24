@@ -48,6 +48,13 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   }
 
   @override
+  void dispose() {
+    _amountController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final walletsAsync = ref.watch(walletListProvider);
     final categoriesAsync = ref.watch(categoryListProvider);

@@ -22,6 +22,13 @@ class _AddWalletScreenState extends ConsumerState<AddWalletScreen> {
   int _selectedColorIndex = 0;
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _balanceController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
