@@ -43,12 +43,13 @@ class TransactionList extends _$TransactionList {
     required DateTime date,
     required int categoryId,
     required int walletId,
+    int? habitLogId,
   }) async {
     final db = ref.read(appDatabaseProvider);
 
     // Cek Tipe Kategori (0 = Pengeluaran, 1 = Pemasukan)
     final category = await (db.select(db.categories)..where((c) => c.id.equals(categoryId))).getSingle();
-    
+
     // Jika Pengeluaran (0), jadikan negatif. Jika Pemasukan (1), positif.
     final finalAmount = category.type == 0 ? -amount.abs() : amount.abs();
 
@@ -59,12 +60,13 @@ class TransactionList extends _$TransactionList {
         date: date,
         categoryId: categoryId,
         walletId: walletId,
+        habitLogId: habitLogId == null ? const Value.absent() : Value(habitLogId),
       ),
     );
 
     // Update Saldo Dompet
     await _updateWalletBalance(walletId, finalAmount);
-    
+
     ref.invalidateSelf(); // Refresh UI
   }
 

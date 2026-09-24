@@ -55,6 +55,11 @@ class FinanceRepositoryImpl implements FinanceRepository {
     return await (_db.delete(_db.transactions)..where((t) => t.id.equals(id))).go();
   }
 
+  @override
+  Future<Transaction?> getTransactionByHabitLogId(int habitLogId) async {
+    return await (_db.select(_db.transactions)..where((t) => t.habitLogId.equals(habitLogId))).getSingleOrNull();
+  }
+
   // --- CATEGORY ---
   @override
   Future<List<Category>> getCategories() async {

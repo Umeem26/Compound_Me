@@ -31,6 +31,9 @@ class Transactions extends Table {
   // Relasi (Foreign Keys)
   IntColumn get categoryId => integer().references(Categories, #id)();
   IntColumn get walletId => integer().references(Wallets, #id)();
+
+  // Nullable: hanya terisi jika transaksi ini dibuat otomatis dari habit check-in
+  IntColumn get habitLogId => integer().nullable().references(HabitLogs, #id)();
 }
 
 // 4. Tabel Kebiasaan (Habits) -> Fitur Unik CompoundMe
