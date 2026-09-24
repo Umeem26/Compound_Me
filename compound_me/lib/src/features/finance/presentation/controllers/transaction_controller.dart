@@ -48,30 +48,53 @@ class TransactionList extends _$TransactionList {
   }) async {
     final db = ref.read(appDatabaseProvider);
 
+    await db.transaction(() => insertTransactionRaw(
+          amount: amount,
+          note: note,
+          date: date,
+          categoryId: categoryId,
+          walletId: walletId,
+          habitLogId: habitLogId,
+        ));
+
+    ref.invalidateSelf(); // Refresh UI
+    ref.invalidate(walletListProvider); // Refresh saldo di Home
+  }
+
+  // Versi "raw" dari addTransaction: TIDAK membuka db.transaction() sendiri.
+  // Dipakai saat pemanggil (misal HabitController) perlu menggabungkan insert
+  // transaksi ini dengan operasi lain (insert/delete log habit) ke dalam SATU
+  // db.transaction() yang sama, supaya keduanya atomik (rollback bersama kalau
+  // salah satu gagal). Wajib dipanggil di dalam db.transaction() milik pemanggil.
+  Future<void> insertTransactionRaw({
+    required double amount,
+    required String note,
+    required DateTime date,
+    required int categoryId,
+    required int walletId,
+    int? habitLogId,
+  }) async {
+    final db = ref.read(appDatabaseProvider);
+
     // Cek Tipe Kategori (0 = Pengeluaran, 1 = Pemasukan)
     final category = await (db.select(db.categories)..where((c) => c.id.equals(categoryId))).getSingle();
 
     // Jika Pengeluaran (0), jadikan negatif. Jika Pemasukan (1), positif.
     final finalAmount = category.type == 0 ? -amount.abs() : amount.abs();
 
-    await db.transaction(() async {
-      await db.into(db.transactions).insert(
-        TransactionsCompanion.insert(
-          amount: finalAmount,
-          note: Value(note),
-          date: date,
-          categoryId: categoryId,
-          walletId: walletId,
-          habitLogId: habitLogId == null ? const Value.absent() : Value(habitLogId),
-        ),
-      );
+    await db.into(db.transactions).insert(
+      TransactionsCompanion.insert(
+        amount: finalAmount,
+        note: Value(note),
+        date: date,
+        categoryId: categoryId,
+        walletId: walletId,
+        habitLogId: habitLogId == null ? const Value.absent() : Value(habitLogId),
+      ),
+    );
 
-      // Update Saldo Dompet
-      await _updateWalletBalance(walletId, finalAmount);
-    });
-
-    ref.invalidateSelf(); // Refresh UI
-    ref.invalidate(walletListProvider); // Refresh saldo di Home
+    // Update Saldo Dompet
+    await _updateWalletBalance(walletId, finalAmount);
   }
 
   // 2. EDIT TRANSAKSI (FITUR BARU)
@@ -118,15 +141,21 @@ class TransactionList extends _$TransactionList {
   Future<void> deleteTransaction(Transaction trx) async {
     final db = ref.read(appDatabaseProvider);
 
-    await db.transaction(() async {
-      await db.delete(db.transactions).delete(trx);
-
-      // Kembalikan Saldo (Minus ketemu Minus jadi Plus)
-      await _updateWalletBalance(trx.walletId, -trx.amount);
-    });
+    await db.transaction(() => deleteTransactionRaw(trx));
 
     ref.invalidateSelf();
     ref.invalidate(walletListProvider); // Refresh saldo di Home
+  }
+
+  // Versi "raw" dari deleteTransaction: TIDAK membuka db.transaction() sendiri.
+  // Lihat catatan di insertTransactionRaw().
+  Future<void> deleteTransactionRaw(Transaction trx) async {
+    final db = ref.read(appDatabaseProvider);
+
+    await db.delete(db.transactions).delete(trx);
+
+    // Kembalikan Saldo (Minus ketemu Minus jadi Plus)
+    await _updateWalletBalance(trx.walletId, -trx.amount);
   }
 
   // Helper untuk update saldo dompet secara atomik (relative update, bukan read-modify-write)
