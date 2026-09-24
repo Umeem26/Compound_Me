@@ -17,8 +17,9 @@ abstract class HabitRepository {
   // Ambil log hari ini (biar tahu mana yang sudah dicentang)
   Future<List<HabitLog>> getHabitLogsByDate(DateTime date);
 
-  // Cari log habit tertentu di tanggal tertentu (untuk cek status toggle)
-  Future<HabitLog?> getHabitLogForHabitOnDate(int habitId, DateTime date);
+  // Cari SEMUA log habit tertentu di tanggal tertentu (toleran terhadap duplikat lama
+  // yang mungkin tercipta sebelum ada guard in-flight, misal dari tap ganda)
+  Future<List<HabitLog>> getHabitLogsForHabitOnDate(int habitId, DateTime date);
 
   // Hapus log (untuk uncheck habit)
   Future<int> deleteHabitLog(int id);
