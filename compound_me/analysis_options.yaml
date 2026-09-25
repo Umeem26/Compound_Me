@@ -13,3 +13,7 @@ linter:
     # Doc comments on every public member conflict with the project rule of
     # short "why" comments only.
     public_member_api_docs: false
+    # Keep class-named constructors (`const Foo()`) instead of Dart 3.13's
+    # `const new()`: it matches Flutter docs and generated code.
+    unnecessary_type_name_in_constructor: false
+    unnecessary_const_in_enum_constructor: false
