@@ -9,61 +9,25 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  local_auth: ^2.1.6       # Untuk Sensor Biometrik
   shared_preferences: ^2.2.2
-
-  # --- UI Utilities ---
-  cupertino_icons: ^1.0.6
-  google_fonts: ^8.0.0
   intl: ^0.19.0
   fl_chart: ^1.1.1
-  font_awesome_flutter: ^10.7.0
-
-  # --- State Management ---
   flutter_riverpod: ^2.4.9
   riverpod_annotation: ^2.3.3
-
-  # --- Navigation ---
   go_router: ^13.1.0
-
-  # --- Database (Drift/SQLite) ---
   drift: ^2.14.0
-  sqlite3_flutter_libs: ^0.5.18
   path_provider: ^2.1.2
   path: ^1.8.3
-
-  # --- Utils ---
   uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.1
   flutter_launcher_icons: ^0.13.1
-  
-  # --- Code Generators (PINDAH KE SINI YANG BENAR) ---
   build_runner: ^2.4.8
   riverpod_generator: ^2.3.9
   drift_dev: ^2.14.0
   flutter_native_splash: ^2.3.10
 
-# Konfigurasi Icon (Harus Rata Kiri Paling Luar)
-flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/icon/app_icon.png"
-  min_sdk_android: 21
-  adaptive_icon_background: "#11998E"
-  adaptive_icon_foreground: "assets/icon/app_icon.png"
-
 flutter:
   uses-material-design: true
-  assets:
-    - assets/icon/
-
-flutter_native_splash:
-  color: "#11998E"  # Warna Latar Teal (Sesuai Tema)
-  image: "assets/icon/app_icon.png" # Logo di tengah
-  android_12:
-    image: "assets/icon/app_icon.png"
-    icon_background_color: "#11998E"
