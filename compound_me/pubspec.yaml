@@ -36,3 +36,26 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/brand/app_icon_1024.png"
+  remove_alpha_ios: true
+  min_sdk_android: 26
+  adaptive_icon_background: "#00695C"
+  adaptive_icon_foreground: "assets/brand/adaptive_foreground.png"
+  # The mark already carries its own safe-zone padding; the default 16% inset shrinks it.
+  adaptive_icon_foreground_inset: 0
+  adaptive_icon_monochrome: "assets/brand/adaptive_monochrome.png"
+
+flutter_native_splash:
+  color: "#00695C"
+  color_dark: "#0C1211"
+  image: "assets/brand/splash_mark_1152.png"
+  android_12:
+    color: "#00695C"
+    color_dark: "#0C1211"
+    image: "assets/brand/splash_mark_1152.png"
+  fullscreen: false
+  web: false
