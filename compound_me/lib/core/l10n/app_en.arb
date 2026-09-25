@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "appTitle": "CompoundMe",
+  "navHome": "Home",
+  "navHabits": "Habits",
+  "navInsights": "Insights",
+  "navProfile": "Profile",
+  "navAdd": "Add transaction",
+  "homeEmptyTitle": "No transactions yet",
+  "homeEmptyBody": "Log your first one, it only takes a few seconds.",
+  "homeEmptyAction": "Log your first transaction",
+  "habitsEmptyTitle": "Start with one habit",
+  "habitsEmptyBody": "Small habits you repeat will show their impact here.",
+  "insightsEmptyTitle": "Insights appear after a week of logging",
+  "insightsEmptyBody": "Log every day, then see the patterns here.",
+  "profileEmptyTitle": "Your profile isn't set up yet",
+  "profileEmptyBody": "Your nickname and wallets will be kept here.",
+  "undoAction": "Undo"
+}
