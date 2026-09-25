@@ -19,6 +19,32 @@ void main() {
       expect(taps, 1);
     });
 
+    testWidgets('hugs its label when expand is false', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          Column(
+            children: [
+              PrimaryButton(label: 'Simpan', onPressed: () {}),
+              PrimaryButton(label: 'Simpan', onPressed: () {}, expand: false),
+            ],
+          ),
+        ),
+      );
+
+      final buttons = find.byType(PrimaryButton);
+      final full = tester.getSize(buttons.first).width;
+      final compact = tester.getSize(buttons.last).width;
+      expect(
+        full,
+        tester.view.physicalSize.width / tester.view.devicePixelRatio,
+      );
+      expect(compact, lessThan(full));
+      expect(
+        tester.getSize(buttons.last).height,
+        greaterThanOrEqualTo(AppSizes.buttonHeight),
+      );
+    });
+
     testWidgets('is dimmed and ignores taps when disabled', (tester) async {
       await tester.pumpWidget(
         _wrap(const PrimaryButton(label: 'Simpan', onPressed: null)),

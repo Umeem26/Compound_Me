@@ -174,8 +174,9 @@ class _AppButtonState extends State<_AppButton> {
           color: _pressed ? widget.pressedBackground : widget.background,
           borderRadius: radius,
         ),
-        alignment: Alignment.center,
-        child: content,
+        // Container.alignment would stretch to the max width and break
+        // expand: false; widthFactor keeps a compact button hugging its label.
+        child: Center(widthFactor: 1, child: content),
       ),
     );
 
