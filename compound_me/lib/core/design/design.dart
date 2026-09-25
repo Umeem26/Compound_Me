@@ -5,6 +5,7 @@ export 'components/buttons.dart';
 export 'components/empty_state.dart';
 export 'components/segmented_toggle.dart';
 export 'components/undo_snackbar.dart';
+export 'icons.dart';
 export 'theme.dart';
 export 'tokens.dart';
 export 'typography.dart';
