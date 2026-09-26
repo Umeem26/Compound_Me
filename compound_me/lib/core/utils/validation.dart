@@ -13,7 +13,9 @@ enum ValidationError {
   scheduleNeedsDays,
   timesPerWeekOutOfRange,
   countOutOfRange,
+  futureDate,
   archivedReference,
+  defaultCategoryRename,
 }
 
 class ValidationException implements Exception {
