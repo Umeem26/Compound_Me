@@ -1,3 +1,4 @@
+import 'package:compound_me/bootstrap/licenses.dart';
 import 'package:compound_me/core/database/app_database.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:flutter_riverpod/misc.dart';
@@ -12,6 +13,7 @@ class AppBootstrap {
   final AppPreferences preferences;
 
   static Future<AppBootstrap> load() async {
+    registerBundledLicenses();
     // v1 crashed with LocaleDataException because this was missing.
     await Future.wait([
       initializeDateFormatting('id'),

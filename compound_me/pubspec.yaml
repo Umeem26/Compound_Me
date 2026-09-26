@@ -36,6 +36,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/fonts/OFL.txt
+    - assets/fonts/phosphor/LICENSE.txt
   fonts:
     - family: PlusJakartaSans
       fonts:
