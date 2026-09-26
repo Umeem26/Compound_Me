@@ -228,5 +228,17 @@ Layar <S-xx> belum sesuai docs/v2/02-design-system.md: <sebutkan: ukuran judul t
 | 0 | Splash terang tetap teal | Titik putih logo hilang di latar terang (03 S-00 diperbarui) | Disetujui |
 | 0 | 3 lint very_good_analysis dimatikan (doc comment API publik + 2 lint sintaks konstruktor Dart 3.13) | Alasan tercatat di `analysis_options.yaml` | Disetujui |
 | 0 | Durasi pressed 120 ms (`motionFast`) | Konsisten dengan token yang ada (02 §7.2 diperbarui) | Disetujui |
-| 0 | Nilai pressed/tint tema gelap dihitung sendiri | Spesifikasi hanya memberi nilai terang | Disetujui, dicatat ke 02 §11 di Fase 1 |
-| 0 | Lisensi font OFL & Phosphor MIT ikut dibundel | Kewajiban lisensi | Perlu didaftarkan ke `LicenseRegistry` (Fase 1) |
+| 0 | Nilai pressed/tint tema gelap dihitung sendiri | Spesifikasi hanya memberi nilai terang | Disetujui, tercatat di 02 §11.1 (Fase 1) |
+| 0 | Lisensi font OFL & Phosphor MIT ikut dibundel | Kewajiban lisensi | Selesai: didaftarkan ke `LicenseRegistry` di bootstrap (Fase 1) |
+| 1 | schemaVersion 2: upgrade dari v1 = `createAll` + seed | Fase 0 terpasang dengan skema v1 kosong; tanpa ini perangkat dev crash "no such table". Instal baru tetap sama | Perlu review |
+| 1 | Tanggal disimpan sebagai teks ISO-8601 UTC berpresisi milidetik (`build.yaml`, `toStoredUtc`) | Drift membandingkan tanggal sebagai teks; semua nilai harus berformat sama agar urutan dan filter bulan benar | Perlu review |
+| 1 | Tanpa folder DAO; `HabitLedger` satu-satunya penulis `habit_logs` + transaksi check-in | Satu jalur untuk konsistensi log ↔ transaksi, dipakai HabitRepository dan TransactionRepository | Perlu review |
+| 1 | Konsistensi 30 hari hanya untuk kebiasaan build | Untuk reduce, check-in berarti melakukan kebiasaan yang ingin dikurangi; ukurannya batas mingguan | Perlu review |
+| 1 | Minggu berjalan dan minggu pembuatan tidak pernah dihitung gagal; minggu reduce baru dinilai setelah selesai | Sesuai prinsip "ramah saat gagal" (§4.3) | Perlu review |
+| 1 | `formatRupiah` diberi parameter `localeCode`; tanda minus `−` (U+2212) | Mode compact berbeda antara id (rb/jt/M) dan en (K/M/B) | Perlu review |
+| 1 | Toggle reduce: 0 → 1, ≥ 1 → 0; check-in tanggal lampau dicatat pukul 12.00 lokal | Flow C "tap lagi = batal"; jam 12 mencegah tanggal bergeser saat dikonversi ke UTC | Perlu review |
+| 1 | Hapus transaksi dari kebiasaan menurunkan count log; `restore` menaikkannya kembali hanya jika log masih ada | PRD memakai konfirmasi, bukan undo, untuk kasus ini; FK `SET NULL` memutus tautan saat log terhapus | Perlu review |
+| 1 | Pencarian nama kategori default lewat `extraCategoryIds` dari UI | Nama terjemahan tidak disimpan di DB | Perlu review |
+| 1 | Ganti jenis kebiasaan (build ↔ reduce) ditolak kalau sudah ada check-in; nama kategori kustom maks. 30 karakter | Menjaga riwayat dan transaksi; 05 §3 tidak menyebut batas nama kategori | Perlu review |
+| 1 | Ikon & warna kategori default dipilih sendiri (mis. Makanan = forkKnife/coral) | S-42 hanya menyebut nama | Perlu review |
+| 1 | Lint `recursive_getters` diabaikan per file tabel Drift | DSL CHECK Drift merujuk kolom di getter-nya sendiri; bukan rekursi runtime | Perlu review |
