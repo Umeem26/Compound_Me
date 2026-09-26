@@ -58,4 +58,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get undoAction => 'Undo';
+
+  @override
+  String get catFood => 'Food & drinks';
+
+  @override
+  String get catTransport => 'Transport';
+
+  @override
+  String get catShopping => 'Shopping';
+
+  @override
+  String get catBills => 'Bills';
+
+  @override
+  String get catEntertainment => 'Entertainment';
+
+  @override
+  String get catHealth => 'Health';
+
+  @override
+  String get catEducation => 'Education';
+
+  @override
+  String get catOtherExpense => 'Other';
+
+  @override
+  String get catAllowance => 'Allowance / salary';
+
+  @override
+  String get catFreelance => 'Freelance';
+
+  @override
+  String get catGift => 'Gifts';
+
+  @override
+  String get catOtherIncome => 'Other';
 }
