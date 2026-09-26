@@ -1,0 +1,67 @@
+{
+  "@@locale": "id",
+  "appTitle": "CompoundMe",
+  "@appTitle": {
+    "description": "App name. Not translated."
+  },
+  "navHome": "Beranda",
+  "@navHome": {
+    "description": "Bottom navigation tab for the home screen."
+  },
+  "navHabits": "Kebiasaan",
+  "@navHabits": {
+    "description": "Bottom navigation tab for habits."
+  },
+  "navInsights": "Wawasan",
+  "@navInsights": {
+    "description": "Bottom navigation tab for Compound Insights."
+  },
+  "navProfile": "Profil",
+  "@navProfile": {
+    "description": "Bottom navigation tab for the profile."
+  },
+  "navAdd": "Tambah transaksi",
+  "@navAdd": {
+    "description": "Accessible label of the center add button and title of the add transaction sheet."
+  },
+  "homeEmptyTitle": "Belum ada transaksi",
+  "@homeEmptyTitle": {
+    "description": "Home empty state title."
+  },
+  "homeEmptyBody": "Catat yang pertama, cuma butuh beberapa detik.",
+  "@homeEmptyBody": {
+    "description": "Home empty state explanation."
+  },
+  "homeEmptyAction": "Catat transaksi pertama",
+  "@homeEmptyAction": {
+    "description": "Home empty state button that opens the add transaction sheet."
+  },
+  "habitsEmptyTitle": "Mulai dari satu kebiasaan",
+  "@habitsEmptyTitle": {
+    "description": "Habits empty state title."
+  },
+  "habitsEmptyBody": "Kebiasaan kecil yang diulang akan terlihat dampaknya di sini.",
+  "@habitsEmptyBody": {
+    "description": "Habits empty state explanation."
+  },
+  "insightsEmptyTitle": "Wawasan muncul setelah seminggu mencatat",
+  "@insightsEmptyTitle": {
+    "description": "Insights empty state title."
+  },
+  "insightsEmptyBody": "Catat setiap hari, lalu lihat polanya di sini.",
+  "@insightsEmptyBody": {
+    "description": "Insights empty state explanation."
+  },
+  "profileEmptyTitle": "Profil belum diatur",
+  "@profileEmptyTitle": {
+    "description": "Profile empty state title, shown before onboarding exists."
+  },
+  "profileEmptyBody": "Nama panggilan dan dompetmu akan tersimpan di sini.",
+  "@profileEmptyBody": {
+    "description": "Profile empty state explanation."
+  },
+  "undoAction": "Urungkan",
+  "@undoAction": {
+    "description": "Action on the undo snackbar."
+  }
+}

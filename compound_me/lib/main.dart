@@ -1,29 +1,16 @@
-import 'package:flutter/material.dart';
+import 'package:compound_me/app.dart';
+import 'package:compound_me/bootstrap/app_bootstrap.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:compound_me/src/core/theme/theme_provider.dart';
-import 'package:compound_me/src/features/dashboard/presentation/screens/splash_screen.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('id_ID', null);
-  runApp(const ProviderScope(child: MyApp()));
-}
-
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeProvider);
-
-    return MaterialApp(
-      title: 'CompoundMe',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: themeMode,
-      home: const SplashScreen(), // Langsung ke Splash, tanpa dibungkus LifecycleManager
-    );
-  }
+  final binding = WidgetsFlutterBinding.ensureInitialized();
+  // Single native splash: held only while bootstrap runs, removed after the
+  // first frame in CompoundMeApp. No Flutter splash widget, no fake delay.
+  FlutterNativeSplash.preserve(widgetsBinding: binding);
+  final bootstrap = await AppBootstrap.load();
+  runApp(
+    ProviderScope(overrides: bootstrap.overrides, child: const CompoundMeApp()),
+  );
 }
