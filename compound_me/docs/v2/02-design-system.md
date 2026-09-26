@@ -106,7 +106,7 @@ Ikon kategori selalu tampil sebagai ikon `fg` di dalam lingkaran/rounded square 
 
 **Font: Plus Jakarta Sans** (open source, Google Fonts). Dirancang oleh Tokotype untuk program "Jakarta City of Collaboration" tahun 2020. Pilihan ini punya cerita lokal yang bagus untuk portofolio, geometris-humanis, dan angkanya jelas. Menggantikan Poppins v1.
 
-- Pakai `google_fonts` dengan font **dibundel sebagai aset** (bukan diunduh saat runtime) supaya jalan offline dan tidak ada kedipan font.
+- Font **dibundel sebagai aset** lewat `fonts:` di `pubspec.yaml` (bukan paket `google_fonts`), supaya jalan offline dan tidak ada kedipan font. File `OFL.txt` disertakan dan didaftarkan ke `LicenseRegistry`.
 - **Semua nominal uang wajib memakai angka tabular** (`FontFeature.tabularFigures()`) supaya digit sejajar di list.
 - Maksimal **2 ketebalan per layar** selain nominal utama.
 
@@ -156,7 +156,7 @@ Text scaling: layout wajib tetap utuh sampai `textScaler` 1,3. Nominal hero bole
 
 ## 6. Ikonografi
 
-- **Satu set ikon: Phosphor Icons** (lisensi MIT) lewat package `phosphor_flutter`. Varian `regular` untuk default, `fill` untuk tab aktif dan status selesai. Jangan campur dengan `Icons.*` Material kecuali ikon sistem yang tidak ada padanannya.
+- **Satu set ikon: Phosphor Icons** (lisensi MIT), **dibundel sebagai font** (`Phosphor-Regular.ttf`, `Phosphor-Fill.ttf`) dan dipetakan di `AppIcons`. Paket `phosphor_flutter` tidak dipakai karena rilis terakhirnya (Mei 2024) tidak bisa dikompilasi di Flutter 3.43+ (keputusan Fase 0). Varian `regular` untuk default, `fill` untuk tab aktif dan status selesai. Jangan campur dengan `Icons.*` Material kecuali ikon sistem yang tidak ada padanannya. Lisensi MIT disertakan dan didaftarkan ke `LicenseRegistry`.
 - Ukuran: 20 dp (dalam list/chip), 24 dp (tab bar, app bar), 28 dp (tile kebiasaan).
 - Ikon kategori, dompet, dan kebiasaan dipilih dari **daftar kurasi ±48 ikon** (disimpan sebagai `iconKey` string, lihat `05-architecture-and-data.md`). Jangan simpan codepoint mentah.
 - **Tidak ada emoji** di UI mana pun, termasuk nama template, notifikasi, dan empty state.
@@ -178,7 +178,7 @@ Semua komponen dibuat sekali di `lib/core/design/components/` dan dipakai ulang.
 | `DestructiveButton` | Seperti Secondary tapi warna `danger`. Hanya di sheet konfirmasi. |
 | `IconButtonTonal` | Lingkaran 40 dp latar `surfaceMuted`, ikon 20. Area tap 48. |
 
-State: pressed = warna 1 tingkat lebih gelap + skala 0,98 (100 ms). Disabled = opacity 40%, tidak bisa di-tap. Loading = spinner 20 dp menggantikan teks, lebar tombol tetap.
+State: pressed = warna 1 tingkat lebih gelap + skala 0,98 (`motionFast`, 120 ms). Disabled = opacity 40%, tidak bisa di-tap. Loading = spinner 20 dp menggantikan teks, lebar tombol tetap.
 
 ### 7.3 Kartu & list
 - **`AppCard`**: `surface`, radius `radiusLg`, border 1 px, padding 16.
@@ -264,6 +264,7 @@ Tema gelap bukan inversi. Gunakan kolom "Gelap" di tabel token. Aturan tambahan:
 - Aksen emas pindah ke `gold300`.
 - Tanpa bayangan. Elevasi = `surface` → `surfaceMuted`.
 - Teks utama `#E8EEEC` (bukan putih murni) untuk mengurangi silau.
+- Warna pressed dan tint tema gelap diturunkan di `tokens.dart` pada Fase 0 (kontras sudah dicek). Nilainya ditambahkan ke bagian ini oleh Claude Code di Fase 1, supaya dokumen tetap jadi sumber kebenaran.
 
 ## 12. Implementasi di Flutter (ringkas)
 

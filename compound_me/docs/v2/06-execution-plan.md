@@ -217,3 +217,16 @@ Pakai prompt koreksi yang spesifik, jangan "perbaiki UI-nya":
 ```
 Layar <S-xx> belum sesuai docs/v2/02-design-system.md: <sebutkan: ukuran judul terlalu besar / ada gradasi di X / jarak antar kartu tidak 16>. Perbaiki hanya itu, jangan ubah layar lain, lalu kirim screenshot sebelum/sesudah.
 ```
+
+## 5. Log keputusan eksekusi
+
+| Fase | Keputusan | Alasan | Status |
+|---|---|---|---|
+| 0 | Ikon Phosphor dibundel sebagai font + `AppIcons`, bukan paket `phosphor_flutter` | Paket (rilis Mei 2024) gagal dikompilasi di Flutter 3.43+ | Disetujui |
+| 0 | `sqlite3_flutter_libs` dihapus | Sudah EOL, SQLite ikut lewat drift/sqlite3 | Disetujui |
+| 0 | Plus Jakarta Sans lewat `fonts:` pubspec | Offline, tanpa kedipan font | Disetujui |
+| 0 | Splash terang tetap teal | Titik putih logo hilang di latar terang (03 S-00 diperbarui) | Disetujui |
+| 0 | 3 lint very_good_analysis dimatikan (doc comment API publik + 2 lint sintaks konstruktor Dart 3.13) | Alasan tercatat di `analysis_options.yaml` | Disetujui |
+| 0 | Durasi pressed 120 ms (`motionFast`) | Konsisten dengan token yang ada (02 §7.2 diperbarui) | Disetujui |
+| 0 | Nilai pressed/tint tema gelap dihitung sendiri | Spesifikasi hanya memberi nilai terang | Disetujui, dicatat ke 02 §11 di Fase 1 |
+| 0 | Lisensi font OFL & Phosphor MIT ikut dibundel | Kewajiban lisensi | Perlu didaftarkan ke `LicenseRegistry` (Fase 1) |

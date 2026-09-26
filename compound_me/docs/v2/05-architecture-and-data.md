@@ -18,7 +18,8 @@
 | Navigasi | **go_router** dengan `StatefulShellRoute.indexedStack` untuk bottom nav. | Sudah jadi dependency di v1 tapi tidak dipakai. Mendukung deep link dan menjaga state tiap tab. |
 | Lokalisasi | **gen-l10n** (`flutter_localizations` + `intl`), ARB `id` dan `en`. | Cara resmi Flutter, type-safe. |
 | Preferensi | `shared_preferences` (tema, bahasa, onboarding selesai, sembunyikan saldo, dompet/kategori terakhir). | Data kecil key-value, tidak perlu masuk SQLite. |
-| Ikon | `phosphor_flutter`. | Satu set ikon konsisten (lihat design system §6). |
+| Ikon | Phosphor dibundel sebagai font + `AppIcons`. | Satu set ikon konsisten (design system §6). `phosphor_flutter` tidak bisa dikompilasi di Flutter 3.43+ (keputusan Fase 0). |
+| SQLite native | Lewat `drift`/`sqlite3` (build hooks). | `sqlite3_flutter_libs` sudah EOL dan tidak dipakai (keputusan Fase 0). |
 | Grafik | `fl_chart`. | Sudah dipakai di v1, cukup untuk donut & bar. |
 | ID data | **UUID string** (`uuid` v4) untuk semua tabel. | Menyiapkan cloud sync P2 tanpa konflik ID auto-increment. |
 | Uang | **`int` Rupiah** (tanpa desimal). | Rupiah tidak memakai sen di praktik sehari-hari. Integer menghindari seluruh kelas bug floating point. |

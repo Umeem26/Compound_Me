@@ -38,6 +38,6 @@ flutter run            # emulator: Pixel 9, API 35
 ## Alur kerja git
 - Satu fase = satu branch `v2/phase-N-<nama>` dari `main`.
 - Conventional Commits, sertakan ID fitur bila relevan: `feat(F-04): amount keypad`.
-- Sebelum PR: `flutter analyze` harus **0 issue**, `flutter test` hijau, app dijalankan di emulator, screenshot layar baru disimpan di `docs/v2/screens/`.
+- Sebelum PR: `flutter analyze` harus **0 issue**, `flutter test` hijau, app dijalankan di emulator, screenshot layar baru disimpan di `docs/v2/screens/` **di root repo** (bukan `compound_me/docs/`).
 - Buat PR ke `main` tapi **jangan merge**. Pemilik repo yang merge setelah review.
 - Di akhir tugas, tulis ringkasan: apa yang dikerjakan, keputusan yang diambil sendiri, dan apa yang belum diuji.

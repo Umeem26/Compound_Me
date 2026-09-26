@@ -84,7 +84,7 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 ## 3. Spesifikasi layar
 
 ### S-00 Splash
-- **Hanya splash native** (Android 12+ SplashScreen API lewat `flutter_native_splash`, dan LaunchScreen di iOS). Latar `bg` (terang/gelap), logo mark di tengah sesuai ukuran di `04-brand-assets.md`.
+- **Hanya splash native** (Android 12+ SplashScreen API lewat `flutter_native_splash`, dan LaunchScreen di iOS). Latar `teal700` di mode terang dan `#0C1211` di mode gelap (latar terang tidak dipakai karena titik putih logo akan hilang), logo mark di tengah sesuai ukuran di `04-brand-assets.md`.
 - **Tidak ada `SplashScreen` widget di Flutter** dan tidak ada delay buatan. Splash native ditahan (`FlutterNativeSplash.preserve`) hanya selama inisialisasi (buka database, muat preferensi, muat locale), lalu `remove()`.
 - Ini memperbaiki masalah v1: dua splash berturut-turut dan logo terpotong.
 
