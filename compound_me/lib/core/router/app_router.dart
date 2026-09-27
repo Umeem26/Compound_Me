@@ -1,9 +1,12 @@
+import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/router/app_shell.dart';
 import 'package:compound_me/core/router/routes.dart';
 import 'package:compound_me/features/habits/presentation/habits_screen.dart';
 import 'package:compound_me/features/home/presentation/home_screen.dart';
 import 'package:compound_me/features/insights/presentation/insights_screen.dart';
+import 'package:compound_me/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:compound_me/features/settings/presentation/profile_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,9 +14,28 @@ part 'app_router.g.dart';
 
 @Riverpod(keepAlive: true)
 GoRouter appRouter(Ref ref) {
+  // Onboarding runs once; until it is done every route leads to it, and
+  // afterwards it can't be reopened (PRD US-02.1).
+  final onboardingDone = ValueNotifier(ref.read(onboardingDoneProvider));
+  ref
+    ..listen(onboardingDoneProvider, (_, done) => onboardingDone.value = done)
+    ..onDispose(onboardingDone.dispose);
+
   final router = GoRouter(
     initialLocation: AppRoutes.home,
+    refreshListenable: onboardingDone,
+    redirect: (context, state) {
+      final atOnboarding = state.matchedLocation == AppRoutes.onboarding;
+      if (!onboardingDone.value) {
+        return atOnboarding ? null : AppRoutes.onboarding;
+      }
+      return atOnboarding ? AppRoutes.home : null;
+    },
     routes: [
+      GoRoute(
+        path: AppRoutes.onboarding,
+        builder: (context, state) => const OnboardingScreen(),
+      ),
       // indexedStack keeps each tab's state when switching (05 §1).
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

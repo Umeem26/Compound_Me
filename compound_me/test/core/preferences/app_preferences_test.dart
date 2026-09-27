@@ -30,6 +30,27 @@ void main() {
     expect((await AppPreferences.load()).localeCode, isNull);
   });
 
+  test('onboarding status, draft, name and hint survive a reload', () async {
+    final prefs = await AppPreferences.load();
+    expect(prefs.onboardingDone, isFalse);
+    expect(prefs.userName, isEmpty);
+    expect(prefs.addCoachMarkSeen, isFalse);
+
+    await prefs.setOnboardingDraft('{"step":"name"}');
+    await prefs.setUserName('Raka');
+    await prefs.setOnboardingDone(done: true);
+    await prefs.setAddCoachMarkSeen();
+
+    final reloaded = await AppPreferences.load();
+    expect(reloaded.onboardingDraft, '{"step":"name"}');
+    expect(reloaded.userName, 'Raka');
+    expect(reloaded.onboardingDone, isTrue);
+    expect(reloaded.addCoachMarkSeen, isTrue);
+
+    await reloaded.setOnboardingDraft(null);
+    expect((await AppPreferences.load()).onboardingDraft, isNull);
+  });
+
   test('ignores an unknown stored theme value', () async {
     SharedPreferencesAsyncPlatform.instance =
         InMemorySharedPreferencesAsync.withData({'themeMode': 'sepia'});

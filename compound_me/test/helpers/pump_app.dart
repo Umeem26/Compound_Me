@@ -13,10 +13,14 @@ const pixel9 = Size(1080, 2424);
 const pixel9Ratio = 2.625;
 
 /// Builds the full app the way bootstrap does, with in-memory storage.
-Future<void> pumpApp(
+/// By default onboarding is done and its hint dismissed; [prefs] adds or
+/// overrides stored preferences. Returns the in-memory database.
+Future<AppDatabase> pumpApp(
   WidgetTester tester, {
   ThemeMode themeMode = ThemeMode.light,
-  String localeCode = 'id',
+  String? localeCode = 'id',
+  bool onboarded = true,
+  Map<String, Object> prefs = const {},
   double textScale = 1,
   Size physicalSize = pixel9,
   double devicePixelRatio = pixel9Ratio,
@@ -31,7 +35,11 @@ Future<void> pumpApp(
   SharedPreferencesAsyncPlatform.instance =
       InMemorySharedPreferencesAsync.withData({
         'themeMode': themeMode.name,
-        'localeCode': localeCode,
+        'localeCode': ?localeCode,
+        'onboardingDone': onboarded,
+        'addCoachMarkSeen': true,
+        if (onboarded) 'userName': 'Raka',
+        ...prefs,
       });
   final preferences = await AppPreferences.load();
   final database = AppDatabase(NativeDatabase.memory());
@@ -47,4 +55,5 @@ Future<void> pumpApp(
     ),
   );
   await tester.pumpAndSettle();
+  return database;
 }

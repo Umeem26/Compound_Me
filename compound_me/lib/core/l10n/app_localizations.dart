@@ -265,6 +265,324 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lainnya'**
   String get catOtherIncome;
+
+  /// Button that moves to the next step.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut'**
+  String get actionNext;
+
+  /// Accessible label of the back arrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali'**
+  String get actionBack;
+
+  /// Skips the product value pages in onboarding.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati'**
+  String get actionSkip;
+
+  /// Saves a form or sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get actionSave;
+
+  /// Dismisses a one-time hint.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengerti'**
+  String get actionGotIt;
+
+  /// Snackbar when saving fails (02 §9).
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan. Coba lagi.'**
+  String get errorSaveFailed;
+
+  /// Screen reader label of the keypad backspace key. Long press clears.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus satu angka'**
+  String get keypadBackspace;
+
+  /// Name of the Indonesian language, always written in Indonesian.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa Indonesia'**
+  String get languageIndonesian;
+
+  /// Name of the English language, always written in English.
+  ///
+  /// In id, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// Onboarding language step title.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih bahasa'**
+  String get onboardingLanguageTitle;
+
+  /// Onboarding language step explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Bisa diganti kapan saja di Pengaturan.'**
+  String get onboardingLanguageBody;
+
+  /// First product value page title.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan kecil, dampak besar'**
+  String get onboardingValueGrowthTitle;
+
+  /// First product value page text.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat berapa sebenarnya harga rutinitasmu, lalu arahkan ke hal yang lebih berarti.'**
+  String get onboardingValueGrowthBody;
+
+  /// Second product value page title.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat dalam hitungan detik'**
+  String get onboardingValueSpeedTitle;
+
+  /// Second product value page text.
+  ///
+  /// In id, this message translates to:
+  /// **'Keypad cepat untuk pengeluaran, satu ketukan untuk check-in kebiasaan.'**
+  String get onboardingValueSpeedBody;
+
+  /// Third product value page title.
+  ///
+  /// In id, this message translates to:
+  /// **'Privat di perangkatmu'**
+  String get onboardingValuePrivacyTitle;
+
+  /// Third product value page text.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa akun. Datamu tidak pernah keluar dari HP ini.'**
+  String get onboardingValuePrivacyBody;
+
+  /// Screen reader label of the onboarding page dots.
+  ///
+  /// In id, this message translates to:
+  /// **'Halaman {current} dari {total}'**
+  String onboardingPageLabel(int current, int total);
+
+  /// Onboarding name step title.
+  ///
+  /// In id, this message translates to:
+  /// **'Panggil kamu siapa?'**
+  String get onboardingNameTitle;
+
+  /// Onboarding name step explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Dipakai untuk sapaan saja.'**
+  String get onboardingNameBody;
+
+  /// Label of a name field.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama'**
+  String get fieldName;
+
+  /// Validation error for an empty name.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama belum diisi.'**
+  String get errorNameRequired;
+
+  /// Onboarding wallet step title.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet pertama'**
+  String get onboardingWalletTitle;
+
+  /// Onboarding wallet step explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempat uangmu dicatat, misalnya uang tunai atau rekening bank.'**
+  String get onboardingWalletBody;
+
+  /// Helper under the first wallet form.
+  ///
+  /// In id, this message translates to:
+  /// **'Bisa ditambah atau diubah nanti.'**
+  String get onboardingWalletHelper;
+
+  /// Label of the wallet name field.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama dompet'**
+  String get fieldWalletName;
+
+  /// Label of the wallet type picker.
+  ///
+  /// In id, this message translates to:
+  /// **'Tipe'**
+  String get fieldWalletType;
+
+  /// Label of the wallet starting balance.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo awal'**
+  String get fieldInitialBalance;
+
+  /// Default name of the first wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunai'**
+  String get walletDefaultName;
+
+  /// Wallet type: cash.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunai'**
+  String get walletTypeCash;
+
+  /// Wallet type: bank account.
+  ///
+  /// In id, this message translates to:
+  /// **'Bank'**
+  String get walletTypeBank;
+
+  /// Wallet type: e-wallet such as GoPay or OVO.
+  ///
+  /// In id, this message translates to:
+  /// **'E-wallet'**
+  String get walletTypeEwallet;
+
+  /// Wallet type: anything else.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get walletTypeOther;
+
+  /// Onboarding habits step title.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kebiasaan'**
+  String get onboardingHabitsTitle;
+
+  /// Onboarding habits step explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih sampai 3. Semuanya bisa diubah nanti.'**
+  String get onboardingHabitsBody;
+
+  /// Group of habits the user wants more of.
+  ///
+  /// In id, this message translates to:
+  /// **'Ingin dibangun'**
+  String get habitGroupBuild;
+
+  /// Group of habits the user wants less of.
+  ///
+  /// In id, this message translates to:
+  /// **'Ingin dikurangi'**
+  String get habitGroupReduce;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Olahraga'**
+  String get templateExercise;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Baca 10 halaman'**
+  String get templateRead;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Bawa bekal'**
+  String get templatePackLunch;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Minum air 8 gelas'**
+  String get templateDrinkWater;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Kopi kekinian'**
+  String get templateCafeCoffee;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Jajan malam'**
+  String get templateLateSnacks;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Ojol jarak dekat'**
+  String get templateShortRides;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Belanja impulsif'**
+  String get templateImpulseBuys;
+
+  /// Habit schedule: daily.
+  ///
+  /// In id, this message translates to:
+  /// **'Setiap hari'**
+  String get scheduleDaily;
+
+  /// Habit schedule: Monday to Friday.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari kerja'**
+  String get scheduleWorkdays;
+
+  /// Habit schedule: a number of times per week.
+  ///
+  /// In id, this message translates to:
+  /// **'{count}x seminggu'**
+  String scheduleTimesPerWeek(int count);
+
+  /// Screen reader label of the editable template cost.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah biaya {template}, sekarang {amount}'**
+  String templateCostEdit(String template, String amount);
+
+  /// Title of the sheet that edits a template cost.
+  ///
+  /// In id, this message translates to:
+  /// **'Biaya per kali'**
+  String get templateCostTitle;
+
+  /// Finishes onboarding with the picked habits.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai'**
+  String get actionStart;
+
+  /// Finishes onboarding without picking habits.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati dulu'**
+  String get actionSkipForNow;
+
+  /// One-time hint above the add button after onboarding.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat pengeluaran dan pemasukan dari tombol ini.'**
+  String get coachMarkAdd;
 }
 
 class _AppLocalizationsDelegate

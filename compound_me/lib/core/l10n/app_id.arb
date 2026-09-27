@@ -111,5 +111,238 @@
   "catOtherIncome": "Lainnya",
   "@catOtherIncome": {
     "description": "Default income category name (stored as nameKey catOtherIncome)."
+  },
+  "actionNext": "Lanjut",
+  "@actionNext": {
+    "description": "Button that moves to the next step."
+  },
+  "actionBack": "Kembali",
+  "@actionBack": {
+    "description": "Accessible label of the back arrow."
+  },
+  "actionSkip": "Lewati",
+  "@actionSkip": {
+    "description": "Skips the product value pages in onboarding."
+  },
+  "actionSave": "Simpan",
+  "@actionSave": {
+    "description": "Saves a form or sheet."
+  },
+  "actionGotIt": "Mengerti",
+  "@actionGotIt": {
+    "description": "Dismisses a one-time hint."
+  },
+  "errorSaveFailed": "Gagal menyimpan. Coba lagi.",
+  "@errorSaveFailed": {
+    "description": "Snackbar when saving fails (02 §9)."
+  },
+  "keypadBackspace": "Hapus satu angka",
+  "@keypadBackspace": {
+    "description": "Screen reader label of the keypad backspace key. Long press clears."
+  },
+  "languageIndonesian": "Bahasa Indonesia",
+  "@languageIndonesian": {
+    "description": "Name of the Indonesian language, always written in Indonesian."
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "Name of the English language, always written in English."
+  },
+  "onboardingLanguageTitle": "Pilih bahasa",
+  "@onboardingLanguageTitle": {
+    "description": "Onboarding language step title."
+  },
+  "onboardingLanguageBody": "Bisa diganti kapan saja di Pengaturan.",
+  "@onboardingLanguageBody": {
+    "description": "Onboarding language step explanation."
+  },
+  "onboardingValueGrowthTitle": "Kebiasaan kecil, dampak besar",
+  "@onboardingValueGrowthTitle": {
+    "description": "First product value page title."
+  },
+  "onboardingValueGrowthBody": "Lihat berapa sebenarnya harga rutinitasmu, lalu arahkan ke hal yang lebih berarti.",
+  "@onboardingValueGrowthBody": {
+    "description": "First product value page text."
+  },
+  "onboardingValueSpeedTitle": "Catat dalam hitungan detik",
+  "@onboardingValueSpeedTitle": {
+    "description": "Second product value page title."
+  },
+  "onboardingValueSpeedBody": "Keypad cepat untuk pengeluaran, satu ketukan untuk check-in kebiasaan.",
+  "@onboardingValueSpeedBody": {
+    "description": "Second product value page text."
+  },
+  "onboardingValuePrivacyTitle": "Privat di perangkatmu",
+  "@onboardingValuePrivacyTitle": {
+    "description": "Third product value page title."
+  },
+  "onboardingValuePrivacyBody": "Tanpa akun. Datamu tidak pernah keluar dari HP ini.",
+  "@onboardingValuePrivacyBody": {
+    "description": "Third product value page text."
+  },
+  "onboardingPageLabel": "Halaman {current} dari {total}",
+  "@onboardingPageLabel": {
+    "description": "Screen reader label of the onboarding page dots.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingNameTitle": "Panggil kamu siapa?",
+  "@onboardingNameTitle": {
+    "description": "Onboarding name step title."
+  },
+  "onboardingNameBody": "Dipakai untuk sapaan saja.",
+  "@onboardingNameBody": {
+    "description": "Onboarding name step explanation."
+  },
+  "fieldName": "Nama",
+  "@fieldName": {
+    "description": "Label of a name field."
+  },
+  "errorNameRequired": "Nama belum diisi.",
+  "@errorNameRequired": {
+    "description": "Validation error for an empty name."
+  },
+  "onboardingWalletTitle": "Dompet pertama",
+  "@onboardingWalletTitle": {
+    "description": "Onboarding wallet step title."
+  },
+  "onboardingWalletBody": "Tempat uangmu dicatat, misalnya uang tunai atau rekening bank.",
+  "@onboardingWalletBody": {
+    "description": "Onboarding wallet step explanation."
+  },
+  "onboardingWalletHelper": "Bisa ditambah atau diubah nanti.",
+  "@onboardingWalletHelper": {
+    "description": "Helper under the first wallet form."
+  },
+  "fieldWalletName": "Nama dompet",
+  "@fieldWalletName": {
+    "description": "Label of the wallet name field."
+  },
+  "fieldWalletType": "Tipe",
+  "@fieldWalletType": {
+    "description": "Label of the wallet type picker."
+  },
+  "fieldInitialBalance": "Saldo awal",
+  "@fieldInitialBalance": {
+    "description": "Label of the wallet starting balance."
+  },
+  "walletDefaultName": "Tunai",
+  "@walletDefaultName": {
+    "description": "Default name of the first wallet."
+  },
+  "walletTypeCash": "Tunai",
+  "@walletTypeCash": {
+    "description": "Wallet type: cash."
+  },
+  "walletTypeBank": "Bank",
+  "@walletTypeBank": {
+    "description": "Wallet type: bank account."
+  },
+  "walletTypeEwallet": "E-wallet",
+  "@walletTypeEwallet": {
+    "description": "Wallet type: e-wallet such as GoPay or OVO."
+  },
+  "walletTypeOther": "Lainnya",
+  "@walletTypeOther": {
+    "description": "Wallet type: anything else."
+  },
+  "onboardingHabitsTitle": "Pilih kebiasaan",
+  "@onboardingHabitsTitle": {
+    "description": "Onboarding habits step title."
+  },
+  "onboardingHabitsBody": "Pilih sampai 3. Semuanya bisa diubah nanti.",
+  "@onboardingHabitsBody": {
+    "description": "Onboarding habits step explanation."
+  },
+  "habitGroupBuild": "Ingin dibangun",
+  "@habitGroupBuild": {
+    "description": "Group of habits the user wants more of."
+  },
+  "habitGroupReduce": "Ingin dikurangi",
+  "@habitGroupReduce": {
+    "description": "Group of habits the user wants less of."
+  },
+  "templateExercise": "Olahraga",
+  "@templateExercise": {
+    "description": "Starter habit name."
+  },
+  "templateRead": "Baca 10 halaman",
+  "@templateRead": {
+    "description": "Starter habit name."
+  },
+  "templatePackLunch": "Bawa bekal",
+  "@templatePackLunch": {
+    "description": "Starter habit name."
+  },
+  "templateDrinkWater": "Minum air 8 gelas",
+  "@templateDrinkWater": {
+    "description": "Starter habit name."
+  },
+  "templateCafeCoffee": "Kopi kekinian",
+  "@templateCafeCoffee": {
+    "description": "Starter habit name."
+  },
+  "templateLateSnacks": "Jajan malam",
+  "@templateLateSnacks": {
+    "description": "Starter habit name."
+  },
+  "templateShortRides": "Ojol jarak dekat",
+  "@templateShortRides": {
+    "description": "Starter habit name."
+  },
+  "templateImpulseBuys": "Belanja impulsif",
+  "@templateImpulseBuys": {
+    "description": "Starter habit name."
+  },
+  "scheduleDaily": "Setiap hari",
+  "@scheduleDaily": {
+    "description": "Habit schedule: daily."
+  },
+  "scheduleWorkdays": "Hari kerja",
+  "@scheduleWorkdays": {
+    "description": "Habit schedule: Monday to Friday."
+  },
+  "scheduleTimesPerWeek": "{count}x seminggu",
+  "@scheduleTimesPerWeek": {
+    "description": "Habit schedule: a number of times per week.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateCostEdit": "Ubah biaya {template}, sekarang {amount}",
+  "@templateCostEdit": {
+    "description": "Screen reader label of the editable template cost.",
+    "placeholders": {
+      "template": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "templateCostTitle": "Biaya per kali",
+  "@templateCostTitle": {
+    "description": "Title of the sheet that edits a template cost."
+  },
+  "actionStart": "Mulai",
+  "@actionStart": {
+    "description": "Finishes onboarding with the picked habits."
+  },
+  "actionSkipForNow": "Lewati dulu",
+  "@actionSkipForNow": {
+    "description": "Finishes onboarding without picking habits."
+  },
+  "coachMarkAdd": "Catat pengeluaran dan pemasukan dari tombol ini.",
+  "@coachMarkAdd": {
+    "description": "One-time hint above the add button after onboarding."
   }
 }
