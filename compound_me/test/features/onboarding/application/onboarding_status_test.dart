@@ -22,7 +22,7 @@ void main() {
   Future<AppPreferences> prefsWith(Map<String, Object> data) async {
     SharedPreferencesAsyncPlatform.instance =
         InMemorySharedPreferencesAsync.withData(data);
-    return AppPreferences.load();
+    return await AppPreferences.load();
   }
 
   final habitsDraft = const OnboardingDraft(
