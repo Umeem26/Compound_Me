@@ -132,7 +132,12 @@ class AppListTile extends StatelessWidget {
                 ),
                 if (value != null) ...[
                   const SizedBox(width: AppSpacing.space2),
-                  Flexible(
+                  // Sized to its text so it sits by the chevron, but never
+                  // wider than half the screen, leaving the title the rest.
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.sizeOf(context).width / 2,
+                    ),
                     child: Text(
                       value!,
                       style: AppTextStyles.body.copyWith(

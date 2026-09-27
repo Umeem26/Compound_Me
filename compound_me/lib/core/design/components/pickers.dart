@@ -60,52 +60,68 @@ class ColorPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.tokens.colors;
-    final brightness = Theme.of(context).brightness;
-    return Wrap(
-      spacing: AppSpacing.space1,
-      runSpacing: AppSpacing.space1,
+    // Two even rows of four: eight 48 dp targets don't fit one row.
+    const perRow = 4;
+    const presets = AppPresetColor.values;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final preset in AppPresetColor.values)
-          Semantics(
-            button: true,
-            selected: preset.key == selectedKey,
-            label: semanticLabel(preset),
-            excludeSemantics: true,
-            onTap: () => _select(preset.key),
-            child: InkResponse(
-              onTap: () => _select(preset.key),
-              radius: AppSizes.minTouchTarget / 2,
-              child: SizedBox.square(
-                dimension: AppSizes.minTouchTarget,
-                child: Center(
-                  child: Container(
-                    width: AppSizes.colorSwatch,
-                    height: AppSizes.colorSwatch,
-                    decoration: BoxDecoration(
-                      color: preset.foreground(brightness),
-                      shape: BoxShape.circle,
-                      border: preset.key == selectedKey
-                          ? Border.all(
-                              color: colors.textPrimary,
-                              width: AppSizes.borderSelected,
-                              strokeAlign: BorderSide.strokeAlignOutside,
-                            )
-                          : null,
-                    ),
-                    child: preset.key == selectedKey
-                        ? Icon(
-                            AppIcons.check,
-                            size: AppSizes.iconSm,
-                            color: colors.surface,
-                          )
-                        : null,
+        for (var start = 0; start < presets.length; start += perRow)
+          Row(
+            children: [
+              for (final preset in presets.skip(start).take(perRow))
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(
+                    end: AppSpacing.space2,
                   ),
+                  child: _swatch(context, preset),
                 ),
-              ),
-            ),
+            ],
           ),
       ],
+    );
+  }
+
+  Widget _swatch(BuildContext context, AppPresetColor preset) {
+    final colors = context.tokens.colors;
+    final selected = preset.key == selectedKey;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: semanticLabel(preset),
+      excludeSemantics: true,
+      onTap: () => _select(preset.key),
+      child: InkResponse(
+        onTap: () => _select(preset.key),
+        radius: AppSizes.minTouchTarget / 2,
+        child: SizedBox.square(
+          dimension: AppSizes.minTouchTarget,
+          child: Center(
+            child: Container(
+              width: AppSizes.colorSwatch,
+              height: AppSizes.colorSwatch,
+              decoration: BoxDecoration(
+                color: preset.foreground(Theme.of(context).brightness),
+                shape: BoxShape.circle,
+                border: selected
+                    ? Border.all(
+                        color: colors.textPrimary,
+                        width: AppSizes.borderSelected,
+                        strokeAlign: BorderSide.strokeAlignOutside,
+                      )
+                    : null,
+              ),
+              child: selected
+                  ? Icon(
+                      AppIcons.check,
+                      size: AppSizes.iconSm,
+                      color: colors.surface,
+                    )
+                  : null,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
