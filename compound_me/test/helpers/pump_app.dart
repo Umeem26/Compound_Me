@@ -2,6 +2,9 @@ import 'package:compound_me/app.dart';
 import 'package:compound_me/core/database/app_database.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/router/app_router.dart';
+import 'package:compound_me/features/onboarding/application/onboarding_status.dart';
+import 'package:compound_me/features/wallets/data/drift_wallet_repository.dart';
+import 'package:compound_me/features/wallets/domain/wallet.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,13 +20,18 @@ const pixel9Ratio = 2.625;
 
 /// Builds the full app the way bootstrap does, with in-memory storage.
 /// By default onboarding is done and its hint dismissed; [prefs] adds or
-/// overrides stored preferences. Returns the in-memory database.
+/// overrides stored preferences.
+///
+/// [seed] fills the database before the onboarding flag is synced with it,
+/// as bootstrap does. Without it, an onboarded app gets the one wallet
+/// onboarding always creates. Returns the in-memory database.
 Future<AppDatabase> pumpApp(
   WidgetTester tester, {
   ThemeMode themeMode = ThemeMode.light,
   String? localeCode = 'id',
   bool onboarded = true,
   Map<String, Object> prefs = const {},
+  Future<void> Function(AppDatabase db)? seed,
   double textScale = 1,
   Size physicalSize = pixel9,
   double devicePixelRatio = pixel9Ratio,
@@ -54,6 +62,21 @@ Future<AppDatabase> pumpApp(
   final preferences = await AppPreferences.load();
   final database = AppDatabase(NativeDatabase.memory());
   addTearDown(database.close);
+  final wallets = DriftWalletRepository(database);
+  if (seed != null) {
+    await seed(database);
+  } else if (onboarded) {
+    await wallets.create(
+      WalletDraft(
+        name: 'Tunai',
+        type: WalletType.cash,
+        iconKey: WalletType.cash.defaultIconKey,
+        colorKey: 'teal',
+        initialBalance: 0,
+      ),
+    );
+  }
+  await syncOnboardingStatus(prefs: preferences, wallets: wallets);
 
   await tester.pumpWidget(
     ProviderScope(

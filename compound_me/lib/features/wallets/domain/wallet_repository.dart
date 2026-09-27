@@ -28,6 +28,10 @@ abstract interface class WalletRepository {
 
   Future<Wallet?> findById(String id);
 
+  /// Whether any wallet exists, active or archived. Onboarding always
+  /// creates one, so this tells whether onboarding really finished.
+  Future<bool> hasAny();
+
   /// Whether any transaction (deleted ones included) or habit uses it.
   Future<bool> isInUse(String id);
 

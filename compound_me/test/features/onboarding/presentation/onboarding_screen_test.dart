@@ -1,7 +1,10 @@
 import 'package:compound_me/core/design/design.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/features/habits/domain/habit.dart';
+import 'package:compound_me/features/onboarding/data/drift_onboarding_setup.dart';
+import 'package:compound_me/features/onboarding/domain/habit_templates.dart';
 import 'package:compound_me/features/onboarding/domain/onboarding_draft.dart';
+import 'package:compound_me/features/onboarding/domain/onboarding_setup.dart';
 import 'package:compound_me/features/wallets/domain/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -183,5 +186,47 @@ void main() {
 
     expect(find.byType(AppBottomNav), findsOneWidget);
     expect(find.text('Pilih bahasa'), findsNothing);
+  });
+
+  group('the database decides whether onboarding finished', () {
+    testApp('killed after the wallet and habits were saved: opens Home', (
+      tester,
+    ) async {
+      final db = await pumpApp(
+        tester,
+        onboarded: false,
+        prefs: {'onboardingDraft': _draftAt(OnboardingStep.habits)},
+        seed: (db) => DriftOnboardingSetup(db).complete(
+          wallet: WalletDraft(
+            name: 'Dompet utama',
+            type: WalletType.cash,
+            iconKey: WalletType.cash.defaultIconKey,
+            colorKey: 'teal',
+            initialBalance: 0,
+          ),
+          habits: const [
+            StarterHabit(template: HabitTemplate.read, name: 'Baca'),
+          ],
+        ),
+      );
+
+      expect(find.text('Belum ada transaksi'), findsOneWidget);
+      expect(find.text('Pilih kebiasaan'), findsNothing);
+      expect(await db.select(db.wallets).get(), hasLength(1));
+      expect(await db.select(db.habits).get(), hasLength(1));
+      final prefs = await AppPreferences.load();
+      expect(prefs.onboardingDone, isTrue);
+      expect(prefs.onboardingDraft, isNull, reason: 'no second "Mulai"');
+    });
+
+    testApp('killed after deleting all data: opens onboarding', (tester) async {
+      // Preferences still say "done", but the database has no wallet.
+      await pumpApp(tester, seed: (_) async {});
+
+      expect(find.text('Choose your language'), findsOneWidget);
+      final prefs = await AppPreferences.load();
+      expect(prefs.onboardingDone, isFalse);
+      expect(prefs.userName, isEmpty);
+    });
   });
 }

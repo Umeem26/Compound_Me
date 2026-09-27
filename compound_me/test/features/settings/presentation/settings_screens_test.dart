@@ -23,9 +23,13 @@ void main() {
     testApp('shows the name, active wallets and every destination', (
       tester,
     ) async {
-      final db = await pumpApp(tester);
-      await seedWallet(db);
-      await seedWallet(db, name: 'Bank');
+      await pumpApp(
+        tester,
+        seed: (db) async {
+          await seedWallet(db);
+          await seedWallet(db, name: 'Bank');
+        },
+      );
       await _openProfile(tester);
 
       expect(find.text('Raka'), findsOneWidget);
@@ -90,7 +94,6 @@ void main() {
       tester,
     ) async {
       final db = await pumpApp(tester);
-      await seedWallet(db);
       await goTo(tester, AppRoutes.settings);
 
       await _tap(tester, find.text('Hapus semua data'));

@@ -63,12 +63,17 @@ class OnboardingController extends _$OnboardingController {
   /// Saves the wallet and habits, then marks onboarding as done, which
   /// sends the router to Home. [defaultWalletName] and [templateName] come
   /// from the language chosen during onboarding.
+  ///
+  /// The name is saved first: once the database transaction commits,
+  /// bootstrap treats onboarding as finished even if the app dies before
+  /// the steps after it, so nothing it needs may come later.
   Future<void> finish({
     required String defaultWalletName,
     required String Function(HabitTemplate template) templateName,
   }) async {
     final draft = state;
     final walletName = draft.walletName?.trim();
+    await ref.read(userNameProvider.notifier).set(draft.name.trim());
     await ref
         .read(onboardingSetupProvider)
         .complete(
@@ -92,7 +97,6 @@ class OnboardingController extends _$OnboardingController {
               ),
           ],
         );
-    await ref.read(userNameProvider.notifier).set(draft.name.trim());
     await ref.read(appPreferencesProvider).setOnboardingDraft(null);
     await ref.read(onboardingDoneProvider.notifier).set(done: true);
   }

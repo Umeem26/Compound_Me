@@ -1,7 +1,9 @@
 import 'package:compound_me/bootstrap/licenses.dart';
 import 'package:compound_me/core/database/app_database.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
+import 'package:compound_me/features/onboarding/application/onboarding_status.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
+import 'package:compound_me/features/wallets/data/drift_wallet_repository.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -26,6 +28,11 @@ class AppBootstrap {
     await database.customSelect('SELECT 1').get();
     // Deleted transactions stay restorable for 30 days (PRD US-05.2).
     await DriftTransactionRepository(database).purgeDeleted();
+    // The router reads the cached flag; the database decides it.
+    await syncOnboardingStatus(
+      prefs: preferences,
+      wallets: DriftWalletRepository(database),
+    );
     return AppBootstrap._(database: database, preferences: preferences);
   }
 

@@ -122,6 +122,17 @@ void main() {
     expect(await wallets.findById(bank), isNull);
   });
 
+  test('hasAny counts active and archived wallets', () async {
+    expect(await wallets.hasAny(), isFalse);
+    await seedWallet(db);
+    final bank = await wallets.create(_draft());
+    await wallets.archive(bank);
+    expect(await wallets.hasAny(), isTrue);
+
+    await db.delete(db.wallets).go();
+    expect(await wallets.hasAny(), isFalse);
+  });
+
   test('undo puts a deleted wallet back as it was', () async {
     final cash = await seedWallet(db);
     final bank = await wallets.create(_draft());

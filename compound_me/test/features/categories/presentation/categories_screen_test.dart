@@ -35,16 +35,20 @@ void main() {
   });
 
   testApp('a category in use can only be archived, with undo', (tester) async {
-    final db = await pumpApp(tester);
-    final wallet = await seedWallet(db);
-    await DriftTransactionRepository(db).add(
-      TransactionDraft(
-        kind: TransactionKind.expense,
-        amount: 20000,
-        walletId: wallet,
-        categoryId: await defaultCategoryId(db, 'catFood'),
-        occurredAt: DateTime(2026, 9, 26, 12),
-      ),
+    await pumpApp(
+      tester,
+      seed: (db) async {
+        final wallet = await seedWallet(db);
+        await DriftTransactionRepository(db).add(
+          TransactionDraft(
+            kind: TransactionKind.expense,
+            amount: 20000,
+            walletId: wallet,
+            categoryId: await defaultCategoryId(db, 'catFood'),
+            occurredAt: DateTime(2026, 9, 26, 12),
+          ),
+        );
+      },
     );
     await goTo(tester, AppRoutes.categories);
 

@@ -66,6 +66,17 @@ class DriftWalletRepository implements WalletRepository {
   Future<Wallet?> findById(String id) async => (await _find(id))?.toDomain();
 
   @override
+  Future<bool> hasAny() async {
+    final row = await _db
+        .customSelect(
+          'SELECT EXISTS(SELECT 1 FROM wallets) AS found',
+          readsFrom: {_db.wallets},
+        )
+        .getSingle();
+    return row.read<bool>('found');
+  }
+
+  @override
   Future<bool> isInUse(String id) async =>
       await _db.isReferenced('transactions', 'wallet_id', id) ||
       await _db.isReferenced('habits', 'wallet_id', id);

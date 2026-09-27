@@ -53,10 +53,14 @@ void main() {
   testApp('lists active wallets with their balance and the total', (
     tester,
   ) async {
-    final db = await pumpApp(tester);
-    await _wallet(db, 'Tunai', type: WalletType.cash, balance: 100000);
-    final bank = await _wallet(db, 'BCA', balance: 250000);
-    await _spend(db, bank, 50000);
+    await pumpApp(
+      tester,
+      seed: (db) async {
+        await _wallet(db, 'Tunai', type: WalletType.cash, balance: 100000);
+        final bank = await _wallet(db, 'BCA', balance: 250000);
+        await _spend(db, bank, 50000);
+      },
+    );
     await goTo(tester, AppRoutes.wallets);
 
     expect(find.text('Dompet'), findsWidgets);
@@ -69,10 +73,14 @@ void main() {
   testApp('a wallet with transactions can only be archived, with undo', (
     tester,
   ) async {
-    final db = await pumpApp(tester);
-    await _wallet(db, 'Tunai', type: WalletType.cash);
-    final bank = await _wallet(db, 'BCA');
-    await _spend(db, bank, 10000);
+    await pumpApp(
+      tester,
+      seed: (db) async {
+        await _wallet(db, 'Tunai', type: WalletType.cash);
+        final bank = await _wallet(db, 'BCA');
+        await _spend(db, bank, 10000);
+      },
+    );
     await goTo(tester, AppRoutes.wallets);
 
     await _tap(tester, find.text('BCA'));
@@ -93,9 +101,13 @@ void main() {
   testApp('an unused wallet is deleted, and undo brings it back', (
     tester,
   ) async {
-    final db = await pumpApp(tester);
-    await _wallet(db, 'Tunai', type: WalletType.cash);
-    await _wallet(db, 'GoPay', type: WalletType.ewallet);
+    final db = await pumpApp(
+      tester,
+      seed: (db) async {
+        await _wallet(db, 'Tunai', type: WalletType.cash);
+        await _wallet(db, 'GoPay', type: WalletType.ewallet);
+      },
+    );
     await goTo(tester, AppRoutes.wallets);
 
     await _tap(tester, find.text('GoPay'));
@@ -110,9 +122,13 @@ void main() {
   });
 
   testApp('the last active wallet cannot be archived', (tester) async {
-    final db = await pumpApp(tester);
-    final cash = await _wallet(db, 'Tunai', type: WalletType.cash);
-    await _spend(db, cash, 10000);
+    final db = await pumpApp(
+      tester,
+      seed: (db) async {
+        final cash = await _wallet(db, 'Tunai', type: WalletType.cash);
+        await _spend(db, cash, 10000);
+      },
+    );
     await goTo(tester, AppRoutes.wallets);
 
     // Name and type label are both "Tunai"; the name comes first.
@@ -127,8 +143,8 @@ void main() {
   testApp('a new wallet needs a name and then appears in the list', (
     tester,
   ) async {
+    // The default onboarded app already has one "Tunai" cash wallet.
     final db = await pumpApp(tester);
-    await _wallet(db, 'Tunai', type: WalletType.cash);
     await goTo(tester, AppRoutes.wallets);
 
     await _tap(tester, find.text('Tambah dompet'));
