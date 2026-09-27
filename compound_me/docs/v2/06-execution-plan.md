@@ -230,15 +230,18 @@ Layar <S-xx> belum sesuai docs/v2/02-design-system.md: <sebutkan: ukuran judul t
 | 0 | Durasi pressed 120 ms (`motionFast`) | Konsisten dengan token yang ada (02 §7.2 diperbarui) | Disetujui |
 | 0 | Nilai pressed/tint tema gelap dihitung sendiri | Spesifikasi hanya memberi nilai terang | Disetujui, tercatat di 02 §11.1 (Fase 1) |
 | 0 | Lisensi font OFL & Phosphor MIT ikut dibundel | Kewajiban lisensi | Selesai: didaftarkan ke `LicenseRegistry` di bootstrap (Fase 1) |
-| 1 | schemaVersion 2: upgrade dari v1 = `createAll` + seed | Fase 0 terpasang dengan skema v1 kosong; tanpa ini perangkat dev crash "no such table". Instal baru tetap sama | Perlu review |
-| 1 | Tanggal disimpan sebagai teks ISO-8601 UTC berpresisi milidetik (`build.yaml`, `toStoredUtc`) | Drift membandingkan tanggal sebagai teks; semua nilai harus berformat sama agar urutan dan filter bulan benar | Perlu review |
-| 1 | Tanpa folder DAO; `HabitLedger` satu-satunya penulis `habit_logs` + transaksi check-in | Satu jalur untuk konsistensi log ↔ transaksi, dipakai HabitRepository dan TransactionRepository | Perlu review |
-| 1 | Konsistensi 30 hari hanya untuk kebiasaan build | Untuk reduce, check-in berarti melakukan kebiasaan yang ingin dikurangi; ukurannya batas mingguan | Perlu review |
-| 1 | Minggu berjalan dan minggu pembuatan tidak pernah dihitung gagal; minggu reduce baru dinilai setelah selesai | Sesuai prinsip "ramah saat gagal" (§4.3) | Perlu review |
-| 1 | `formatRupiah` diberi parameter `localeCode`; tanda minus `−` (U+2212) | Mode compact berbeda antara id (rb/jt/M) dan en (K/M/B) | Perlu review |
-| 1 | Toggle reduce: 0 → 1, ≥ 1 → 0; check-in tanggal lampau dicatat pukul 12.00 lokal | Flow C "tap lagi = batal"; jam 12 mencegah tanggal bergeser saat dikonversi ke UTC | Perlu review |
-| 1 | Hapus transaksi dari kebiasaan menurunkan count log; `restore` menaikkannya kembali hanya jika log masih ada | PRD memakai konfirmasi, bukan undo, untuk kasus ini; FK `SET NULL` memutus tautan saat log terhapus | Perlu review |
-| 1 | Pencarian nama kategori default lewat `extraCategoryIds` dari UI | Nama terjemahan tidak disimpan di DB | Perlu review |
-| 1 | Ganti jenis kebiasaan (build ↔ reduce) ditolak kalau sudah ada check-in; nama kategori kustom maks. 30 karakter | Menjaga riwayat dan transaksi; 05 §3 tidak menyebut batas nama kategori | Perlu review |
-| 1 | Ikon & warna kategori default dipilih sendiri (mis. Makanan = forkKnife/coral) | S-42 hanya menyebut nama | Perlu review |
-| 1 | Lint `recursive_getters` diabaikan per file tabel Drift | DSL CHECK Drift merujuk kolom di getter-nya sendiri; bukan rekursi runtime | Perlu review |
+| 1 | schemaVersion 2: upgrade dari v1 = `createAll` + seed | Fase 0 terpasang dengan skema v1 kosong; tanpa ini perangkat dev crash "no such table". Instal baru tetap sama | Disetujui |
+| 1 | Tanggal disimpan sebagai teks ISO-8601 UTC berpresisi milidetik (`build.yaml`, `toStoredUtc`) | Drift membandingkan tanggal sebagai teks; semua nilai harus berformat sama agar urutan dan filter bulan benar | Disetujui |
+| 1 | Tanpa folder DAO; `HabitLedger` satu-satunya penulis `habit_logs` + transaksi check-in | Satu jalur untuk konsistensi log ↔ transaksi, dipakai HabitRepository dan TransactionRepository | Disetujui |
+| 1 | Konsistensi 30 hari hanya untuk kebiasaan build | Untuk reduce, check-in berarti melakukan kebiasaan yang ingin dikurangi; ukurannya batas mingguan | Disetujui |
+| 1 | Minggu berjalan dan minggu pembuatan tidak pernah dihitung gagal; minggu reduce baru dinilai setelah selesai | Sesuai prinsip "ramah saat gagal" (§4.3) | Disetujui |
+| 1 | `formatRupiah` diberi parameter `localeCode`; tanda minus `−` (U+2212) | Mode compact berbeda antara id (rb/jt/M) dan en (K/M/B) | Disetujui |
+| 1 | Toggle reduce: 0 → 1, ≥ 1 → 0; check-in tanggal lampau dicatat pukul 12.00 lokal | Flow C "tap lagi = batal"; jam 12 mencegah tanggal bergeser saat dikonversi ke UTC | Disetujui |
+| 1 | Hapus transaksi dari kebiasaan menurunkan count log; `restore` menaikkannya kembali | Review PR #5: dulu log di-hapus saat count jadi 0 sehingga restore kehilangan check-in dan tautannya. Sekarang `habit_logs` punya `deletedAt` (skema v3), count 0 = soft delete, restore = log aktif lagi dengan count + 1 | Diperbaiki |
+| 1 | Pencarian nama kategori default lewat `extraCategoryIds` dari UI | Nama terjemahan tidak disimpan di DB | Disetujui |
+| 1 | Ganti jenis kebiasaan (build ↔ reduce) ditolak kalau sudah ada check-in; nama kategori kustom maks. 30 karakter | Menjaga riwayat dan transaksi; 05 §3 tidak menyebut batas nama kategori | Disetujui |
+| 1 | Ikon & warna kategori default dipilih sendiri (mis. Makanan = forkKnife/coral) | S-42 hanya menyebut nama | Disetujui |
+| 1 | Lint `recursive_getters` diabaikan per file tabel Drift | DSL CHECK Drift merujuk kolom di getter-nya sendiri; bukan rekursi runtime | Disetujui |
+| 1 | schemaVersion 3: `addColumn` `habit_logs.deletedAt`; upgrade dari v1 tetap `createAll` (langsung skema terbaru). Snapshot skema di `drift_schemas/`, diuji dengan `SchemaVerifier` | Migrasi diuji terhadap skema v3 yang dibuat dari nol, termasuk index unik; siap dipakai migrasi fase berikutnya | Perlu review |
+| 1 | Ganti jenis kebiasaan setelah check-in dibatalkan: log terhapusnya dibuang permanen | Transaksi reduce lama tidak boleh menaikkan count kebiasaan build saat di-restore; transaksinya kembali sebagai pengeluaran biasa | Perlu review |
+| 1 | Jatah hari longgar dihitung dari hari longgar terakhir yang diberikan, termasuk dari streak sebelumnya; hanya periode yang sudah dinilai yang dihitung | Batas "1 per 7 periode terjadwal" berlaku sebagai jendela bergeser; hari tidak terjadwal, hari ini yang terbuka, dan minggu berjalan tidak menghabiskan jatah | Perlu review |

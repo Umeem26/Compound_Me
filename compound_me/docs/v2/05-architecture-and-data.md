@@ -24,7 +24,7 @@
 | ID data | **UUID string** (`uuid` v4) untuk semua tabel. | Menyiapkan cloud sync P2 tanpa konflik ID auto-increment. |
 | Uang | **`int` Rupiah** (tanpa desimal). | Rupiah tidak memakai sen di praktik sehari-hari. Integer menghindari seluruh kelas bug floating point. |
 | Saldo | **Dihitung**, tidak disimpan. `saldo = saldo_awal + Σ pemasukan − Σ pengeluaran (± transfer)`. | Menghapus bug v1 di mana saldo tersimpan bisa berbeda dengan riwayat transaksi. |
-| Hapus | Soft delete (`deletedAt`) untuk transaksi, lalu dibersihkan permanen setelah 30 hari. Dompet/kategori/kebiasaan: arsip (`archivedAt`). | Mendukung undo dan menyiapkan sync (tombstone). |
+| Hapus | Soft delete (`deletedAt`) untuk transaksi dan log kebiasaan, lalu dibersihkan permanen setelah 30 hari. Dompet/kategori/kebiasaan: arsip (`archivedAt`). | Mendukung undo dan menyiapkan sync (tombstone). |
 
 ## 2. Struktur folder
 
@@ -119,8 +119,14 @@ Index: `(occurredAt)`, `(walletId, occurredAt)`, `(categoryId, occurredAt)`, `(h
 | habitId | TEXT FK → habits | `ON DELETE CASCADE` (hapus permanen hanya untuk habit tanpa log, lihat PRD) |
 | date | TEXT `YYYY-MM-DD` | **tanggal lokal**, bukan timestamp. UNIQUE `(habitId, date)` |
 | count | INTEGER ≥ 1 | jumlah kejadian hari itu (build selalu 1) |
+| deletedAt | DateTime? | soft delete (check-in dibatalkan). Log terhapus dianggap `count` 0 dan diabaikan oleh semua query log |
 
-**Relasi check-in ↔ transaksi:** untuk kebiasaan `reduce`, setiap kejadian = satu baris `transactions` dengan `habitLogId` yang sama. Menaikkan `count` = tambah transaksi. Menurunkan = soft delete transaksi terbaru dari log itu. `count` 0 = hapus log. Semuanya dalam satu `db.transaction`.
+**Relasi check-in ↔ transaksi:** untuk kebiasaan `reduce`, setiap kejadian = satu baris `transactions` dengan `habitLogId` yang sama. Menaikkan `count` = tambah transaksi. Menurunkan = soft delete transaksi terbaru dari log itu. Semuanya dalam satu `db.transaction`.
+- `count` turun ke 0 (lewat check-in atau hapus transaksinya) = **soft delete log**, bukan hapus, supaya tautan `habitLogId` tetap ada.
+- Restore transaksi check-in = log diaktifkan lagi (`deletedAt` dikosongkan) dengan `count` + 1.
+- Check-in baru di tanggal yang log-nya terhapus memakai ulang baris yang sama, sehingga UNIQUE `(habitId, date)` tetap berlaku.
+- Log terhapus dibersihkan permanen bersama transaksi terhapus setelah 30 hari.
+- Ganti jenis kebiasaan (build ↔ reduce) hanya boleh tanpa log aktif; log terhapusnya langsung dibuang permanen.
 
 ### Query saldo (contoh)
 ```sql
@@ -154,15 +160,16 @@ Untuk `daily`/`weekdays` (satuan hari):
 2. Telusuri mundur hanya hari yang terjadwal.
 3. Hari check-in → `streak += 1`, reset penghitung "terlewat berturut".
 4. Hari terlewat → kalau ini terlewat pertama (berturut), tandai **hari longgar** dan lanjut (tidak menambah streak). Kalau terlewat kedua berturut → berhenti.
-5. `bestStreak` = maksimum dari seluruh riwayat dengan aturan yang sama.
+5. **Batas hari longgar:** maksimal 1 hari longgar dalam setiap 7 periode terjadwal berurutan. Hari terlewat hanya boleh jadi longgar kalau hari longgar terakhir yang diberikan (termasuk dari streak sebelumnya) berjarak ≥ 7 periode terjadwal. Kalau jatah belum pulih, hari terlewat itu memutus streak walaupun tidak berturut-turut. Yang dihitung hanya periode yang sudah dinilai: hari tidak terjadwal, hari ini yang belum check-in, dan minggu berjalan tidak dihitung.
+6. `bestStreak` = maksimum dari seluruh riwayat dengan aturan yang sama.
 
-Untuk `timesPerWeek` (satuan minggu): minggu "berhasil" kalau jumlah check-in ≥ target. Minggu berjalan tidak dihitung gagal. Aturan longgar yang sama berlaku per minggu. Streak ditampilkan sebagai "N minggu".
+Untuk `timesPerWeek` (satuan minggu): minggu "berhasil" kalau jumlah check-in ≥ target. Minggu berjalan tidak dihitung gagal. Aturan longgar yang sama berlaku per minggu, termasuk batasnya (maksimal 1 minggu longgar dalam setiap 7 minggu). Streak ditampilkan sebagai "N minggu".
 
 Untuk `reduce`: streak hanya ada kalau `weeklyLimit` diisi. Minggu berhasil = jumlah kejadian ≤ batas.
 
-**Konsistensi 30 hari:** `hari terjadwal yang di-check-in / hari terjadwal` dalam 30 hari terakhir (hari ini dihitung hanya jika sudah check-in). Untuk `timesPerWeek`: `Σ min(check-in minggu, target) / Σ target` dalam 4 minggu terakhir yang lengkap + minggu berjalan secara proporsional.
+**Konsistensi 30 hari** (hanya kebiasaan `build`): `hari terjadwal yang di-check-in / hari terjadwal` dalam 30 hari terakhir (hari ini dihitung hanya jika sudah check-in). Untuk `timesPerWeek`: `Σ min(check-in minggu, target) / Σ target` dalam 4 minggu terakhir yang lengkap + minggu berjalan secara proporsional.
 
-Semua ini diimplementasikan di `habits/domain/streak_calculator.dart` sebagai fungsi murni yang menerima `List<HabitLog>`, `Habit`, `DateTime today`, dan **wajib** punya unit test untuk: tanpa log, streak berjalan, satu hari longgar, dua hari terlewat, hari tidak terjadwal di tengah, pergantian bulan/tahun, dan `timesPerWeek`.
+Semua ini diimplementasikan di `habits/domain/streak_calculator.dart` sebagai fungsi murni yang menerima `List<HabitLog>`, `Habit`, `DateTime today`, dan **wajib** punya unit test untuk: tanpa log, streak berjalan, satu hari longgar, dua hari terlewat, hari tidak terjadwal di tengah, pergantian bulan/tahun, `timesPerWeek`, dan pola selang-seling (check-in, bolong, check-in, bolong, …) yang harus memutus streak.
 
 ### 4.4 Compound Insights
 Semua di `insights/domain/`, murni Dart:
