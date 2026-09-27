@@ -184,95 +184,112 @@ class _CategoryFormState extends ConsumerState<_CategoryForm> {
           source == null ? l10n.categoryNewTitle : l10n.categoryEditTitle,
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.screenHorizontal,
-          AppSpacing.space4,
-          AppSpacing.screenHorizontal,
-          AppSpacing.space8,
-        ),
+      // The save button sits in the body so it rises above the keyboard;
+      // as a bottom bar it would stay hidden behind it.
+      body: Column(
         children: [
-          Center(
-            child: IconBadge(
-              iconKey: _iconKey,
-              colorKey: _colorKey,
-              size: AppSizes.avatar,
-              iconSize: AppSizes.iconLg,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.space6),
-          AppTextField(
-            label: l10n.fieldCategoryName,
-            controller: _name!,
-            enabled: !_isDefault,
-            errorText: _nameError,
-            helperText: _isDefault ? l10n.categoryDefaultNameHelper : null,
-            maxLength: categoryNameMaxLength,
-            autofocus: source == null,
-            onChanged: (_) {
-              if (_nameError != null) setState(() => _nameError = null);
-            },
-          ),
-          const SizedBox(height: AppSpacing.space4),
-          RowPicker(
-            label: l10n.fieldIcon,
-            value: '',
-            leading: IconBadge(iconKey: _iconKey, colorKey: _colorKey),
-            onTap: _pickIcon,
-          ),
-          const SizedBox(height: AppSpacing.space4),
-          Text(
-            l10n.fieldColor,
-            style: AppTextStyles.label.copyWith(color: colors.textSecondary),
-          ),
-          const SizedBox(height: AppSpacing.space1),
-          ColorPicker(
-            selectedKey: _colorKey,
-            onChanged: (key) => setState(() => _colorKey = key),
-            semanticLabel: l10n.presetColorName,
-          ),
-          if (source != null) ...[
-            const SizedBox(height: AppSpacing.space6),
-            AppListGroup(
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.screenHorizontal,
+                AppSpacing.space4,
+                AppSpacing.screenHorizontal,
+                AppSpacing.space8,
+              ),
               children: [
-                if (source.inUse)
-                  AppListTile(
-                    title: l10n.categoryArchive,
-                    subtitle: l10n.categoryArchiveHint,
-                    showChevron: false,
-                    onTap: _busy
-                        ? null
-                        : () => _archiveOrDelete(CategoryEditAction.archived),
-                  )
-                else
-                  AppListTile(
-                    title: l10n.categoryDelete,
-                    subtitle: l10n.categoryDeleteHint,
-                    destructive: true,
-                    showChevron: false,
-                    onTap: _busy
-                        ? null
-                        : () => _archiveOrDelete(CategoryEditAction.deleted),
+                Center(
+                  child: IconBadge(
+                    iconKey: _iconKey,
+                    colorKey: _colorKey,
+                    size: AppSizes.avatar,
+                    iconSize: AppSizes.iconLg,
                   ),
+                ),
+                const SizedBox(height: AppSpacing.space6),
+                AppTextField(
+                  label: l10n.fieldCategoryName,
+                  controller: _name!,
+                  enabled: !_isDefault,
+                  errorText: _nameError,
+                  helperText: _isDefault
+                      ? l10n.categoryDefaultNameHelper
+                      : null,
+                  maxLength: categoryNameMaxLength,
+                  autofocus: source == null,
+                  onChanged: (_) {
+                    if (_nameError != null) setState(() => _nameError = null);
+                  },
+                ),
+                const SizedBox(height: AppSpacing.space4),
+                RowPicker(
+                  label: l10n.fieldIcon,
+                  value: '',
+                  leading: IconBadge(iconKey: _iconKey, colorKey: _colorKey),
+                  onTap: _pickIcon,
+                ),
+                const SizedBox(height: AppSpacing.space4),
+                Text(
+                  l10n.fieldColor,
+                  style: AppTextStyles.label.copyWith(
+                    color: colors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.space1),
+                ColorPicker(
+                  selectedKey: _colorKey,
+                  onChanged: (key) => setState(() => _colorKey = key),
+                  semanticLabel: l10n.presetColorName,
+                ),
+                if (source != null) ...[
+                  const SizedBox(height: AppSpacing.space6),
+                  AppListGroup(
+                    children: [
+                      if (source.inUse)
+                        AppListTile(
+                          title: l10n.categoryArchive,
+                          subtitle: l10n.categoryArchiveHint,
+                          showChevron: false,
+                          onTap: _busy
+                              ? null
+                              : () => _archiveOrDelete(
+                                  CategoryEditAction.archived,
+                                ),
+                        )
+                      else
+                        AppListTile(
+                          title: l10n.categoryDelete,
+                          subtitle: l10n.categoryDeleteHint,
+                          destructive: true,
+                          showChevron: false,
+                          onTap: _busy
+                              ? null
+                              : () => _archiveOrDelete(
+                                  CategoryEditAction.deleted,
+                                ),
+                        ),
+                    ],
+                  ),
+                ],
               ],
             ),
-          ],
+          ),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.screenHorizontal,
+                AppSpacing.space3,
+                AppSpacing.screenHorizontal,
+                AppSpacing.space4,
+              ),
+              child: PrimaryButton(
+                label: l10n.actionSave,
+                loading: _busy,
+                onPressed: _save,
+              ),
+            ),
+          ),
         ],
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.screenHorizontal,
-            AppSpacing.space3,
-            AppSpacing.screenHorizontal,
-            AppSpacing.space4,
-          ),
-          child: PrimaryButton(
-            label: l10n.actionSave,
-            loading: _busy,
-            onPressed: _save,
-          ),
-        ),
       ),
     );
   }
