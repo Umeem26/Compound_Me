@@ -44,4 +44,36 @@ void main() {
       expect(formatRupiah(-1200000, compact: true), '−1,2 jt');
     });
   });
+
+  group('keypad entry', () {
+    test('appends digits and triple zero', () {
+      expect(keypadAppend(0, '2'), 2);
+      expect(keypadAppend(2, '5'), 25);
+      expect(keypadAppend(25, '000'), 25000);
+    });
+
+    test('never builds leading zeros', () {
+      expect(keypadAppend(0, '0'), 0);
+      expect(keypadAppend(0, '000'), 0);
+      expect(keypadAppend(0, '7'), 7);
+    });
+
+    test('ignores input beyond the digit limit', () {
+      final max = int.parse('9' * maxAmountDigits);
+      expect(keypadAppend(max, '1'), max);
+      expect(keypadAppend(max ~/ 100, '000'), max ~/ 100);
+      expect(keypadAppend(max ~/ 1000, '000'), (max ~/ 1000) * 1000);
+    });
+
+    test('backspace drops the last digit', () {
+      expect(keypadBackspace(25000), 2500);
+      expect(keypadBackspace(7), 0);
+      expect(keypadBackspace(0), 0);
+    });
+
+    test('display digits are grouped without the Rp prefix', () {
+      expect(formatAmountDigits(0), '0');
+      expect(formatAmountDigits(1250000), '1.250.000');
+    });
+  });
 }

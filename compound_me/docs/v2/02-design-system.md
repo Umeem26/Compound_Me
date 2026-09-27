@@ -297,8 +297,16 @@ Rasio kontras dihitung dengan rumus WCAG 2.2. "Campur X% A di atas B" berarti wa
 | `inversePrimary` | Terang | `#4DB6AC` | `teal400` | Aksi "Urungkan" di `#121917` | 7,31 |
 | `inverseSurface` / `onInverseSurface` | Gelap | `#E8EEEC` / `#0C1211` | `textPrimary` / `bg` gelap | Snackbar | 16,10 |
 | `inversePrimary` | Gelap | `#00695C` | `teal700` | Aksi "Urungkan" di `#E8EEEC` | 5,63 |
+| `dangerTint` | Terang | `#FAEFEF` | Campur 8% `danger` di atas putih | Teks `onDangerTint` | 5,43 |
+| `dangerTint` | Gelap | `#372928` | Campur 16% `danger` di atas `surface` gelap | Teks `onDangerTint` | 5,69 |
+| `dangerTintPressed` | Terang | `#F8E7E7` | Campur 12% `danger` di atas putih | Teks `onDangerTint` | 5,12 |
+| `dangerTintPressed` | Gelap | `#49302F` | Campur 24% `danger` di atas `surface` gelap | Teks `onDangerTint` | 4,92 |
+| `onDangerTint` | Terang | `#B23434` | `danger` satu tingkat lebih gelap (Fase 2) | `DestructiveButton` | lihat baris di atas |
+| `onDangerTint` | Gelap | `#F48686` | `danger` satu tingkat lebih terang (Fase 2) | `DestructiveButton` | lihat baris di atas |
 
 Catatan: `primaryPressed` gelap (3,97) hanya tampil selama tombol ditekan (120 ms) dan teksnya `label` 600. `teal700` tidak dipakai sebagai pressed gelap karena teks `teal900` di atasnya hanya 2,10.
+
+`onDangerTint` dibuat terpisah dari `danger`, karena teks `danger` di atas tint-nya sendiri hanya 4,33 (terang, 12%) dan 4,46 (gelap, 20%), di bawah 4,5 untuk teks `label`.
 
 ## 12. Implementasi di Flutter (ringkas)
 

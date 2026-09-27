@@ -25,6 +25,28 @@ String formatRupiah(
   return body;
 }
 
+/// Digits of [value] grouped with dots (`22.000`), without `Rp`. For the
+/// amount display, where `Rp` is drawn separately (§7.5).
+String formatAmountDigits(Money value) => _groupThousands(value.abs());
+
+/// Keypad entry works on whole Rupiah digits (05 §4.1: parsing only from
+/// the keypad, never from formatted text). 12 digits reach 999 miliar.
+const maxAmountDigits = 12;
+
+/// Appends typed [digits] ("7" or "000"). Leading zeros are dropped and
+/// input past [maxAmountDigits] is ignored.
+Money keypadAppend(Money value, String digits) {
+  final next = '${value == 0 ? '' : value}$digits'.replaceFirst(
+    RegExp('^0+'),
+    '',
+  );
+  if (next.isEmpty) return 0;
+  if (next.length > maxAmountDigits) return value;
+  return int.parse(next);
+}
+
+Money keypadBackspace(Money value) => value ~/ 10;
+
 String _groupThousands(int value) {
   final digits = value.toString();
   final buffer = StringBuffer();

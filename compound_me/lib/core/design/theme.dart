@@ -160,6 +160,28 @@ abstract final class AppTheme {
         ),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(color: colors.primary),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.onPrimary
+              : colors.textSecondary,
+        ),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.primary
+              : colors.surfaceMuted,
+        ),
+        trackOutlineColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.primary
+              : colors.textSecondary,
+        ),
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: colors.primary,
+        selectionColor: colors.primaryTintPressed,
+        selectionHandleColor: colors.primary,
+      ),
       iconTheme: IconThemeData(
         color: colors.textPrimary,
         size: AppSizes.iconMd,
