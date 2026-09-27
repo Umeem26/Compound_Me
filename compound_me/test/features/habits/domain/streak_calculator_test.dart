@@ -215,6 +215,91 @@ void main() {
     });
   });
 
+  group('grace limit: one per 7 scheduled periods', () {
+    final fromMonday = habitFixture(start: day('2026-09-14'));
+
+    test('alternating check-ins and misses cannot keep a streak alive', () {
+      // 14, 16, ..., 26 checked; 15, 17, ..., 25 missed.
+      final logs = logsOn([
+        for (var d = day('2026-09-14'); d.isBefore(_sunday); d = d.addDays(2))
+          d.toIso(),
+      ]);
+      final result = _calc(fromMonday, logs, _sunday);
+
+      expect(result.current, 1);
+      expect(result.best, 2);
+      expect(result.graceDates, {
+        day('2026-09-15'),
+        day('2026-09-23'),
+      }, reason: '09-23 is 8 scheduled days after the first grace');
+    });
+
+    test('a second single miss within 7 scheduled days ends the '
+        'streak', () {
+      final logs = logsOn([
+        '2026-09-14',
+        ...daysBetween('2026-09-16', '2026-09-20'),
+        ...daysBetween('2026-09-22', '2026-09-26'),
+      ]);
+      final result = _calc(fromMonday, logs, _sunday);
+
+      expect(result.current, 5);
+      expect(result.best, 6);
+      expect(result.graceDates, {day('2026-09-15')});
+    });
+
+    test('the grace comes back 7 scheduled days after the last one', () {
+      final logs = logsOn([
+        '2026-09-14',
+        ...daysBetween('2026-09-16', '2026-09-21'),
+        ...daysBetween('2026-09-23', '2026-09-26'),
+      ]);
+      final result = _calc(fromMonday, logs, _sunday);
+
+      expect(result.current, 11);
+      expect(result.graceDates, {day('2026-09-15'), day('2026-09-22')});
+    });
+
+    test('counts scheduled days, not calendar days', () {
+      final workdays = habitFixture(
+        start: day('2026-09-07'),
+        schedule: ScheduleType.weekdays,
+        scheduleDays: Weekdays.workdays,
+      );
+      // Misses on Tue 09-08 and Wed 09-16: 8 calendar days apart, but only
+      // 6 scheduled days.
+      final logs = logsOn([
+        '2026-09-07',
+        ...daysBetween('2026-09-09', '2026-09-11'),
+        ...daysBetween('2026-09-14', '2026-09-15'),
+        ...daysBetween('2026-09-17', '2026-09-18'),
+        ...daysBetween('2026-09-21', '2026-09-25'),
+      ]);
+      final result = _calc(workdays, logs, _sunday);
+
+      expect(result.current, 7);
+      expect(result.graceDates, {day('2026-09-08')});
+    });
+
+    test('applies to weekly streaks too', () {
+      final threeTimes = habitFixture(
+        start: day('2026-08-31'),
+        schedule: ScheduleType.timesPerWeek,
+        timesPerWeek: 3,
+      );
+      // Weeks of 08-31 and 09-14 reach the target; 09-07 and 09-21 do not.
+      final logs = logsOn([
+        ...daysBetween('2026-08-31', '2026-09-02'),
+        ...daysBetween('2026-09-14', '2026-09-16'),
+      ]);
+      final result = _calc(threeTimes, logs, day('2026-09-30'));
+
+      expect(result.current, 0);
+      expect(result.best, 2);
+      expect(result.graceDates, {day('2026-09-07')});
+    });
+  });
+
   group('consistency', () {
     test('30-day consistency ignores an unchecked today', () {
       final habit = habitFixture(start: day('2026-08-01'));

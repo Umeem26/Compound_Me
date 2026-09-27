@@ -21,8 +21,9 @@ class StreakResult {
   final int best;
   final StreakUnit unit;
 
-  /// "Hari longgar": single misses that did not break the streak. For weekly
-  /// streaks these are the Mondays of the forgiven weeks.
+  /// "Hari longgar": single misses that did not break the streak, at most
+  /// one per seven scheduled periods. For weekly streaks these are the
+  /// Mondays of the forgiven weeks.
   final Set<LocalDate> graceDates;
 
   /// Share of the scheduled target done in the last 30 days (0–1). Only for
@@ -30,8 +31,9 @@ class StreakResult {
   final double? consistency30;
 }
 
-/// Streaks with the "never miss twice" rule (05 §4.3). Pure functions over
-/// the habit's logs so they can be tested without a database.
+/// Streaks with the "never miss twice" rule and its grace limit (05 §4.3).
+/// Pure functions over the habit's logs so they can be tested without a
+/// database.
 abstract final class StreakCalculator {
   /// Null for reduce habits without a weekly limit: they have no streak.
   static StreakResult? calculate({
@@ -213,29 +215,47 @@ class _Run {
   final Set<LocalDate> graces;
 }
 
-/// Walks periods oldest to newest. One miss after a success is forgiven
-/// (a grace period); a second miss in a row ends the run.
+/// Walks scheduled periods oldest to newest. One miss after a success is
+/// forgiven (a grace period) if no grace was given in the previous
+/// [graceWindow] - 1 periods, so any [graceWindow] periods in a row hold at
+/// most one. Any other miss ends the run, even when it is not the second in
+/// a row: alternating check-ins and misses must not keep a streak alive.
 class _RunTracker {
+  static const graceWindow = 7;
+
+  /// Index of the next evaluated period. Unscheduled days, an open today
+  /// and a running week never reach the tracker, so they do not count.
+  int _period = 0;
   int _run = 0;
   int _best = 0;
   int _misses = 0;
   LocalDate? _pendingGrace;
+  int? _pendingGracePeriod;
+
+  /// Index of the last grace actually given, possibly in an earlier run.
+  int? _lastGracePeriod;
   final Set<LocalDate> _graces = {};
 
   void success() {
+    _period++;
     _run++;
     _best = math.max(_best, _run);
     _misses = 0;
     if (_pendingGrace != null) {
       _graces.add(_pendingGrace!);
+      _lastGracePeriod = _pendingGracePeriod;
       _pendingGrace = null;
     }
   }
 
   void miss(LocalDate period) {
+    final index = _period++;
     _misses++;
-    if (_misses == 1 && _run > 0) {
+    final last = _lastGracePeriod;
+    final graceAvailable = last == null || index - last >= graceWindow;
+    if (_misses == 1 && _run > 0 && graceAvailable) {
       _pendingGrace = period;
+      _pendingGracePeriod = index;
     } else {
       _run = 0;
       _pendingGrace = null;
