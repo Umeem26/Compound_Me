@@ -44,10 +44,13 @@ void main() {
       await _tap(tester, find.byTooltip('Kembali'));
       await _tap(tester, find.text('Pengaturan'));
       expect(find.text('Tampilan'), findsOneWidget);
+      // App details live on the About screen only (review PR #6).
+      expect(find.text('Dibuat oleh Hisyam Khaeru Umam'), findsNothing);
+      expect(find.text('Lisensi open source'), findsNothing);
       await _tap(tester, find.byTooltip('Kembali'));
       await _tap(tester, find.text('Tentang CompoundMe'));
       expect(find.text('Dibuat oleh Hisyam Khaeru Umam'), findsOneWidget);
-      expect(find.text('1.0.0 (1)'), findsWidgets);
+      expect(find.text('1.0.0 (1)'), findsOneWidget, reason: 'version once');
     });
 
     testApp('the name can be changed but not emptied', (tester) async {

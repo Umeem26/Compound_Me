@@ -279,7 +279,8 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 
 ### S-40 Profil
 - Header: avatar inisial (lingkaran `teal50`, huruf `teal700`), nama (tap untuk ubah).
-- Grup list: **Keuangan**: Dompet (jumlah aktif), Kategori. **Aplikasi**: Pengaturan. **Tentang**: Tentang CompoundMe (versi, lisensi open source, link GitHub).
+- Grup list: **Keuangan**: Dompet (jumlah aktif), Kategori. **Aplikasi**: Pengaturan. **Tentang**: Tentang CompoundMe.
+- Layar **Tentang CompoundMe**: ikon app, nama, versi (sekali, di bawah nama), "Dibuat oleh Hisyam Khaeru Umam", link kode sumber di GitHub, dan "Lisensi open source" (halaman lisensi Flutter, termasuk font OFL dan ikon MIT). Ini satu-satunya tempat info aplikasi (review PR #6).
 - Tidak ada item yang belum berfungsi.
 
 ### S-41 Dompet
@@ -297,7 +298,7 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 ### S-43 Pengaturan
 - **Tampilan:** Bahasa (Indonesia / English), Tema (Ikuti sistem / Terang / Gelap), Sembunyikan saldo saat membuka app (toggle).
 - **Data:** Hapus semua data (danger, konfirmasi 2 langkah + ketik `HAPUS`/`DELETE`). Ekspor & backup muncul di 2.1.
-- **Tentang:** versi app, "Dibuat oleh Hisyam Khaeru Umam", link repo.
+- Info aplikasi (versi, pembuat, link repo, lisensi) tidak diulang di sini; tempatnya di Profil → Tentang CompoundMe (S-40).
 
 ## 4. Pola interaksi global
 

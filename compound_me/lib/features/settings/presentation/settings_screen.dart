@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:compound_me/core/design/design.dart';
 import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
-import 'package:compound_me/features/settings/presentation/about_rows.dart';
 import 'package:compound_me/features/settings/presentation/delete_all_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Settings (S-43): language and theme apply at once and are remembered,
-/// the hide-balance default, deleting all data, and about.
+/// the hide-balance default and deleting all data. App details live on
+/// the About screen (S-40) only.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -98,8 +98,6 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.space6),
-                AboutRows(title: l10n.profileGroupAbout),
                 const SizedBox(height: AppSpacing.space8),
               ],
             ),
