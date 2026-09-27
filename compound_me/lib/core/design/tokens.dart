@@ -25,23 +25,33 @@ abstract final class AppPalette {
 
 /// The eight preset colors for categories, wallets and habits (§3.5).
 /// Stored in the database by [key], never as a raw color value.
+///
+/// Each preset has an icon color per theme so the icon keeps at least 3:1
+/// against its own tint (WCAG 1.4.11). Where the §3.5 value falls short in
+/// one theme it is replaced there (§3.5 table); the others are unchanged.
 enum AppPresetColor {
-  teal('teal', AppPalette.teal700),
-  gold('gold', AppPalette.gold500),
-  coral('coral', Color(0xFFD9655B)),
+  teal('teal', AppPalette.teal700, dark: AppPalette.teal400),
+  gold('gold', AppPalette.gold800, dark: AppPalette.gold500),
+  coral('coral', Color(0xFFD45147), dark: Color(0xFFD9655B)),
   violet('violet', Color(0xFF7C6BC4)),
   blue('blue', Color(0xFF3F7FD1)),
-  green('green', Color(0xFF3E9A5C)),
+  green('green', Color(0xFF3B8E56), dark: Color(0xFF3E9A5C)),
   rose('rose', Color(0xFFC45A8A)),
-  slate('slate', Color(0xFF5F6F7A));
+  slate('slate', Color(0xFF5F6F7A), dark: Color(0xFF657883));
 
-  const AppPresetColor(this.key, this.foreground);
+  const AppPresetColor(this.key, this.light, {Color? dark})
+    : dark = dark ?? light;
 
   final String key;
-  final Color foreground;
+  final Color light;
+  final Color dark;
+
+  Color foreground(Brightness brightness) =>
+      brightness == Brightness.dark ? dark : light;
 
   /// Icons sit on a 12% tint of the preset, never on a solid fill.
-  Color get background => foreground.withValues(alpha: AppOpacity.presetTint);
+  Color background(Brightness brightness) =>
+      foreground(brightness).withValues(alpha: AppOpacity.presetTint);
 
   static AppPresetColor fromKey(String key) =>
       values.firstWhere((c) => c.key == key, orElse: () => AppPresetColor.teal);

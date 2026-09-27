@@ -31,6 +31,16 @@ class AppTokens extends ThemeExtension<AppTokens> {
 
 extension AppTokensContext on BuildContext {
   AppTokens get tokens => Theme.of(this).extension<AppTokens>()!;
+
+  /// Icon and tint colors of a stored preset key in the current theme.
+  ({Color foreground, Color background}) presetColor(String key) {
+    final preset = AppPresetColor.fromKey(key);
+    final brightness = Theme.of(this).brightness;
+    return (
+      foreground: preset.foreground(brightness),
+      background: preset.background(brightness),
+    );
+  }
 }
 
 abstract final class AppTheme {

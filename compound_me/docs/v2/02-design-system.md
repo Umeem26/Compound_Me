@@ -102,6 +102,19 @@ Kategori dan dompet memilih dari **8 warna preset** (bukan color picker bebas), 
 
 Ikon kategori selalu tampil sebagai ikon `fg` di dalam lingkaran/rounded square `bg`. Tidak ada latar warna penuh.
 
+**Warna ikon per tema (Fase 2).** Ikon adalah objek grafis, jadi butuh kontras minimal 3:1 terhadap tint-nya sendiri (WCAG 1.4.11), baik di atas `surface` maupun `bg`. Nilai di atas dipakai apa adanya, kecuali yang tidak mencapai 3:1. Yang itu diganti hanya di tema yang gagal. `bg` selalu tint 12% dari `fg` tema tersebut. Rasio di bawah adalah rasio terburuk dari dua latar, dan dijaga oleh `test/core/design/preset_colors_test.dart`.
+
+| Preset | `fg` terang | Rasio | `fg` gelap | Rasio |
+|---|---|---|---|---|
+| teal | `teal700` #00695C | 5,24 | **`teal400` #4DB6AC** (teal700 hanya 2,42) | 5,84 |
+| gold | **`gold800` #8A6400** (gold500 hanya 1,85) | 4,34 | `gold500` #E0A91B | 6,59 |
+| coral | **#D45147** (#D9655B hanya 2,91) | 3,38 | #D9655B | 4,28 |
+| violet | #7C6BC4 | 3,63 | #7C6BC4 | 3,48 |
+| blue | #3F7FD1 | 3,34 | #3F7FD1 | 3,72 |
+| green | **#3B8E56** (#3E9A5C hanya 2,94) | 3,33 | #3E9A5C | 4,24 |
+| rose | #C45A8A | 3,33 | #C45A8A | 3,80 |
+| slate | #5F6F7A | 4,22 | **#657883** (#5F6F7A hanya 2,98) | 3,32 |
+
 ## 4. Tipografi
 
 **Font: Plus Jakarta Sans** (open source, Google Fonts). Dirancang oleh Tokotype untuk program "Jakarta City of Collaboration" tahun 2020. Pilihan ini punya cerita lokal yang bagus untuk portofolio, geometris-humanis, dan angkanya jelas. Menggantikan Poppins v1.
