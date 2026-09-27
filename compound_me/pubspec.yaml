@@ -18,10 +18,12 @@ dependencies:
   go_router: ^18.0.1
   intl: ^0.20.3
   meta: ^1.18.3
+  package_info_plus: ^10.2.1
   path: ^1.9.1
   path_provider: ^2.1.6
   riverpod_annotation: ^4.0.7
   shared_preferences: ^2.5.5
+  url_launcher: ^6.3.2
   uuid: ^4.6.0
 
 dev_dependencies:
@@ -38,6 +40,8 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
+    # Shown on the About screen and the licenses page.
+    - assets/brand/app_icon_1024.png
     - assets/fonts/OFL.txt
     - assets/fonts/phosphor/LICENSE.txt
   fonts:

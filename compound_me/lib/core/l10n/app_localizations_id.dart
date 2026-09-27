@@ -51,13 +51,6 @@ class AppLocalizationsId extends AppLocalizations {
       'Catat setiap hari, lalu lihat polanya di sini.';
 
   @override
-  String get profileEmptyTitle => 'Profil belum diatur';
-
-  @override
-  String get profileEmptyBody =>
-      'Nama panggilan dan dompetmu akan tersimpan di sini.';
-
-  @override
   String get undoAction => 'Urungkan';
 
   @override
@@ -427,4 +420,108 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get categoryDeletedDone => 'Kategori dihapus';
+
+  @override
+  String profileEditName(String name) {
+    return 'Ubah nama, $name';
+  }
+
+  @override
+  String get profileNameTitle => 'Nama panggilan';
+
+  @override
+  String get profileTapToEdit => 'Ketuk untuk mengubah';
+
+  @override
+  String get profileGroupFinance => 'Keuangan';
+
+  @override
+  String get profileGroupApp => 'Aplikasi';
+
+  @override
+  String get profileGroupAbout => 'Tentang';
+
+  @override
+  String profileActiveWallets(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count aktif',
+      one: '1 aktif',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsTitle => 'Pengaturan';
+
+  @override
+  String get settingsGroupDisplay => 'Tampilan';
+
+  @override
+  String get settingsLanguage => 'Bahasa';
+
+  @override
+  String get settingsTheme => 'Tema';
+
+  @override
+  String get themeSystem => 'Ikuti sistem';
+
+  @override
+  String get themeLight => 'Terang';
+
+  @override
+  String get themeDark => 'Gelap';
+
+  @override
+  String get settingsHideBalance => 'Sembunyikan saldo saat membuka app';
+
+  @override
+  String get settingsHideBalanceHint =>
+      'Saldo di Beranda tertutup sampai kamu ketuk ikon mata.';
+
+  @override
+  String get settingsGroupData => 'Data';
+
+  @override
+  String get settingsDeleteAll => 'Hapus semua data';
+
+  @override
+  String get deleteAllTitle => 'Hapus semua data?';
+
+  @override
+  String get deleteAllBody =>
+      'Semua transaksi, kebiasaan, dompet, kategori buatanmu, dan pengaturan akan dihapus dari HP ini. Ini tidak bisa dibatalkan.';
+
+  @override
+  String get deleteAllContinue => 'Lanjutkan';
+
+  @override
+  String get actionCancel => 'Batal';
+
+  @override
+  String get deleteAllWord => 'HAPUS';
+
+  @override
+  String deleteAllTypeLabel(String word) {
+    return 'Ketik $word untuk menghapus';
+  }
+
+  @override
+  String get aboutTitle => 'Tentang CompoundMe';
+
+  @override
+  String get aboutVersion => 'Versi';
+
+  @override
+  String get aboutCreator => 'Dibuat oleh Hisyam Khaeru Umam';
+
+  @override
+  String get aboutSource => 'Kode sumber di GitHub';
+
+  @override
+  String get aboutLicenses => 'Lisensi open source';
+
+  @override
+  String get linkOpenFailed => 'Link tidak bisa dibuka.';
 }

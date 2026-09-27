@@ -176,18 +176,6 @@ abstract class AppLocalizations {
   /// **'Catat setiap hari, lalu lihat polanya di sini.'**
   String get insightsEmptyBody;
 
-  /// Profile empty state title, shown before onboarding exists.
-  ///
-  /// In id, this message translates to:
-  /// **'Profil belum diatur'**
-  String get profileEmptyTitle;
-
-  /// Profile empty state explanation.
-  ///
-  /// In id, this message translates to:
-  /// **'Nama panggilan dan dompetmu akan tersimpan di sini.'**
-  String get profileEmptyBody;
-
   /// Action on the undo snackbar.
   ///
   /// In id, this message translates to:
@@ -883,6 +871,186 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Kategori dihapus'**
   String get categoryDeletedDone;
+
+  /// Screen reader label of the profile header that edits the name.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah nama, {name}'**
+  String profileEditName(String name);
+
+  /// Title of the sheet that edits the name.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama panggilan'**
+  String get profileNameTitle;
+
+  /// Hint under the name in the profile header.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk mengubah'**
+  String get profileTapToEdit;
+
+  /// Profile group with wallets and categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Keuangan'**
+  String get profileGroupFinance;
+
+  /// Profile group with settings.
+  ///
+  /// In id, this message translates to:
+  /// **'Aplikasi'**
+  String get profileGroupApp;
+
+  /// Profile and settings group about the app.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang'**
+  String get profileGroupAbout;
+
+  /// Number of active wallets next to the Wallets row.
+  ///
+  /// In id, this message translates to:
+  /// **'{count, plural, =1{1 aktif} other{{count} aktif}}'**
+  String profileActiveWallets(int count);
+
+  /// Settings screen title (S-43).
+  ///
+  /// In id, this message translates to:
+  /// **'Pengaturan'**
+  String get settingsTitle;
+
+  /// Settings group for language, theme and balance.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilan'**
+  String get settingsGroupDisplay;
+
+  /// Language setting label.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa'**
+  String get settingsLanguage;
+
+  /// Theme setting label.
+  ///
+  /// In id, this message translates to:
+  /// **'Tema'**
+  String get settingsTheme;
+
+  /// Theme option that follows the device.
+  ///
+  /// In id, this message translates to:
+  /// **'Ikuti sistem'**
+  String get themeSystem;
+
+  /// Light theme option.
+  ///
+  /// In id, this message translates to:
+  /// **'Terang'**
+  String get themeLight;
+
+  /// Dark theme option.
+  ///
+  /// In id, this message translates to:
+  /// **'Gelap'**
+  String get themeDark;
+
+  /// Toggle that starts Home with the balance hidden.
+  ///
+  /// In id, this message translates to:
+  /// **'Sembunyikan saldo saat membuka app'**
+  String get settingsHideBalance;
+
+  /// Explains the hide balance toggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo di Beranda tertutup sampai kamu ketuk ikon mata.'**
+  String get settingsHideBalanceHint;
+
+  /// Settings group for deleting data.
+  ///
+  /// In id, this message translates to:
+  /// **'Data'**
+  String get settingsGroupData;
+
+  /// Row and button that delete everything.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus semua data'**
+  String get settingsDeleteAll;
+
+  /// First confirmation sheet title.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus semua data?'**
+  String get deleteAllTitle;
+
+  /// Explains what deleting all data removes.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua transaksi, kebiasaan, dompet, kategori buatanmu, dan pengaturan akan dihapus dari HP ini. Ini tidak bisa dibatalkan.'**
+  String get deleteAllBody;
+
+  /// Goes to the second confirmation step.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan'**
+  String get deleteAllContinue;
+
+  /// Closes a confirmation without doing anything.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get actionCancel;
+
+  /// Word the user types to confirm deleting all data. Keep it one uppercase word.
+  ///
+  /// In id, this message translates to:
+  /// **'HAPUS'**
+  String get deleteAllWord;
+
+  /// Label of the confirmation field.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik {word} untuk menghapus'**
+  String deleteAllTypeLabel(String word);
+
+  /// About screen title and profile row.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang CompoundMe'**
+  String get aboutTitle;
+
+  /// App version row.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi'**
+  String get aboutVersion;
+
+  /// Credits row with the author's name.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibuat oleh Hisyam Khaeru Umam'**
+  String get aboutCreator;
+
+  /// Row that opens the repository in a browser.
+  ///
+  /// In id, this message translates to:
+  /// **'Kode sumber di GitHub'**
+  String get aboutSource;
+
+  /// Row that opens the licenses page.
+  ///
+  /// In id, this message translates to:
+  /// **'Lisensi open source'**
+  String get aboutLicenses;
+
+  /// Snackbar when the browser can't be opened.
+  ///
+  /// In id, this message translates to:
+  /// **'Link tidak bisa dibuka.'**
+  String get linkOpenFailed;
 }
 
 class _AppLocalizationsDelegate

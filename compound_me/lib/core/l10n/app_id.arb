@@ -52,14 +52,6 @@
   "@insightsEmptyBody": {
     "description": "Insights empty state explanation."
   },
-  "profileEmptyTitle": "Profil belum diatur",
-  "@profileEmptyTitle": {
-    "description": "Profile empty state title, shown before onboarding exists."
-  },
-  "profileEmptyBody": "Nama panggilan dan dompetmu akan tersimpan di sini.",
-  "@profileEmptyBody": {
-    "description": "Profile empty state explanation."
-  },
   "undoAction": "Urungkan",
   "@undoAction": {
     "description": "Action on the undo snackbar."
@@ -567,5 +559,140 @@
   "categoryDeletedDone": "Kategori dihapus",
   "@categoryDeletedDone": {
     "description": "Undo snackbar after deleting a category."
+  },
+  "profileEditName": "Ubah nama, {name}",
+  "@profileEditName": {
+    "description": "Screen reader label of the profile header that edits the name.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profileNameTitle": "Nama panggilan",
+  "@profileNameTitle": {
+    "description": "Title of the sheet that edits the name."
+  },
+  "profileTapToEdit": "Ketuk untuk mengubah",
+  "@profileTapToEdit": {
+    "description": "Hint under the name in the profile header."
+  },
+  "profileGroupFinance": "Keuangan",
+  "@profileGroupFinance": {
+    "description": "Profile group with wallets and categories."
+  },
+  "profileGroupApp": "Aplikasi",
+  "@profileGroupApp": {
+    "description": "Profile group with settings."
+  },
+  "profileGroupAbout": "Tentang",
+  "@profileGroupAbout": {
+    "description": "Profile and settings group about the app."
+  },
+  "profileActiveWallets": "{count, plural, =1{1 aktif} other{{count} aktif}}",
+  "@profileActiveWallets": {
+    "description": "Number of active wallets next to the Wallets row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsTitle": "Pengaturan",
+  "@settingsTitle": {
+    "description": "Settings screen title (S-43)."
+  },
+  "settingsGroupDisplay": "Tampilan",
+  "@settingsGroupDisplay": {
+    "description": "Settings group for language, theme and balance."
+  },
+  "settingsLanguage": "Bahasa",
+  "@settingsLanguage": {
+    "description": "Language setting label."
+  },
+  "settingsTheme": "Tema",
+  "@settingsTheme": {
+    "description": "Theme setting label."
+  },
+  "themeSystem": "Ikuti sistem",
+  "@themeSystem": {
+    "description": "Theme option that follows the device."
+  },
+  "themeLight": "Terang",
+  "@themeLight": {
+    "description": "Light theme option."
+  },
+  "themeDark": "Gelap",
+  "@themeDark": {
+    "description": "Dark theme option."
+  },
+  "settingsHideBalance": "Sembunyikan saldo saat membuka app",
+  "@settingsHideBalance": {
+    "description": "Toggle that starts Home with the balance hidden."
+  },
+  "settingsHideBalanceHint": "Saldo di Beranda tertutup sampai kamu ketuk ikon mata.",
+  "@settingsHideBalanceHint": {
+    "description": "Explains the hide balance toggle."
+  },
+  "settingsGroupData": "Data",
+  "@settingsGroupData": {
+    "description": "Settings group for deleting data."
+  },
+  "settingsDeleteAll": "Hapus semua data",
+  "@settingsDeleteAll": {
+    "description": "Row and button that delete everything."
+  },
+  "deleteAllTitle": "Hapus semua data?",
+  "@deleteAllTitle": {
+    "description": "First confirmation sheet title."
+  },
+  "deleteAllBody": "Semua transaksi, kebiasaan, dompet, kategori buatanmu, dan pengaturan akan dihapus dari HP ini. Ini tidak bisa dibatalkan.",
+  "@deleteAllBody": {
+    "description": "Explains what deleting all data removes."
+  },
+  "deleteAllContinue": "Lanjutkan",
+  "@deleteAllContinue": {
+    "description": "Goes to the second confirmation step."
+  },
+  "actionCancel": "Batal",
+  "@actionCancel": {
+    "description": "Closes a confirmation without doing anything."
+  },
+  "deleteAllWord": "HAPUS",
+  "@deleteAllWord": {
+    "description": "Word the user types to confirm deleting all data. Keep it one uppercase word."
+  },
+  "deleteAllTypeLabel": "Ketik {word} untuk menghapus",
+  "@deleteAllTypeLabel": {
+    "description": "Label of the confirmation field.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutTitle": "Tentang CompoundMe",
+  "@aboutTitle": {
+    "description": "About screen title and profile row."
+  },
+  "aboutVersion": "Versi",
+  "@aboutVersion": {
+    "description": "App version row."
+  },
+  "aboutCreator": "Dibuat oleh Hisyam Khaeru Umam",
+  "@aboutCreator": {
+    "description": "Credits row with the author's name."
+  },
+  "aboutSource": "Kode sumber di GitHub",
+  "@aboutSource": {
+    "description": "Row that opens the repository in a browser."
+  },
+  "aboutLicenses": "Lisensi open source",
+  "@aboutLicenses": {
+    "description": "Row that opens the licenses page."
+  },
+  "linkOpenFailed": "Link tidak bisa dibuka.",
+  "@linkOpenFailed": {
+    "description": "Snackbar when the browser can't be opened."
   }
 }

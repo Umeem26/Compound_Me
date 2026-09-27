@@ -284,6 +284,7 @@ abstract final class AppSizes {
   static const double coachMarkPointer = 8;
   static const double coachMarkMaxWidth = 280;
   static const double skeletonLine = 16;
+  static const double appIcon = 72;
 }
 
 abstract final class AppOpacity {

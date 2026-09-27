@@ -51,6 +51,21 @@ void main() {
     expect((await AppPreferences.load()).onboardingDraft, isNull);
   });
 
+  test('hide balance is remembered and clear forgets everything', () async {
+    final prefs = await AppPreferences.load();
+    expect(prefs.hideBalanceOnLaunch, isFalse);
+    await prefs.setHideBalanceOnLaunch(hide: true);
+    await prefs.setThemeMode(ThemeMode.dark);
+    await prefs.setUserName('Raka');
+    expect((await AppPreferences.load()).hideBalanceOnLaunch, isTrue);
+
+    await prefs.clear();
+    final cleared = await AppPreferences.load();
+    expect(cleared.hideBalanceOnLaunch, isFalse);
+    expect(cleared.themeMode, ThemeMode.system);
+    expect(cleared.userName, isEmpty);
+  });
+
   test('ignores an unknown stored theme value', () async {
     SharedPreferencesAsyncPlatform.instance =
         InMemorySharedPreferencesAsync.withData({'themeMode': 'sepia'});

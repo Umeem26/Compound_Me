@@ -16,6 +16,7 @@ class AppPreferences {
   static const _onboardingDraftKey = 'onboardingDraft';
   static const _userNameKey = 'userName';
   static const _addCoachMarkSeenKey = 'addCoachMarkSeen';
+  static const _hideBalanceKey = 'hideBalanceOnLaunch';
 
   static Future<AppPreferences> load() async {
     final prefs = await SharedPreferencesWithCache.create(
@@ -27,6 +28,7 @@ class AppPreferences {
           _onboardingDraftKey,
           _userNameKey,
           _addCoachMarkSeenKey,
+          _hideBalanceKey,
         },
       ),
     );
@@ -68,6 +70,15 @@ class AppPreferences {
 
   Future<void> setAddCoachMarkSeen() =>
       _prefs.setBool(_addCoachMarkSeenKey, true);
+
+  /// S-43: start with the Home balance hidden (used by BalanceHeader).
+  bool get hideBalanceOnLaunch => _prefs.getBool(_hideBalanceKey) ?? false;
+
+  Future<void> setHideBalanceOnLaunch({required bool hide}) =>
+      _prefs.setBool(_hideBalanceKey, hide);
+
+  /// Forgets every setting, as after a fresh install ("Hapus semua data").
+  Future<void> clear() => _prefs.clear();
 }
 
 @Riverpod(keepAlive: true)
@@ -133,5 +144,16 @@ class AddCoachMarkSeen extends _$AddCoachMarkSeen {
   Future<void> markSeen() async {
     state = true;
     await ref.read(appPreferencesProvider).setAddCoachMarkSeen();
+  }
+}
+
+@Riverpod(keepAlive: true)
+class HideBalanceOnLaunch extends _$HideBalanceOnLaunch {
+  @override
+  bool build() => ref.watch(appPreferencesProvider).hideBalanceOnLaunch;
+
+  Future<void> set({required bool hide}) async {
+    state = hide;
+    await ref.read(appPreferencesProvider).setHideBalanceOnLaunch(hide: hide);
   }
 }

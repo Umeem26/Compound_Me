@@ -11,4 +11,6 @@ abstract final class AppRoutes {
   static const categories = '/me/categories';
   static String categoryNew(String kind) => '/me/categories/new?kind=$kind';
   static String category(String id) => '/me/categories/$id';
+  static const settings = '/me/settings';
+  static const about = '/me/about';
 }

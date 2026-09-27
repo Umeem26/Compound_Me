@@ -332,3 +332,56 @@ abstract class _$AddCoachMarkSeen extends $Notifier<bool> {
     return element.handleCreate(ref, build);
   }
 }
+
+@ProviderFor(HideBalanceOnLaunch)
+final hideBalanceOnLaunchProvider = HideBalanceOnLaunchProvider._();
+
+final class HideBalanceOnLaunchProvider
+    extends $NotifierProvider<HideBalanceOnLaunch, bool> {
+  HideBalanceOnLaunchProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'hideBalanceOnLaunchProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$hideBalanceOnLaunchHash();
+
+  @$internal
+  @override
+  HideBalanceOnLaunch create() => HideBalanceOnLaunch();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$hideBalanceOnLaunchHash() =>
+    r'f37affb4c0e1132d5d101b045187d82f6d82491a';
+
+abstract class _$HideBalanceOnLaunch extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}

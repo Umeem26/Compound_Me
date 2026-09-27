@@ -8,7 +8,9 @@ import 'package:compound_me/features/habits/presentation/habits_screen.dart';
 import 'package:compound_me/features/home/presentation/home_screen.dart';
 import 'package:compound_me/features/insights/presentation/insights_screen.dart';
 import 'package:compound_me/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:compound_me/features/settings/presentation/about_screen.dart';
 import 'package:compound_me/features/settings/presentation/profile_screen.dart';
+import 'package:compound_me/features/settings/presentation/settings_screen.dart';
 import 'package:compound_me/features/wallets/presentation/wallet_editor_screen.dart';
 import 'package:compound_me/features/wallets/presentation/wallets_screen.dart';
 import 'package:flutter/widgets.dart';
@@ -98,6 +100,14 @@ GoRouter appRouter(Ref ref) {
                         ),
                       ),
                     ],
+                  ),
+                  GoRoute(
+                    path: 'settings',
+                    builder: (context, state) => const SettingsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'about',
+                    builder: (context, state) => const AboutScreen(),
                   ),
                   GoRoute(
                     path: 'categories',

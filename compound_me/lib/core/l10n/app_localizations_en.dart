@@ -51,12 +51,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insightsEmptyBody => 'Log every day, then see the patterns here.';
 
   @override
-  String get profileEmptyTitle => 'Your profile isn\'t set up yet';
-
-  @override
-  String get profileEmptyBody => 'Your nickname and wallets will be kept here.';
-
-  @override
   String get undoAction => 'Undo';
 
   @override
@@ -425,4 +419,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryDeletedDone => 'Category deleted';
+
+  @override
+  String profileEditName(String name) {
+    return 'Change name, $name';
+  }
+
+  @override
+  String get profileNameTitle => 'Your name';
+
+  @override
+  String get profileTapToEdit => 'Tap to change';
+
+  @override
+  String get profileGroupFinance => 'Money';
+
+  @override
+  String get profileGroupApp => 'App';
+
+  @override
+  String get profileGroupAbout => 'About';
+
+  @override
+  String profileActiveWallets(int count) {
+    return '$count active';
+  }
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsGroupDisplay => 'Display';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get settingsHideBalance => 'Hide balance when opening the app';
+
+  @override
+  String get settingsHideBalanceHint =>
+      'The Home balance stays hidden until you tap the eye icon.';
+
+  @override
+  String get settingsGroupData => 'Data';
+
+  @override
+  String get settingsDeleteAll => 'Delete all data';
+
+  @override
+  String get deleteAllTitle => 'Delete all data?';
+
+  @override
+  String get deleteAllBody =>
+      'All transactions, habits, wallets, your own categories and settings will be removed from this phone. This can\'t be undone.';
+
+  @override
+  String get deleteAllContinue => 'Continue';
+
+  @override
+  String get actionCancel => 'Cancel';
+
+  @override
+  String get deleteAllWord => 'DELETE';
+
+  @override
+  String deleteAllTypeLabel(String word) {
+    return 'Type $word to delete';
+  }
+
+  @override
+  String get aboutTitle => 'About CompoundMe';
+
+  @override
+  String get aboutVersion => 'Version';
+
+  @override
+  String get aboutCreator => 'Made by Hisyam Khaeru Umam';
+
+  @override
+  String get aboutSource => 'Source code on GitHub';
+
+  @override
+  String get aboutLicenses => 'Open source licenses';
+
+  @override
+  String get linkOpenFailed => 'Couldn\'t open the link.';
 }
