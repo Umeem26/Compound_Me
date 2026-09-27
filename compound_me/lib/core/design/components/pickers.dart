@@ -13,12 +13,14 @@ class IconBadge extends StatelessWidget {
     required this.iconKey,
     required this.colorKey,
     this.size = AppSizes.iconBadge,
+    this.iconSize = AppSizes.iconSm,
     super.key,
   });
 
   final String iconKey;
   final String colorKey;
   final double size;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class IconBadge extends StatelessWidget {
         ),
         child: Icon(
           AppIcons.byKey[iconKey] ?? AppIcons.dotsThreeCircle,
-          size: AppSizes.iconSm,
+          size: iconSize,
           color: preset.foreground,
         ),
       ),

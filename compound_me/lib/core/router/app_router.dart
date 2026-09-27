@@ -6,7 +6,9 @@ import 'package:compound_me/features/home/presentation/home_screen.dart';
 import 'package:compound_me/features/insights/presentation/insights_screen.dart';
 import 'package:compound_me/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:compound_me/features/settings/presentation/profile_screen.dart';
-import 'package:flutter/foundation.dart';
+import 'package:compound_me/features/wallets/presentation/wallet_editor_screen.dart';
+import 'package:compound_me/features/wallets/presentation/wallets_screen.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -21,7 +23,12 @@ GoRouter appRouter(Ref ref) {
     ..listen(onboardingDoneProvider, (_, done) => onboardingDone.value = done)
     ..onDispose(onboardingDone.dispose);
 
+  // Full-screen forms cover the bottom navigation, so they live on the
+  // root navigator instead of the tab's own.
+  final rootNavigator = GlobalKey<NavigatorState>();
+
   final router = GoRouter(
+    navigatorKey: rootNavigator,
     initialLocation: AppRoutes.home,
     refreshListenable: onboardingDone,
     redirect: (context, state) {
@@ -70,6 +77,26 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.me,
                 builder: (context, state) => const ProfileScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'wallets',
+                    builder: (context, state) => const WalletsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'new',
+                        parentNavigatorKey: rootNavigator,
+                        builder: (context, state) => const WalletEditorScreen(),
+                      ),
+                      GoRoute(
+                        path: ':id',
+                        parentNavigatorKey: rootNavigator,
+                        builder: (context, state) => WalletEditorScreen(
+                          walletId: state.pathParameters['id'],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

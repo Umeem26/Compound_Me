@@ -1,10 +1,12 @@
 import 'package:compound_me/app.dart';
 import 'package:compound_me/core/database/app_database.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
+import 'package:compound_me/core/router/app_router.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meta/meta.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 
@@ -56,4 +58,28 @@ Future<AppDatabase> pumpApp(
   );
   await tester.pumpAndSettle();
   return database;
+}
+
+/// Navigates the running app, like following a link.
+Future<void> goTo(WidgetTester tester, String location) async {
+  ProviderScope.containerOf(tester.element(find.byType(CompoundMeApp)))
+      .read(appRouterProvider)
+      .go(location);
+  await tester.pumpAndSettle();
+}
+
+/// [testWidgets] for tests that pump the whole app. Drift closes stream
+/// queries on a zero-length timer, so the app is unmounted and that timer
+/// runs before the test ends instead of failing it as pending.
+@isTest
+void testApp(
+  String description,
+  Future<void> Function(WidgetTester tester) body,
+) {
+  testWidgets(description, (tester) async {
+    await body(tester);
+    await tester.pumpWidget(const SizedBox.shrink());
+    // A plain pump() doesn't advance fake time, so the timer wouldn't fire.
+    await tester.pump(Duration.zero);
+  });
 }

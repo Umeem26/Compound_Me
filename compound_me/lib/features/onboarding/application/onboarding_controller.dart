@@ -15,9 +15,6 @@ part 'onboarding_controller.g.dart';
 /// Names are entered once and shown in greetings (Flow A: 1–24 chars).
 const onboardingNameMaxLength = 24;
 
-/// Wallet names follow the repository limit (05 §3).
-const walletNameMaxLength = 30;
-
 /// Holds Flow A's progress and saves it after every change.
 @Riverpod(keepAlive: true)
 class OnboardingController extends _$OnboardingController {

@@ -1,6 +1,9 @@
 import 'package:compound_me/core/utils/money.dart';
 import 'package:meta/meta.dart';
 
+/// Wallet names are 1–30 characters (05 §3).
+const walletNameMaxLength = 30;
+
 enum WalletType {
   cash('money'),
   bank('bank'),

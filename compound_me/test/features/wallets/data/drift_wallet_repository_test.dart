@@ -122,6 +122,22 @@ void main() {
     expect(await wallets.findById(bank), isNull);
   });
 
+  test('undo puts a deleted wallet back as it was', () async {
+    final cash = await seedWallet(db);
+    final bank = await wallets.create(_draft());
+    await wallets.reorder([bank, cash]);
+    final before = (await wallets.findById(bank))!;
+
+    await wallets.delete(bank);
+    await wallets.undoDelete(before);
+
+    final after = (await wallets.findById(bank))!;
+    expect(after.name, before.name);
+    expect(after.sortOrder, 0);
+    expect(after.createdAt, before.createdAt);
+    expect((await balances()).keys, [bank, cash]);
+  });
+
   test('the last active wallet cannot be archived or deleted', () async {
     final cash = await seedWallet(db);
     final bank = await wallets.create(_draft());

@@ -583,6 +583,204 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Catat pengeluaran dan pemasukan dari tombol ini.'**
   String get coachMarkAdd;
+
+  /// Error state title when reading data fails.
+  ///
+  /// In id, this message translates to:
+  /// **'Data belum bisa dimuat'**
+  String get errorLoadTitle;
+
+  /// Error state explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi sebentar lagi.'**
+  String get errorLoadBody;
+
+  /// Retry button of the error state.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get actionRetry;
+
+  /// Brings an archived wallet or category back.
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan'**
+  String get actionRestore;
+
+  /// Label of the icon picker row.
+  ///
+  /// In id, this message translates to:
+  /// **'Ikon'**
+  String get fieldIcon;
+
+  /// Label of the color picker.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna'**
+  String get fieldColor;
+
+  /// Title of the icon picker sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih ikon'**
+  String get iconPickerTitle;
+
+  /// Screen reader label of an icon in the picker.
+  ///
+  /// In id, this message translates to:
+  /// **'Ikon {position} dari {total}'**
+  String iconPosition(int position, int total);
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Hijau toska'**
+  String get presetTeal;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Emas'**
+  String get presetGold;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Koral'**
+  String get presetCoral;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Ungu'**
+  String get presetViolet;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Biru'**
+  String get presetBlue;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Hijau'**
+  String get presetGreen;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Merah muda'**
+  String get presetRose;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Abu-abu'**
+  String get presetSlate;
+
+  /// Wallets screen title (S-41).
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet'**
+  String get walletsTitle;
+
+  /// Overline above the total of active wallets. All caps on purpose.
+  ///
+  /// In id, this message translates to:
+  /// **'TOTAL SALDO'**
+  String get walletsTotal;
+
+  /// Row that opens the new wallet form.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah dompet'**
+  String get walletsAdd;
+
+  /// Folded section with archived wallets or categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Diarsipkan ({count})'**
+  String walletsArchived(int count);
+
+  /// Screen reader label of a drag handle.
+  ///
+  /// In id, this message translates to:
+  /// **'Geser untuk mengurutkan {name}'**
+  String walletsReorder(String name);
+
+  /// Wallets empty state title.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada dompet aktif'**
+  String get walletsEmptyTitle;
+
+  /// Wallets empty state explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan dompet untuk mulai mencatat.'**
+  String get walletsEmptyBody;
+
+  /// Title of the new wallet form.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet baru'**
+  String get walletNewTitle;
+
+  /// Title of the edit wallet form.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah dompet'**
+  String get walletEditTitle;
+
+  /// Helper under the starting balance of an existing wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo sekarang ikut berubah sesuai selisihnya.'**
+  String get walletBalanceHelper;
+
+  /// Archives a wallet that has transactions.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan dompet'**
+  String get walletArchive;
+
+  /// Explains archiving a wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Disembunyikan dari pilihan, riwayatnya tetap ada.'**
+  String get walletArchiveHint;
+
+  /// Deletes a wallet without transactions.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus dompet'**
+  String get walletDelete;
+
+  /// Explains why an unused wallet can be deleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum pernah dipakai, jadi bisa dihapus.'**
+  String get walletDeleteHint;
+
+  /// Why the last active wallet can't be archived or deleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Minimal harus ada satu dompet aktif.'**
+  String get walletLastActive;
+
+  /// Undo snackbar after archiving a wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet diarsipkan'**
+  String get walletArchivedDone;
+
+  /// Undo snackbar after deleting a wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet dihapus'**
+  String get walletDeletedDone;
 }
 
 class _AppLocalizationsDelegate

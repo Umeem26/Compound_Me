@@ -5,4 +5,7 @@ abstract final class AppRoutes {
   static const habits = '/habits';
   static const insights = '/insights';
   static const me = '/me';
+  static const wallets = '/me/wallets';
+  static const walletNew = '/me/wallets/new';
+  static String wallet(String id) => '/me/wallets/$id';
 }

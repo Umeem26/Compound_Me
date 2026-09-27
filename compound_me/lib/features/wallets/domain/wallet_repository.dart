@@ -43,4 +43,8 @@ abstract interface class WalletRepository {
   Future<void> unarchive(String id);
 
   Future<void> delete(String id);
+
+  /// Puts back a wallet removed by [delete] exactly as it was, for the
+  /// undo snackbar (03 §4: undo instead of "are you sure?").
+  Future<void> undoDelete(Wallet wallet);
 }

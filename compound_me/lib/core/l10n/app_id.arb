@@ -344,5 +344,155 @@
   "coachMarkAdd": "Catat pengeluaran dan pemasukan dari tombol ini.",
   "@coachMarkAdd": {
     "description": "One-time hint above the add button after onboarding."
+  },
+  "errorLoadTitle": "Data belum bisa dimuat",
+  "@errorLoadTitle": {
+    "description": "Error state title when reading data fails."
+  },
+  "errorLoadBody": "Coba lagi sebentar lagi.",
+  "@errorLoadBody": {
+    "description": "Error state explanation."
+  },
+  "actionRetry": "Coba lagi",
+  "@actionRetry": {
+    "description": "Retry button of the error state."
+  },
+  "actionRestore": "Pulihkan",
+  "@actionRestore": {
+    "description": "Brings an archived wallet or category back."
+  },
+  "fieldIcon": "Ikon",
+  "@fieldIcon": {
+    "description": "Label of the icon picker row."
+  },
+  "fieldColor": "Warna",
+  "@fieldColor": {
+    "description": "Label of the color picker."
+  },
+  "iconPickerTitle": "Pilih ikon",
+  "@iconPickerTitle": {
+    "description": "Title of the icon picker sheet."
+  },
+  "iconPosition": "Ikon {position} dari {total}",
+  "@iconPosition": {
+    "description": "Screen reader label of an icon in the picker.",
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "presetTeal": "Hijau toska",
+  "@presetTeal": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetGold": "Emas",
+  "@presetGold": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetCoral": "Koral",
+  "@presetCoral": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetViolet": "Ungu",
+  "@presetViolet": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetBlue": "Biru",
+  "@presetBlue": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetGreen": "Hijau",
+  "@presetGreen": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetRose": "Merah muda",
+  "@presetRose": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetSlate": "Abu-abu",
+  "@presetSlate": {
+    "description": "Preset color name for screen readers."
+  },
+  "walletsTitle": "Dompet",
+  "@walletsTitle": {
+    "description": "Wallets screen title (S-41)."
+  },
+  "walletsTotal": "TOTAL SALDO",
+  "@walletsTotal": {
+    "description": "Overline above the total of active wallets. All caps on purpose."
+  },
+  "walletsAdd": "Tambah dompet",
+  "@walletsAdd": {
+    "description": "Row that opens the new wallet form."
+  },
+  "walletsArchived": "Diarsipkan ({count})",
+  "@walletsArchived": {
+    "description": "Folded section with archived wallets or categories.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletsReorder": "Geser untuk mengurutkan {name}",
+  "@walletsReorder": {
+    "description": "Screen reader label of a drag handle.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "walletsEmptyTitle": "Belum ada dompet aktif",
+  "@walletsEmptyTitle": {
+    "description": "Wallets empty state title."
+  },
+  "walletsEmptyBody": "Tambahkan dompet untuk mulai mencatat.",
+  "@walletsEmptyBody": {
+    "description": "Wallets empty state explanation."
+  },
+  "walletNewTitle": "Dompet baru",
+  "@walletNewTitle": {
+    "description": "Title of the new wallet form."
+  },
+  "walletEditTitle": "Ubah dompet",
+  "@walletEditTitle": {
+    "description": "Title of the edit wallet form."
+  },
+  "walletBalanceHelper": "Saldo sekarang ikut berubah sesuai selisihnya.",
+  "@walletBalanceHelper": {
+    "description": "Helper under the starting balance of an existing wallet."
+  },
+  "walletArchive": "Arsipkan dompet",
+  "@walletArchive": {
+    "description": "Archives a wallet that has transactions."
+  },
+  "walletArchiveHint": "Disembunyikan dari pilihan, riwayatnya tetap ada.",
+  "@walletArchiveHint": {
+    "description": "Explains archiving a wallet."
+  },
+  "walletDelete": "Hapus dompet",
+  "@walletDelete": {
+    "description": "Deletes a wallet without transactions."
+  },
+  "walletDeleteHint": "Belum pernah dipakai, jadi bisa dihapus.",
+  "@walletDeleteHint": {
+    "description": "Explains why an unused wallet can be deleted."
+  },
+  "walletLastActive": "Minimal harus ada satu dompet aktif.",
+  "@walletLastActive": {
+    "description": "Why the last active wallet can't be archived or deleted."
+  },
+  "walletArchivedDone": "Dompet diarsipkan",
+  "@walletArchivedDone": {
+    "description": "Undo snackbar after archiving a wallet."
+  },
+  "walletDeletedDone": "Dompet dihapus",
+  "@walletDeletedDone": {
+    "description": "Undo snackbar after deleting a wallet."
   }
 }

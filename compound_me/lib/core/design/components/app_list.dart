@@ -209,7 +209,7 @@ class RowPicker extends StatelessWidget {
     return Semantics(
       button: true,
       enabled: onTap != null,
-      label: '$label, $value',
+      label: value.isEmpty ? label : '$label, $value',
       excludeSemantics: true,
       onTap: onTap,
       child: Material(

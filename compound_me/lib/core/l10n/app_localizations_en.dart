@@ -263,4 +263,110 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coachMarkAdd => 'Log spending and income with this button.';
+
+  @override
+  String get errorLoadTitle => 'Couldn\'t load this';
+
+  @override
+  String get errorLoadBody => 'Please try again in a moment.';
+
+  @override
+  String get actionRetry => 'Try again';
+
+  @override
+  String get actionRestore => 'Restore';
+
+  @override
+  String get fieldIcon => 'Icon';
+
+  @override
+  String get fieldColor => 'Color';
+
+  @override
+  String get iconPickerTitle => 'Choose an icon';
+
+  @override
+  String iconPosition(int position, int total) {
+    return 'Icon $position of $total';
+  }
+
+  @override
+  String get presetTeal => 'Teal';
+
+  @override
+  String get presetGold => 'Gold';
+
+  @override
+  String get presetCoral => 'Coral';
+
+  @override
+  String get presetViolet => 'Violet';
+
+  @override
+  String get presetBlue => 'Blue';
+
+  @override
+  String get presetGreen => 'Green';
+
+  @override
+  String get presetRose => 'Rose';
+
+  @override
+  String get presetSlate => 'Slate';
+
+  @override
+  String get walletsTitle => 'Wallets';
+
+  @override
+  String get walletsTotal => 'TOTAL BALANCE';
+
+  @override
+  String get walletsAdd => 'Add wallet';
+
+  @override
+  String walletsArchived(int count) {
+    return 'Archived ($count)';
+  }
+
+  @override
+  String walletsReorder(String name) {
+    return 'Drag to reorder $name';
+  }
+
+  @override
+  String get walletsEmptyTitle => 'No active wallets';
+
+  @override
+  String get walletsEmptyBody => 'Add a wallet to start logging.';
+
+  @override
+  String get walletNewTitle => 'New wallet';
+
+  @override
+  String get walletEditTitle => 'Edit wallet';
+
+  @override
+  String get walletBalanceHelper =>
+      'The current balance moves by the same difference.';
+
+  @override
+  String get walletArchive => 'Archive wallet';
+
+  @override
+  String get walletArchiveHint => 'Hidden from pickers; its history stays.';
+
+  @override
+  String get walletDelete => 'Delete wallet';
+
+  @override
+  String get walletDeleteHint => 'It hasn\'t been used, so it can be deleted.';
+
+  @override
+  String get walletLastActive => 'You need at least one active wallet.';
+
+  @override
+  String get walletArchivedDone => 'Wallet archived';
+
+  @override
+  String get walletDeletedDone => 'Wallet deleted';
 }

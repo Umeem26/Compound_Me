@@ -265,4 +265,111 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get coachMarkAdd => 'Catat pengeluaran dan pemasukan dari tombol ini.';
+
+  @override
+  String get errorLoadTitle => 'Data belum bisa dimuat';
+
+  @override
+  String get errorLoadBody => 'Coba lagi sebentar lagi.';
+
+  @override
+  String get actionRetry => 'Coba lagi';
+
+  @override
+  String get actionRestore => 'Pulihkan';
+
+  @override
+  String get fieldIcon => 'Ikon';
+
+  @override
+  String get fieldColor => 'Warna';
+
+  @override
+  String get iconPickerTitle => 'Pilih ikon';
+
+  @override
+  String iconPosition(int position, int total) {
+    return 'Ikon $position dari $total';
+  }
+
+  @override
+  String get presetTeal => 'Hijau toska';
+
+  @override
+  String get presetGold => 'Emas';
+
+  @override
+  String get presetCoral => 'Koral';
+
+  @override
+  String get presetViolet => 'Ungu';
+
+  @override
+  String get presetBlue => 'Biru';
+
+  @override
+  String get presetGreen => 'Hijau';
+
+  @override
+  String get presetRose => 'Merah muda';
+
+  @override
+  String get presetSlate => 'Abu-abu';
+
+  @override
+  String get walletsTitle => 'Dompet';
+
+  @override
+  String get walletsTotal => 'TOTAL SALDO';
+
+  @override
+  String get walletsAdd => 'Tambah dompet';
+
+  @override
+  String walletsArchived(int count) {
+    return 'Diarsipkan ($count)';
+  }
+
+  @override
+  String walletsReorder(String name) {
+    return 'Geser untuk mengurutkan $name';
+  }
+
+  @override
+  String get walletsEmptyTitle => 'Belum ada dompet aktif';
+
+  @override
+  String get walletsEmptyBody => 'Tambahkan dompet untuk mulai mencatat.';
+
+  @override
+  String get walletNewTitle => 'Dompet baru';
+
+  @override
+  String get walletEditTitle => 'Ubah dompet';
+
+  @override
+  String get walletBalanceHelper =>
+      'Saldo sekarang ikut berubah sesuai selisihnya.';
+
+  @override
+  String get walletArchive => 'Arsipkan dompet';
+
+  @override
+  String get walletArchiveHint =>
+      'Disembunyikan dari pilihan, riwayatnya tetap ada.';
+
+  @override
+  String get walletDelete => 'Hapus dompet';
+
+  @override
+  String get walletDeleteHint => 'Belum pernah dipakai, jadi bisa dihapus.';
+
+  @override
+  String get walletLastActive => 'Minimal harus ada satu dompet aktif.';
+
+  @override
+  String get walletArchivedDone => 'Dompet diarsipkan';
+
+  @override
+  String get walletDeletedDone => 'Dompet dihapus';
 }
