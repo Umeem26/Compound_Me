@@ -74,8 +74,11 @@ class DriftHabitRepository implements HabitRepository {
   Future<void> update(String id, HabitDraft draft) => _db.transaction(() async {
     final habit = await _require(id);
     final fields = await _validated(draft);
-    if (draft.kind != habit.kind && await _hasLogs(id)) {
-      throw HabitHasLogsException(id);
+    if (draft.kind != habit.kind) {
+      if (await _ledger.hasActiveLogs(id)) throw HabitHasLogsException(id);
+      // Undone check-ins of the old kind must not come back under the new
+      // one when one of their expenses is restored.
+      await _ledger.dropDeletedLogs(id);
     }
     await (_db.update(_db.habits)..where((h) => h.id.equals(id))).write(
       fields.copyWith(updatedAt: Value(_now)),
@@ -101,7 +104,7 @@ class DriftHabitRepository implements HabitRepository {
   @override
   Future<void> delete(String id) => _db.transaction(() async {
     await _require(id);
-    if (await _hasLogs(id)) throw HabitHasLogsException(id);
+    if (await _ledger.hasActiveLogs(id)) throw HabitHasLogsException(id);
     await (_db.delete(_db.habits)..where((h) => h.id.equals(id))).go();
   });
 
@@ -114,7 +117,7 @@ class DriftHabitRepository implements HabitRepository {
     final query = _db.select(_db.habitLogs)
       ..where((l) {
         // YYYY-MM-DD strings sort like dates.
-        var condition = l.habitId.equals(habitId);
+        var condition = l.habitId.equals(habitId) & l.deletedAt.isNull();
         if (from != null) {
           condition &= l.date.isBiggerOrEqualValue(from.toIso());
         }
@@ -128,7 +131,7 @@ class DriftHabitRepository implements HabitRepository {
   @override
   Stream<List<HabitLog>> watchLogsOn(LocalDate date) {
     final query = _db.select(_db.habitLogs)
-      ..where((l) => l.date.equals(date.toIso()));
+      ..where((l) => l.date.equals(date.toIso()) & l.deletedAt.isNull());
     return query.watch().map((rows) => [for (final r in rows) r.toDomain()]);
   }
 
@@ -185,9 +188,6 @@ class DriftHabitRepository implements HabitRepository {
       throw const ValidationException(ValidationError.futureDate);
     }
   }
-
-  Future<bool> _hasLogs(String habitId) =>
-      _db.isReferenced('habit_logs', 'habit_id', habitId);
 
   Future<HabitRow?> _find(String id) =>
       (_db.select(_db.habits)..where((h) => h.id.equals(id))).getSingleOrNull();

@@ -2259,6 +2259,17 @@ class $HabitLogsTable extends HabitLogs
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2267,6 +2278,7 @@ class $HabitLogsTable extends HabitLogs
     habitId,
     date,
     count,
+    deletedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2325,6 +2337,12 @@ class $HabitLogsTable extends HabitLogs
     } else if (isInserting) {
       context.missing(_countMeta);
     }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
     return context;
   }
 
@@ -2362,6 +2380,10 @@ class $HabitLogsTable extends HabitLogs
         DriftSqlType.int,
         data['${effectivePrefix}count'],
       )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
     );
   }
 
@@ -2385,6 +2407,11 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
 
   /// Occurrences that day; build habits always log 1.
   final int count;
+
+  /// Undone check-in. The row stays so restoring one of its expenses brings
+  /// the same log back, and a new check-in that day reuses it (the
+  /// `(habitId, date)` key stays unique). Treated as count 0.
+  final DateTime? deletedAt;
   const HabitLogRow({
     required this.id,
     required this.createdAt,
@@ -2392,6 +2419,7 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
     required this.habitId,
     required this.date,
     required this.count,
+    this.deletedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2402,6 +2430,9 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
     map['habit_id'] = Variable<String>(habitId);
     map['date'] = Variable<String>(date);
     map['count'] = Variable<int>(count);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
     return map;
   }
 
@@ -2413,6 +2444,9 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
       habitId: Value(habitId),
       date: Value(date),
       count: Value(count),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
     );
   }
 
@@ -2428,6 +2462,7 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
       habitId: serializer.fromJson<String>(json['habitId']),
       date: serializer.fromJson<String>(json['date']),
       count: serializer.fromJson<int>(json['count']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
     );
   }
   @override
@@ -2440,6 +2475,7 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
       'habitId': serializer.toJson<String>(habitId),
       'date': serializer.toJson<String>(date),
       'count': serializer.toJson<int>(count),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
     };
   }
 
@@ -2450,6 +2486,7 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
     String? habitId,
     String? date,
     int? count,
+    Value<DateTime?> deletedAt = const Value.absent(),
   }) => HabitLogRow(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -2457,6 +2494,7 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
     habitId: habitId ?? this.habitId,
     date: date ?? this.date,
     count: count ?? this.count,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
   );
   HabitLogRow copyWithCompanion(HabitLogsCompanion data) {
     return HabitLogRow(
@@ -2466,6 +2504,7 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
       habitId: data.habitId.present ? data.habitId.value : this.habitId,
       date: data.date.present ? data.date.value : this.date,
       count: data.count.present ? data.count.value : this.count,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
     );
   }
 
@@ -2477,14 +2516,15 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
           ..write('updatedAt: $updatedAt, ')
           ..write('habitId: $habitId, ')
           ..write('date: $date, ')
-          ..write('count: $count')
+          ..write('count: $count, ')
+          ..write('deletedAt: $deletedAt')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(id, createdAt, updatedAt, habitId, date, count);
+      Object.hash(id, createdAt, updatedAt, habitId, date, count, deletedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2494,7 +2534,8 @@ class HabitLogRow extends DataClass implements Insertable<HabitLogRow> {
           other.updatedAt == this.updatedAt &&
           other.habitId == this.habitId &&
           other.date == this.date &&
-          other.count == this.count);
+          other.count == this.count &&
+          other.deletedAt == this.deletedAt);
 }
 
 class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
@@ -2504,6 +2545,7 @@ class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
   final Value<String> habitId;
   final Value<String> date;
   final Value<int> count;
+  final Value<DateTime?> deletedAt;
   final Value<int> rowid;
   const HabitLogsCompanion({
     this.id = const Value.absent(),
@@ -2512,6 +2554,7 @@ class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
     this.habitId = const Value.absent(),
     this.date = const Value.absent(),
     this.count = const Value.absent(),
+    this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HabitLogsCompanion.insert({
@@ -2521,6 +2564,7 @@ class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
     required String habitId,
     required String date,
     required int count,
+    this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
@@ -2535,6 +2579,7 @@ class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
     Expression<String>? habitId,
     Expression<String>? date,
     Expression<int>? count,
+    Expression<DateTime>? deletedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2544,6 +2589,7 @@ class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
       if (habitId != null) 'habit_id': habitId,
       if (date != null) 'date': date,
       if (count != null) 'count': count,
+      if (deletedAt != null) 'deleted_at': deletedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2555,6 +2601,7 @@ class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
     Value<String>? habitId,
     Value<String>? date,
     Value<int>? count,
+    Value<DateTime?>? deletedAt,
     Value<int>? rowid,
   }) {
     return HabitLogsCompanion(
@@ -2564,6 +2611,7 @@ class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
       habitId: habitId ?? this.habitId,
       date: date ?? this.date,
       count: count ?? this.count,
+      deletedAt: deletedAt ?? this.deletedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2589,6 +2637,9 @@ class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
     if (count.present) {
       map['count'] = Variable<int>(count.value);
     }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2604,6 +2655,7 @@ class HabitLogsCompanion extends UpdateCompanion<HabitLogRow> {
           ..write('habitId: $habitId, ')
           ..write('date: $date, ')
           ..write('count: $count, ')
+          ..write('deletedAt: $deletedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5069,6 +5121,7 @@ typedef $$HabitLogsTableCreateCompanionBuilder = HabitLogsCompanion Function({
   required String habitId,
   required String date,
   required int count,
+  Value<DateTime?> deletedAt,
   Value<int> rowid,
 });
 typedef $$HabitLogsTableUpdateCompanionBuilder = HabitLogsCompanion Function({
@@ -5078,6 +5131,7 @@ typedef $$HabitLogsTableUpdateCompanionBuilder = HabitLogsCompanion Function({
   Value<String> habitId,
   Value<String> date,
   Value<int> count,
+  Value<DateTime?> deletedAt,
   Value<int> rowid,
 });
 
@@ -5152,6 +5206,11 @@ class $$HabitLogsTableFilterComposer
 
   ColumnFilters<int> get count => $composableBuilder(
     column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5238,6 +5297,11 @@ class $$HabitLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$HabitsTableOrderingComposer get habitId {
     final $$HabitsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -5285,6 +5349,9 @@ class $$HabitLogsTableAnnotationComposer
 
   GeneratedColumn<int> get count =>
       $composableBuilder(column: $table.count, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
 
   $$HabitsTableAnnotationComposer get habitId {
     final $$HabitsTableAnnotationComposer composer = $composerBuilder(
@@ -5369,6 +5436,7 @@ class $$HabitLogsTableTableManager
                 Value<String> habitId = const Value.absent(),
                 Value<String> date = const Value.absent(),
                 Value<int> count = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => HabitLogsCompanion(
                 id: id,
@@ -5377,6 +5445,7 @@ class $$HabitLogsTableTableManager
                 habitId: habitId,
                 date: date,
                 count: count,
+                deletedAt: deletedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5387,6 +5456,7 @@ class $$HabitLogsTableTableManager
                 required String habitId,
                 required String date,
                 required int count,
+                Value<DateTime?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => HabitLogsCompanion.insert(
                 id: id,
@@ -5395,6 +5465,7 @@ class $$HabitLogsTableTableManager
                 habitId: habitId,
                 date: date,
                 count: count,
+                deletedAt: deletedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

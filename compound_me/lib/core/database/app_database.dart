@@ -26,9 +26,10 @@ class AppDatabase extends _$AppDatabase {
 
   static const fileName = 'compoundme.db';
 
-  /// 1 = phase 0, which shipped an empty schema; 2 = full phase 1 schema.
+  /// 1 = phase 0, which shipped an empty schema; 2 = full phase 1 schema;
+  /// 3 = soft-deleted habit logs. Snapshots live in drift_schemas/.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -38,9 +39,14 @@ class AppDatabase extends _$AppDatabase {
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
-        // Version 1 had no tables, so upgrading is the same as creating.
+        // Version 1 had no tables, so upgrading is the same as creating,
+        // and createAll already builds the latest schema.
         await m.createAll();
         await seedDefaultCategories(this, now: DateTime.now());
+        return;
+      }
+      if (from < 3) {
+        await m.addColumn(habitLogs, habitLogs.deletedAt);
       }
     },
     beforeOpen: (details) async {

@@ -230,6 +230,45 @@ void main() {
       expect(await balance(), 50000);
     });
 
+    test('deleting the only check-in expense and restoring it brings back '
+        'the same check-in', () async {
+      final id = await habits.create(coffee());
+      await habits.toggleCheckIn(id, today);
+      final log = (await habits.watchLogs(id).first).single;
+      final expense = (await activeCheckInExpenses()).single;
+
+      await transactions.softDelete(expense.id);
+      expect(await habits.watchLogs(id).first, isEmpty);
+      expect(await habits.watchLogsOn(today).first, isEmpty);
+      expect(await balance(), 100000);
+
+      await transactions.restore(expense.id);
+      final restored = (await habits.watchLogs(id).first).single;
+      expect(restored.id, log.id);
+      expect(restored.count, 1);
+      expect((await habits.watchLogsOn(today).first).single.id, log.id);
+      expect((await transactions.findById(expense.id))!.habitLogId, log.id);
+      expect(await balance(), 75000);
+    });
+
+    test('an undone check-in is kept as a deleted row and reused', () async {
+      final id = await habits.create(coffee());
+      await habits.toggleCheckIn(id, today);
+      final log = (await habits.watchLogs(id).first).single;
+
+      await habits.toggleCheckIn(id, today);
+      final stored = await db.select(db.habitLogs).get();
+      expect(stored.single.id, log.id);
+      expect(stored.single.deletedAt, isNotNull);
+      expect(await habits.watchLogs(id).first, isEmpty);
+
+      expect(await habits.toggleCheckIn(id, today), 1);
+      final reused = await db.select(db.habitLogs).get();
+      expect(reused.single.id, log.id);
+      expect(reused.single.deletedAt, isNull);
+      expect(await balance(), 75000);
+    });
+
     test('backdated check-ins are placed at local noon of that day', () async {
       final id = await habits.create(coffee());
       final yesterday = today.addDays(-1);
@@ -295,6 +334,52 @@ void main() {
 
       await habits.delete(id);
       expect(await habits.findById(id), isNull);
+    });
+
+    test('an undone check-in does not block deleting the habit', () async {
+      final id = await habits.create(reading);
+      await habits.toggleCheckIn(id, today);
+      await habits.toggleCheckIn(id, today);
+
+      await habits.delete(id);
+      expect(await habits.findById(id), isNull);
+      expect(await db.select(db.habitLogs).get(), isEmpty);
+    });
+
+    test('switching kind after an undo drops the undone check-in', () async {
+      final id = await habits.create(coffee());
+      await habits.toggleCheckIn(id, today);
+      final expense = (await activeCheckInExpenses()).single;
+      await habits.toggleCheckIn(id, today);
+
+      await habits.update(id, reading);
+      expect(await db.select(db.habitLogs).get(), isEmpty);
+
+      await transactions.restore(expense.id);
+      expect(
+        (await transactions.findById(expense.id))!.habitLogId,
+        isNull,
+        reason: 'a build habit has no expenses, so it returns as a plain one',
+      );
+      expect(await habits.watchLogs(id).first, isEmpty);
+      expect(await balance(), 75000);
+    });
+
+    test('purge removes check-ins undone over 30 days ago', () async {
+      clock.now = DateTime(2026, 8, 1, 9);
+      final old = await habits.create(coffee());
+      await habits.toggleCheckIn(old, LocalDate(2026, 8, 1));
+      await habits.toggleCheckIn(old, LocalDate(2026, 8, 1));
+      clock.now = DateTime(2026, 9, 20, 9);
+      final recent = await habits.create(reading);
+      await habits.toggleCheckIn(recent, LocalDate(2026, 9, 20));
+      await habits.toggleCheckIn(recent, LocalDate(2026, 9, 20));
+      clock.now = DateTime(2026, 9, 27, 9);
+
+      expect(await transactions.purgeDeleted(), 1, reason: 'the old expense');
+      final left = await db.select(db.habitLogs).get();
+      expect(left.map((l) => l.habitId), [recent]);
+      expect(await db.select(db.transactions).get(), isEmpty);
     });
 
     test('update, reorder and log ranges', () async {

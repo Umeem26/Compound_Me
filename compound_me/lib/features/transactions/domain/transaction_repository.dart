@@ -21,9 +21,10 @@ abstract interface class TransactionRepository {
   /// expense also removes that occurrence from the habit log.
   Future<void> softDelete(String id);
 
+  /// Undoes [softDelete], including the check-in occurrence it removed.
   Future<void> restore(String id);
 
-  /// Permanently removes transactions deleted more than [olderThan] ago.
-  /// Returns how many rows were removed.
+  /// Permanently removes transactions and undone habit check-ins deleted
+  /// more than [olderThan] ago. Returns how many transactions were removed.
   Future<int> purgeDeleted({Duration olderThan = retention});
 }

@@ -31,6 +31,7 @@ abstract interface class HabitRepository {
   Future<void> delete(String id);
 
   /// Logs of one habit, oldest first, optionally limited to [from]–[to].
+  /// Undone check-ins are never listed, here or in [watchLogsOn].
   Stream<List<HabitLog>> watchLogs(
     String habitId, {
     LocalDate? from,

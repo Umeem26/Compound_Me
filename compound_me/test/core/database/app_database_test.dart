@@ -5,11 +5,13 @@ import 'package:compound_me/core/design/tokens.dart';
 import 'package:compound_me/core/l10n/app_localizations.dart';
 import 'package:compound_me/core/l10n/category_names.dart';
 import 'package:compound_me/features/categories/domain/category.dart';
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
+import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../generated_migrations/schema.dart';
 import '../../helpers/test_database.dart';
 
 const _now = '2026-09-27T10:00:00.000Z';
@@ -77,7 +79,34 @@ void main() {
 
       expect(await db.select(db.categories).get(), hasLength(12));
       final version = await db.customSelect('PRAGMA user_version').getSingle();
-      expect(version.data.values.single, 2);
+      expect(version.data.values.single, 3);
+      expect(await db.select(db.habitLogs).get(), isEmpty);
+    });
+
+    test('upgrades schema 2 to 3 and keeps existing check-ins', () async {
+      driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+      final verifier = SchemaVerifier(GeneratedHelper());
+      final schema = await verifier.schemaAt(2);
+      schema.rawDatabase
+        ..execute(
+          'INSERT INTO habits (id, name, kind, icon_key, color_key, '
+          "schedule_type, created_at, updated_at) VALUES ('h', 'Baca', "
+          "'build', 'gift', 'teal', 'daily', '$_now', '$_now')",
+        )
+        ..execute(
+          'INSERT INTO habit_logs (id, habit_id, date, count, created_at, '
+          "updated_at) VALUES ('l', 'h', '2026-09-26', 1, '$_now', '$_now')",
+        );
+      final db = AppDatabase(schema.newConnection());
+      addTearDown(db.close);
+
+      // Also checks the result matches a fresh v3 schema, unique keys
+      // included.
+      await verifier.migrateAndValidate(db, 3);
+      final log = await db.select(db.habitLogs).getSingle();
+      expect(log.id, 'l');
+      expect(log.count, 1);
+      expect(log.deletedAt, isNull);
     });
   });
 

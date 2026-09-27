@@ -9,21 +9,34 @@ import 'package:drift/drift.dart';
 /// expense per reduce occurrence, linked by habitLogId). The only place that
 /// writes both tables. Every method must run inside the caller's
 /// `db.transaction` so a log never exists without its transactions.
+///
+/// An undone check-in is soft deleted, never removed, so restoring one of
+/// its expenses brings back the same log and link. A soft-deleted log counts
+/// as 0 occurrences.
 class HabitLedger {
   HabitLedger(this._db);
 
   final AppDatabase _db;
 
-  Future<HabitLogRow?> findLog(String habitId, LocalDate date) =>
-      (_db.select(_db.habitLogs)..where(
-            (l) => l.habitId.equals(habitId) & l.date.equals(date.toIso()),
-          ))
-          .getSingleOrNull();
+  /// The active log of [habitId] on [date], if any.
+  Future<HabitLogRow?> findLog(String habitId, LocalDate date) async {
+    final row = await _findRow(habitId, date);
+    return row?.deletedAt == null ? row : null;
+  }
+
+  Future<bool> hasActiveLogs(String habitId) async {
+    final l = _db.habitLogs;
+    final query = _db.selectOnly(l)
+      ..addColumns([l.id])
+      ..where(l.habitId.equals(habitId) & l.deletedAt.isNull())
+      ..limit(1);
+    return await query.getSingleOrNull() != null;
+  }
 
   /// Sets the occurrences of [habit] on [date] to [count]. For reduce
   /// habits, raising the count adds one expense per occurrence at
   /// [occurredAt]; lowering it soft deletes the newest ones. A count of 0
-  /// removes the log. Returns the new count.
+  /// soft deletes the log. Returns the new count.
   Future<int> setCount(
     HabitRow habit,
     LocalDate date,
@@ -31,12 +44,12 @@ class HabitLedger {
     required DateTime now,
     required DateTime occurredAt,
   }) async {
-    final log = await findLog(habit.id, date);
-    final current = log?.count ?? 0;
+    final row = await _findRow(habit.id, date);
+    final current = row == null ? 0 : _activeCount(row);
     if (count == current) return current;
 
-    var logId = log?.id;
-    if (log == null) {
+    final String logId;
+    if (row == null) {
       logId = newId();
       await _db
           .into(_db.habitLogs)
@@ -50,22 +63,22 @@ class HabitLedger {
               updatedAt: now,
             ),
           );
-    } else if (count > 0) {
-      await _writeCount(log.id, count, now);
+    } else {
+      logId = row.id;
+      if (count > 0) {
+        // Also revives an undone log, keeping (habitId, date) unique.
+        await _writeCount(logId, count, now);
+      } else {
+        await _softDeleteLog(logId, now);
+      }
     }
 
     if (habit.kind == HabitKind.reduce) {
       if (count > current) {
-        await _addOccurrences(habit, logId!, count - current, occurredAt, now);
+        await _addOccurrences(habit, logId, count - current, occurredAt, now);
       } else {
-        await _softDeleteNewest(logId!, current - count, now);
+        await _softDeleteNewest(logId, current - count, now);
       }
-    }
-
-    if (count == 0 && log != null) {
-      // habit_logs → transactions is ON DELETE SET NULL, so the soft-deleted
-      // expenses stay in the trash, unlinked, until they are purged.
-      await (_db.delete(_db.habitLogs)..where((l) => l.id.equals(log.id))).go();
     }
     return count;
   }
@@ -74,20 +87,42 @@ class HabitLedger {
   /// the check-in loses that occurrence too.
   Future<void> onTransactionDeleted(String habitLogId, DateTime now) async {
     final log = await _logById(habitLogId);
-    if (log == null) return;
+    if (log == null || log.deletedAt != null) return;
     if (log.count <= 1) {
-      await (_db.delete(_db.habitLogs)..where((l) => l.id.equals(log.id))).go();
+      await _softDeleteLog(log.id, now);
     } else {
       await _writeCount(log.id, log.count - 1, now);
     }
   }
 
-  /// A deleted check-in expense was restored while its log still exists.
+  /// A deleted check-in expense was restored: its occurrence comes back,
+  /// reviving the log if that was its last one.
   Future<void> onTransactionRestored(String habitLogId, DateTime now) async {
     final log = await _logById(habitLogId);
     if (log == null) return;
-    await _writeCount(log.id, log.count + 1, now);
+    await _writeCount(log.id, _activeCount(log) + 1, now);
   }
+
+  /// Removes the undone logs of [habitId] for good. Their deleted expenses
+  /// lose the link (ON DELETE SET NULL) and restore as plain expenses.
+  Future<void> dropDeletedLogs(String habitId) => (_db.delete(
+    _db.habitLogs,
+  )..where((l) => l.habitId.equals(habitId) & l.deletedAt.isNotNull())).go();
+
+  /// Removes logs undone before [cutoff] for good.
+  Future<int> purgeDeletedLogs(DateTime cutoff) => (_db.delete(
+    _db.habitLogs,
+  )..where((l) => l.deletedAt.isSmallerThanValue(cutoff))).go();
+
+  static int _activeCount(HabitLogRow log) =>
+      log.deletedAt == null ? log.count : 0;
+
+  /// Includes an undone log so a new check-in that day can reuse it.
+  Future<HabitLogRow?> _findRow(String habitId, LocalDate date) =>
+      (_db.select(_db.habitLogs)..where(
+            (l) => l.habitId.equals(habitId) & l.date.equals(date.toIso()),
+          ))
+          .getSingleOrNull();
 
   Future<HabitLogRow?> _logById(String id) => (_db.select(
     _db.habitLogs,
@@ -95,7 +130,18 @@ class HabitLedger {
 
   Future<void> _writeCount(String logId, int count, DateTime now) =>
       (_db.update(_db.habitLogs)..where((l) => l.id.equals(logId))).write(
-        HabitLogsCompanion(count: Value(count), updatedAt: Value(now)),
+        HabitLogsCompanion(
+          count: Value(count),
+          deletedAt: const Value(null),
+          updatedAt: Value(now),
+        ),
+      );
+
+  /// Keeps the stored count: the CHECK needs it ≥ 1, and deletedAt already
+  /// makes it read as 0.
+  Future<void> _softDeleteLog(String logId, DateTime now) =>
+      (_db.update(_db.habitLogs)..where((l) => l.id.equals(logId))).write(
+        HabitLogsCompanion(deletedAt: Value(now), updatedAt: Value(now)),
       );
 
   Future<void> _addOccurrences(

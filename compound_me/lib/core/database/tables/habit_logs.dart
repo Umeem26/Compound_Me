@@ -19,6 +19,11 @@ class HabitLogs extends Table with SyncColumns {
   /// Occurrences that day; build habits always log 1.
   IntColumn get count => integer().check(count.isBiggerOrEqualValue(1))();
 
+  /// Undone check-in. The row stays so restoring one of its expenses brings
+  /// the same log back, and a new check-in that day reuses it (the
+  /// `(habitId, date)` key stays unique). Treated as count 0.
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
   List<Set<Column<Object>>> get uniqueKeys => [
     {habitId, date},

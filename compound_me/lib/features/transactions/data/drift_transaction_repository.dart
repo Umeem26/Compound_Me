@@ -148,8 +148,9 @@ class DriftTransactionRepository implements TransactionRepository {
     if (row.deletedAt == null) return;
     final now = _now;
     await _setDeletedAt(id, null);
-    // If the check-in itself is gone, its link was nulled by the foreign key
-    // and the expense comes back as a plain one.
+    // An undone check-in comes back with this occurrence. If the log was
+    // removed for good, the foreign key nulled the link and the expense
+    // comes back as a plain one.
     if (row.habitLogId != null) {
       await _ledger.onTransactionRestored(row.habitLogId!, now);
     }
@@ -160,9 +161,14 @@ class DriftTransactionRepository implements TransactionRepository {
     Duration olderThan = TransactionRepository.retention,
   }) {
     final cutoff = toStoredUtc(_clock().subtract(olderThan));
-    return (_db.delete(
-      _db.transactions,
-    )..where((t) => t.deletedAt.isSmallerThanValue(cutoff))).go();
+    return _db.transaction(() async {
+      final removed = await (_db.delete(
+        _db.transactions,
+      )..where((t) => t.deletedAt.isSmallerThanValue(cutoff))).go();
+      // Undone check-ins share the same undo window as their expenses.
+      await _ledger.purgeDeletedLogs(cutoff);
+      return removed;
+    });
   }
 
   Future<TransactionRow?> _find(String id) => (_db.select(
