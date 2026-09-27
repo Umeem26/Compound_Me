@@ -59,4 +59,40 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get undoAction => 'Urungkan';
+
+  @override
+  String get catFood => 'Makanan & minuman';
+
+  @override
+  String get catTransport => 'Transportasi';
+
+  @override
+  String get catShopping => 'Belanja';
+
+  @override
+  String get catBills => 'Tagihan';
+
+  @override
+  String get catEntertainment => 'Hiburan';
+
+  @override
+  String get catHealth => 'Kesehatan';
+
+  @override
+  String get catEducation => 'Pendidikan';
+
+  @override
+  String get catOtherExpense => 'Lainnya';
+
+  @override
+  String get catAllowance => 'Uang saku / gaji';
+
+  @override
+  String get catFreelance => 'Freelance';
+
+  @override
+  String get catGift => 'Hadiah';
+
+  @override
+  String get catOtherIncome => 'Lainnya';
 }

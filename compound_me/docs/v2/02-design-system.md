@@ -264,7 +264,28 @@ Tema gelap bukan inversi. Gunakan kolom "Gelap" di tabel token. Aturan tambahan:
 - Aksen emas pindah ke `gold300`.
 - Tanpa bayangan. Elevasi = `surface` → `surfaceMuted`.
 - Teks utama `#E8EEEC` (bukan putih murni) untuk mengurangi silau.
-- Warna pressed dan tint tema gelap diturunkan di `tokens.dart` pada Fase 0 (kontras sudah dicek). Nilainya ditambahkan ke bagian ini oleh Claude Code di Fase 1, supaya dokumen tetap jadi sumber kebenaran.
+- Warna pressed dan tint tema gelap diturunkan di `tokens.dart` pada Fase 0, karena tabel §3 hanya memberi nilai terang. Nilai dan kontrasnya dicatat di tabel berikut supaya dokumen tetap jadi sumber kebenaran.
+
+### 11.1 Token turunan (peran warna tambahan)
+
+Rasio kontras dihitung dengan rumus WCAG 2.2. "Campur X% A di atas B" berarti warna solid hasil blending, bukan transparansi.
+
+| Token | Tema | Hex | Asal | Dipakai dengan | Kontras |
+|---|---|---|---|---|---|
+| `primaryPressed` | Terang | `#004D40` | `teal800` | Teks putih | 9,83 |
+| `primaryPressed` | Gelap | `#3B978E` | Campur 24% `teal900` di atas `teal400` | Teks `teal900` | 3,97 |
+| `primaryTint` | Terang | `#E6F2F0` | `teal50` | Teks `teal700` | 5,77 |
+| `primaryTint` | Gelap | `#1D3531` | Campur 16% `teal400` di atas `surface` gelap | Teks `teal400` | 5,36 |
+| `primaryTintPressed` | Terang | `#CCE5E1` | `teal100` | Teks `teal700` | 5,00 |
+| `primaryTintPressed` | Gelap | `#22413D` | Campur 24% `teal400` di atas `surface` gelap | Teks `teal400` | 4,55 |
+| `onDanger` | Terang | `#FFFFFF` | Putih | Latar `danger` `#C53B3B` | 5,17 |
+| `onDanger` | Gelap | `#00332E` | `teal900` | Latar `danger` `#F07070` | 4,80 |
+| `inverseSurface` / `onInverseSurface` | Terang | `#121917` / `#F7F9F8` | `textPrimary` / `bg` terang | Snackbar | 16,87 |
+| `inversePrimary` | Terang | `#4DB6AC` | `teal400` | Aksi "Urungkan" di `#121917` | 7,31 |
+| `inverseSurface` / `onInverseSurface` | Gelap | `#E8EEEC` / `#0C1211` | `textPrimary` / `bg` gelap | Snackbar | 16,10 |
+| `inversePrimary` | Gelap | `#00695C` | `teal700` | Aksi "Urungkan" di `#E8EEEC` | 5,63 |
+
+Catatan: `primaryPressed` gelap (3,97) hanya tampil selama tombol ditekan (120 ms) dan teksnya `label` 600. `teal700` tidak dipakai sebagai pressed gelap karena teks `teal900` di atasnya hanya 2,10.
 
 ## 12. Implementasi di Flutter (ringkas)
 

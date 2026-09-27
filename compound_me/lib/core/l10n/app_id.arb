@@ -63,5 +63,53 @@
   "undoAction": "Urungkan",
   "@undoAction": {
     "description": "Action on the undo snackbar."
+  },
+  "catFood": "Makanan & minuman",
+  "@catFood": {
+    "description": "Default expense category name (stored as nameKey catFood)."
+  },
+  "catTransport": "Transportasi",
+  "@catTransport": {
+    "description": "Default expense category name (stored as nameKey catTransport)."
+  },
+  "catShopping": "Belanja",
+  "@catShopping": {
+    "description": "Default expense category name (stored as nameKey catShopping)."
+  },
+  "catBills": "Tagihan",
+  "@catBills": {
+    "description": "Default expense category name (stored as nameKey catBills)."
+  },
+  "catEntertainment": "Hiburan",
+  "@catEntertainment": {
+    "description": "Default expense category name (stored as nameKey catEntertainment)."
+  },
+  "catHealth": "Kesehatan",
+  "@catHealth": {
+    "description": "Default expense category name (stored as nameKey catHealth)."
+  },
+  "catEducation": "Pendidikan",
+  "@catEducation": {
+    "description": "Default expense category name (stored as nameKey catEducation)."
+  },
+  "catOtherExpense": "Lainnya",
+  "@catOtherExpense": {
+    "description": "Default expense category name (stored as nameKey catOtherExpense)."
+  },
+  "catAllowance": "Uang saku / gaji",
+  "@catAllowance": {
+    "description": "Default income category name (stored as nameKey catAllowance)."
+  },
+  "catFreelance": "Freelance",
+  "@catFreelance": {
+    "description": "Default income category name (stored as nameKey catFreelance)."
+  },
+  "catGift": "Hadiah",
+  "@catGift": {
+    "description": "Default income category name (stored as nameKey catGift)."
+  },
+  "catOtherIncome": "Lainnya",
+  "@catOtherIncome": {
+    "description": "Default income category name (stored as nameKey catOtherIncome)."
   }
 }

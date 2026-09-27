@@ -15,5 +15,17 @@
   "insightsEmptyBody": "Log every day, then see the patterns here.",
   "profileEmptyTitle": "Your profile isn't set up yet",
   "profileEmptyBody": "Your nickname and wallets will be kept here.",
-  "undoAction": "Undo"
+  "undoAction": "Undo",
+  "catFood": "Food & drinks",
+  "catTransport": "Transport",
+  "catShopping": "Shopping",
+  "catBills": "Bills",
+  "catEntertainment": "Entertainment",
+  "catHealth": "Health",
+  "catEducation": "Education",
+  "catOtherExpense": "Other",
+  "catAllowance": "Allowance / salary",
+  "catFreelance": "Freelance",
+  "catGift": "Gifts",
+  "catOtherIncome": "Other"
 }

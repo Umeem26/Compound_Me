@@ -175,9 +175,10 @@ Cloud sync + akun (Supabase, arsitektur sudah disiapkan di v2.0), widget layar u
   - AC: *Kurangi* boleh lebih dari 1 kejadian per hari (mis. 2 kopi): long-press → stepper jumlah. Setiap kejadian = 1 transaksi.
 - **US-08.3** Streak tidak menghukum.
   - AC: Aturan "jangan bolong dua kali": satu hari terjadwal yang terlewat tidak memutus streak (ditandai sebagai *hari longgar*). Dua hari terjadwal berturut-turut terlewat baru mereset streak.
-  - AC: Tampilkan juga "konsistensi 30 hari" (%) yang tidak pernah reset, sebagai metrik utama selain streak.
+  - AC: Hari longgar dibatasi: maksimal 1 dalam setiap 7 hari terjadwal (1 dalam setiap 7 minggu untuk streak mingguan). Kalau jatahnya sudah terpakai, hari terlewat berikutnya memutus streak walaupun tidak berturut-turut, sehingga pola selang-seling (check-in, bolong, check-in, bolong) tidak bisa menjaga streak.
+  - AC: Untuk kebiasaan *Bangun*, tampilkan juga "konsistensi 30 hari" (%) yang tidak pernah reset, sebagai metrik utama selain streak. Kebiasaan *Kurangi* tidak memakai konsistensi. Ukurannya batas mingguan.
 - **US-08.4** Saya bisa melihat riwayat kebiasaan.
-  - AC: Detail kebiasaan menampilkan kalender bulan (hari check-in, hari longgar, hari terlewat), streak saat ini, streak terbaik, konsistensi 30 hari, dan total biaya (untuk *Kurangi*).
+  - AC: Detail kebiasaan menampilkan kalender bulan (hari check-in, hari longgar, hari terlewat), streak saat ini, streak terbaik, konsistensi 30 hari (*Bangun*), dan total biaya (untuk *Kurangi*).
 
 ### F-09 Compound Insights
 - **US-09.1** Saya tahu seberapa besar kebiasaan menggerogoti uang saya.

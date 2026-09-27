@@ -193,6 +193,78 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Urungkan'**
   String get undoAction;
+
+  /// Default expense category name (stored as nameKey catFood).
+  ///
+  /// In id, this message translates to:
+  /// **'Makanan & minuman'**
+  String get catFood;
+
+  /// Default expense category name (stored as nameKey catTransport).
+  ///
+  /// In id, this message translates to:
+  /// **'Transportasi'**
+  String get catTransport;
+
+  /// Default expense category name (stored as nameKey catShopping).
+  ///
+  /// In id, this message translates to:
+  /// **'Belanja'**
+  String get catShopping;
+
+  /// Default expense category name (stored as nameKey catBills).
+  ///
+  /// In id, this message translates to:
+  /// **'Tagihan'**
+  String get catBills;
+
+  /// Default expense category name (stored as nameKey catEntertainment).
+  ///
+  /// In id, this message translates to:
+  /// **'Hiburan'**
+  String get catEntertainment;
+
+  /// Default expense category name (stored as nameKey catHealth).
+  ///
+  /// In id, this message translates to:
+  /// **'Kesehatan'**
+  String get catHealth;
+
+  /// Default expense category name (stored as nameKey catEducation).
+  ///
+  /// In id, this message translates to:
+  /// **'Pendidikan'**
+  String get catEducation;
+
+  /// Default expense category name (stored as nameKey catOtherExpense).
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get catOtherExpense;
+
+  /// Default income category name (stored as nameKey catAllowance).
+  ///
+  /// In id, this message translates to:
+  /// **'Uang saku / gaji'**
+  String get catAllowance;
+
+  /// Default income category name (stored as nameKey catFreelance).
+  ///
+  /// In id, this message translates to:
+  /// **'Freelance'**
+  String get catFreelance;
+
+  /// Default income category name (stored as nameKey catGift).
+  ///
+  /// In id, this message translates to:
+  /// **'Hadiah'**
+  String get catGift;
+
+  /// Default income category name (stored as nameKey catOtherIncome).
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get catOtherIncome;
 }
 
 class _AppLocalizationsDelegate
