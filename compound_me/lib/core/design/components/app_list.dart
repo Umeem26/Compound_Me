@@ -27,6 +27,9 @@ class AppListGroup extends StatelessWidget {
             ),
             child: Semantics(
               header: true,
+              // Its own node, or a one-row group reads as "Tentang, Tentang
+              // CompoundMe" to screen readers.
+              container: true,
               child: Text(
                 title!,
                 style: AppTextStyles.label.copyWith(
@@ -87,69 +90,74 @@ class AppListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.tokens.colors;
     final chevron = showChevron ?? onTap != null;
-    return InkWell(
-      onTap: onTap,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: AppSizes.row),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space4,
-            vertical: AppSpacing.space2,
-          ),
-          child: Row(
-            children: [
-              if (leading != null) ...[
-                leading!,
-                const SizedBox(width: AppSpacing.space3),
-              ],
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      title,
-                      style: AppTextStyles.body.copyWith(
-                        color: destructive ? colors.danger : colors.textPrimary,
-                      ),
-                    ),
-                    if (subtitle != null)
+    return Semantics(
+      container: true,
+      child: InkWell(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: AppSizes.row),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.space4,
+              vertical: AppSpacing.space2,
+            ),
+            child: Row(
+              children: [
+                if (leading != null) ...[
+                  leading!,
+                  const SizedBox(width: AppSpacing.space3),
+                ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Text(
-                        subtitle!,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: colors.textSecondary,
+                        title,
+                        style: AppTextStyles.body.copyWith(
+                          color: destructive
+                              ? colors.danger
+                              : colors.textPrimary,
                         ),
                       ),
-                  ],
+                      if (subtitle != null)
+                        Text(
+                          subtitle!,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              if (value != null) ...[
-                const SizedBox(width: AppSpacing.space2),
-                Flexible(
-                  child: Text(
-                    value!,
-                    style: AppTextStyles.body.copyWith(
-                      color: colors.textSecondary,
+                if (value != null) ...[
+                  const SizedBox(width: AppSpacing.space2),
+                  Flexible(
+                    child: Text(
+                      value!,
+                      style: AppTextStyles.body.copyWith(
+                        color: colors.textSecondary,
+                      ),
+                      textAlign: TextAlign.end,
                     ),
-                    textAlign: TextAlign.end,
                   ),
-                ),
-              ],
-              if (trailing != null) ...[
-                const SizedBox(width: AppSpacing.space2),
-                trailing!,
-              ],
-              if (chevron) ...[
-                const SizedBox(width: AppSpacing.space1),
-                ExcludeSemantics(
-                  child: Icon(
-                    AppIcons.caretRight,
-                    size: AppSizes.iconSm,
-                    color: colors.textTertiary,
+                ],
+                if (trailing != null) ...[
+                  const SizedBox(width: AppSpacing.space2),
+                  trailing!,
+                ],
+                if (chevron) ...[
+                  const SizedBox(width: AppSpacing.space1),
+                  ExcludeSemantics(
+                    child: Icon(
+                      AppIcons.caretRight,
+                      size: AppSizes.iconSm,
+                      color: colors.textTertiary,
+                    ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

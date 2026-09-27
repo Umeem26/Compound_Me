@@ -116,6 +116,29 @@ void main() {
     expect(controller.text, 'Rak', reason: 'maxLength stops typing');
   });
 
+  testWidgets('a group title is read apart from its only row', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        AppListGroup(
+          title: 'Tentang',
+          children: [
+            AppListTile(
+              title: 'Tentang CompoundMe',
+              value: '1.0.0',
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.bySemanticsLabel('Tentang'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(RegExp('^Tentang CompoundMe')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('RowPicker reads label and value and opens on tap', (
     tester,
   ) async {
