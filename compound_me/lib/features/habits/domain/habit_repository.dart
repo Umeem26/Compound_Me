@@ -11,7 +11,9 @@ class HabitHasLogsException implements Exception {
 }
 
 abstract interface class HabitRepository {
-  /// Occurrences a reduce habit can log on one day (Flow C stepper).
+  /// Occurrences a reduce habit can log on one day (Flow C stepper). Only
+  /// input is capped: restoring a deleted check-in expense may push the
+  /// count above it, so the count always equals its active expenses.
   static const maxDailyCount = 10;
 
   Stream<List<Habit>> watchHabits({bool includeArchived = false});

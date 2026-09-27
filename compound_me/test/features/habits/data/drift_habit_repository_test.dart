@@ -251,6 +251,24 @@ void main() {
       expect(await balance(), 75000);
     });
 
+    test('restoring an expense may pass the daily input limit', () async {
+      final id = await habits.create(coffee());
+      const max = HabitRepository.maxDailyCount;
+      await habits.setCount(id, today, max);
+      final deleted = (await activeCheckInExpenses()).first;
+      await transactions.softDelete(deleted.id);
+      await habits.setCount(id, today, max);
+
+      await transactions.restore(deleted.id);
+      expect(await logCount(id), max + 1);
+      expect(await activeCheckInExpenses(), hasLength(max + 1));
+      await expectLater(
+        habits.setCount(id, today, max + 1),
+        _rejects(ValidationError.countOutOfRange),
+        reason: 'the limit still applies to input',
+      );
+    });
+
     test('an undone check-in is kept as a deleted row and reused', () async {
       final id = await habits.create(coffee());
       await habits.toggleCheckIn(id, today);
