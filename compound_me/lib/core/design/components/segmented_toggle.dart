@@ -140,7 +140,8 @@ class _Segment extends StatelessWidget {
                 color: selected ? colors.textPrimary : colors.textSecondary,
               ),
               textAlign: TextAlign.center,
-              maxLines: 1,
+              // Wraps instead of clipping at large text sizes (03 §5: 1.3).
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),

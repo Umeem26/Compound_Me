@@ -1051,6 +1051,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Link tidak bisa dibuka.'**
   String get linkOpenFailed;
+
+  /// Short name of the Indonesian language for the settings segment (S-43: Indonesia / English).
+  ///
+  /// In id, this message translates to:
+  /// **'Indonesia'**
+  String get languageIndonesianShort;
 }
 
 class _AppLocalizationsDelegate

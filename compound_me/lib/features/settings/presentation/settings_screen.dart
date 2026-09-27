@@ -36,7 +36,7 @@ class SettingsScreen extends ConsumerWidget {
                         options: [
                           SegmentedToggleOption(
                             value: 'id',
-                            label: l10n.languageIndonesian,
+                            label: l10n.languageIndonesianShort,
                           ),
                           SegmentedToggleOption(
                             value: 'en',

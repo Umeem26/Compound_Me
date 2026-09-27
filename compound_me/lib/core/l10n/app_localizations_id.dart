@@ -524,4 +524,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get linkOpenFailed => 'Link tidak bisa dibuka.';
+
+  @override
+  String get languageIndonesianShort => 'Indonesia';
 }

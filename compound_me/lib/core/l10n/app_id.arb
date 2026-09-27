@@ -694,5 +694,9 @@
   "linkOpenFailed": "Link tidak bisa dibuka.",
   "@linkOpenFailed": {
     "description": "Snackbar when the browser can't be opened."
+  },
+  "languageIndonesianShort": "Indonesia",
+  "@languageIndonesianShort": {
+    "description": "Short name of the Indonesian language for the settings segment (S-43: Indonesia / English)."
   }
 }

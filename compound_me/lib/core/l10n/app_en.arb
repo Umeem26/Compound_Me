@@ -158,5 +158,6 @@
   "aboutCreator": "Made by Hisyam Khaeru Umam",
   "aboutSource": "Source code on GitHub",
   "aboutLicenses": "Open source licenses",
-  "linkOpenFailed": "Couldn't open the link."
+  "linkOpenFailed": "Couldn't open the link.",
+  "languageIndonesianShort": "Indonesia"
 }
