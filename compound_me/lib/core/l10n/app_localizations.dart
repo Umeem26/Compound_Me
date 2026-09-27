@@ -781,6 +781,108 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Dompet dihapus'**
   String get walletDeletedDone;
+
+  /// Categories screen title (S-42).
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get categoriesTitle;
+
+  /// Segment for expense categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengeluaran'**
+  String get categoryKindExpense;
+
+  /// Segment for income categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Pemasukan'**
+  String get categoryKindIncome;
+
+  /// Row that opens the new category form.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah kategori'**
+  String get categoriesAdd;
+
+  /// Folded section with archived categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Diarsipkan ({count})'**
+  String categoriesArchived(int count);
+
+  /// Categories empty state title.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kategori aktif'**
+  String get categoriesEmptyTitle;
+
+  /// Categories empty state explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan kategori untuk jenis ini.'**
+  String get categoriesEmptyBody;
+
+  /// Title of the new category form.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori baru'**
+  String get categoryNewTitle;
+
+  /// Title of the edit category form.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah kategori'**
+  String get categoryEditTitle;
+
+  /// Label of the category name field.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kategori'**
+  String get fieldCategoryName;
+
+  /// Why a default category name can't be edited.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kategori bawaan mengikuti bahasa aplikasi.'**
+  String get categoryDefaultNameHelper;
+
+  /// Archives a category that is in use.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan kategori'**
+  String get categoryArchive;
+
+  /// Explains archiving a category.
+  ///
+  /// In id, this message translates to:
+  /// **'Disembunyikan dari pilihan, transaksinya tetap ada.'**
+  String get categoryArchiveHint;
+
+  /// Deletes a category nothing uses.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kategori'**
+  String get categoryDelete;
+
+  /// Why an unused category can be deleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum pernah dipakai, jadi bisa dihapus.'**
+  String get categoryDeleteHint;
+
+  /// Undo snackbar after archiving a category.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori diarsipkan'**
+  String get categoryArchivedDone;
+
+  /// Undo snackbar after deleting a category.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori dihapus'**
+  String get categoryDeletedDone;
 }
 
 class _AppLocalizationsDelegate

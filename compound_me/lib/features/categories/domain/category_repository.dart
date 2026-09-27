@@ -39,4 +39,8 @@ abstract interface class CategoryRepository {
   Future<void> unarchive(String id);
 
   Future<void> delete(String id);
+
+  /// Puts back a category removed by [delete] exactly as it was, for the
+  /// undo snackbar (03 §4).
+  Future<void> undoDelete(Category category);
 }

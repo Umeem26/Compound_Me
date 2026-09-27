@@ -494,5 +494,78 @@
   "walletDeletedDone": "Dompet dihapus",
   "@walletDeletedDone": {
     "description": "Undo snackbar after deleting a wallet."
+  },
+  "categoriesTitle": "Kategori",
+  "@categoriesTitle": {
+    "description": "Categories screen title (S-42)."
+  },
+  "categoryKindExpense": "Pengeluaran",
+  "@categoryKindExpense": {
+    "description": "Segment for expense categories."
+  },
+  "categoryKindIncome": "Pemasukan",
+  "@categoryKindIncome": {
+    "description": "Segment for income categories."
+  },
+  "categoriesAdd": "Tambah kategori",
+  "@categoriesAdd": {
+    "description": "Row that opens the new category form."
+  },
+  "categoriesArchived": "Diarsipkan ({count})",
+  "@categoriesArchived": {
+    "description": "Folded section with archived categories.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "categoriesEmptyTitle": "Belum ada kategori aktif",
+  "@categoriesEmptyTitle": {
+    "description": "Categories empty state title."
+  },
+  "categoriesEmptyBody": "Tambahkan kategori untuk jenis ini.",
+  "@categoriesEmptyBody": {
+    "description": "Categories empty state explanation."
+  },
+  "categoryNewTitle": "Kategori baru",
+  "@categoryNewTitle": {
+    "description": "Title of the new category form."
+  },
+  "categoryEditTitle": "Ubah kategori",
+  "@categoryEditTitle": {
+    "description": "Title of the edit category form."
+  },
+  "fieldCategoryName": "Nama kategori",
+  "@fieldCategoryName": {
+    "description": "Label of the category name field."
+  },
+  "categoryDefaultNameHelper": "Nama kategori bawaan mengikuti bahasa aplikasi.",
+  "@categoryDefaultNameHelper": {
+    "description": "Why a default category name can't be edited."
+  },
+  "categoryArchive": "Arsipkan kategori",
+  "@categoryArchive": {
+    "description": "Archives a category that is in use."
+  },
+  "categoryArchiveHint": "Disembunyikan dari pilihan, transaksinya tetap ada.",
+  "@categoryArchiveHint": {
+    "description": "Explains archiving a category."
+  },
+  "categoryDelete": "Hapus kategori",
+  "@categoryDelete": {
+    "description": "Deletes a category nothing uses."
+  },
+  "categoryDeleteHint": "Belum pernah dipakai, jadi bisa dihapus.",
+  "@categoryDeleteHint": {
+    "description": "Why an unused category can be deleted."
+  },
+  "categoryArchivedDone": "Kategori diarsipkan",
+  "@categoryArchivedDone": {
+    "description": "Undo snackbar after archiving a category."
+  },
+  "categoryDeletedDone": "Kategori dihapus",
+  "@categoryDeletedDone": {
+    "description": "Undo snackbar after deleting a category."
   }
 }

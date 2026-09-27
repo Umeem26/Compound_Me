@@ -369,4 +369,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get walletDeletedDone => 'Wallet deleted';
+
+  @override
+  String get categoriesTitle => 'Categories';
+
+  @override
+  String get categoryKindExpense => 'Expenses';
+
+  @override
+  String get categoryKindIncome => 'Income';
+
+  @override
+  String get categoriesAdd => 'Add category';
+
+  @override
+  String categoriesArchived(int count) {
+    return 'Archived ($count)';
+  }
+
+  @override
+  String get categoriesEmptyTitle => 'No active categories';
+
+  @override
+  String get categoriesEmptyBody => 'Add a category of this kind.';
+
+  @override
+  String get categoryNewTitle => 'New category';
+
+  @override
+  String get categoryEditTitle => 'Edit category';
+
+  @override
+  String get fieldCategoryName => 'Category name';
+
+  @override
+  String get categoryDefaultNameHelper =>
+      'Built-in category names follow the app language.';
+
+  @override
+  String get categoryArchive => 'Archive category';
+
+  @override
+  String get categoryArchiveHint =>
+      'Hidden from pickers; its transactions stay.';
+
+  @override
+  String get categoryDelete => 'Delete category';
+
+  @override
+  String get categoryDeleteHint =>
+      'It hasn\'t been used, so it can be deleted.';
+
+  @override
+  String get categoryArchivedDone => 'Category archived';
+
+  @override
+  String get categoryDeletedDone => 'Category deleted';
 }

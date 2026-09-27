@@ -8,4 +8,7 @@ abstract final class AppRoutes {
   static const wallets = '/me/wallets';
   static const walletNew = '/me/wallets/new';
   static String wallet(String id) => '/me/wallets/$id';
+  static const categories = '/me/categories';
+  static String categoryNew(String kind) => '/me/categories/new?kind=$kind';
+  static String category(String id) => '/me/categories/$id';
 }

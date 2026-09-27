@@ -372,4 +372,59 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get walletDeletedDone => 'Dompet dihapus';
+
+  @override
+  String get categoriesTitle => 'Kategori';
+
+  @override
+  String get categoryKindExpense => 'Pengeluaran';
+
+  @override
+  String get categoryKindIncome => 'Pemasukan';
+
+  @override
+  String get categoriesAdd => 'Tambah kategori';
+
+  @override
+  String categoriesArchived(int count) {
+    return 'Diarsipkan ($count)';
+  }
+
+  @override
+  String get categoriesEmptyTitle => 'Belum ada kategori aktif';
+
+  @override
+  String get categoriesEmptyBody => 'Tambahkan kategori untuk jenis ini.';
+
+  @override
+  String get categoryNewTitle => 'Kategori baru';
+
+  @override
+  String get categoryEditTitle => 'Ubah kategori';
+
+  @override
+  String get fieldCategoryName => 'Nama kategori';
+
+  @override
+  String get categoryDefaultNameHelper =>
+      'Nama kategori bawaan mengikuti bahasa aplikasi.';
+
+  @override
+  String get categoryArchive => 'Arsipkan kategori';
+
+  @override
+  String get categoryArchiveHint =>
+      'Disembunyikan dari pilihan, transaksinya tetap ada.';
+
+  @override
+  String get categoryDelete => 'Hapus kategori';
+
+  @override
+  String get categoryDeleteHint => 'Belum pernah dipakai, jadi bisa dihapus.';
+
+  @override
+  String get categoryArchivedDone => 'Kategori diarsipkan';
+
+  @override
+  String get categoryDeletedDone => 'Kategori dihapus';
 }

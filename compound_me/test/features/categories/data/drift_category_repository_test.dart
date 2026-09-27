@@ -113,6 +113,20 @@ void main() {
       await categories.delete(id);
       expect(await categories.findById(id), isNull);
     });
+
+    test('undo puts a deleted category back as it was', () async {
+      final id = await categories.create(_custom('Kopi'));
+      final before = (await categories.findById(id))!;
+
+      await categories.delete(id);
+      await categories.undoDelete(before);
+
+      final after = (await categories.findById(id))!;
+      expect(after.customName, 'Kopi');
+      expect(after.sortOrder, before.sortOrder);
+      expect(after.createdAt, before.createdAt);
+      expect(after.kind, CategoryKind.expense);
+    });
   });
 
   test('archive hides a category until it is restored', () async {

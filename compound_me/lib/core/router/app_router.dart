@@ -1,6 +1,9 @@
 import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/router/app_shell.dart';
 import 'package:compound_me/core/router/routes.dart';
+import 'package:compound_me/features/categories/domain/category.dart';
+import 'package:compound_me/features/categories/presentation/categories_screen.dart';
+import 'package:compound_me/features/categories/presentation/category_editor_screen.dart';
 import 'package:compound_me/features/habits/presentation/habits_screen.dart';
 import 'package:compound_me/features/home/presentation/home_screen.dart';
 import 'package:compound_me/features/insights/presentation/insights_screen.dart';
@@ -92,6 +95,30 @@ GoRouter appRouter(Ref ref) {
                         parentNavigatorKey: rootNavigator,
                         builder: (context, state) => WalletEditorScreen(
                           walletId: state.pathParameters['id'],
+                        ),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'categories',
+                    builder: (context, state) => const CategoriesScreen(),
+                    routes: [
+                      GoRoute(
+                        path: 'new',
+                        parentNavigatorKey: rootNavigator,
+                        builder: (context, state) => CategoryEditorScreen(
+                          kind:
+                              CategoryKind.values.asNameMap()[state
+                                  .uri
+                                  .queryParameters['kind']] ??
+                              CategoryKind.expense,
+                        ),
+                      ),
+                      GoRoute(
+                        path: ':id',
+                        parentNavigatorKey: rootNavigator,
+                        builder: (context, state) => CategoryEditorScreen(
+                          categoryId: state.pathParameters['id'],
                         ),
                       ),
                     ],

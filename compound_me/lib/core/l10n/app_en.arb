@@ -113,5 +113,22 @@
   "walletDeleteHint": "It hasn't been used, so it can be deleted.",
   "walletLastActive": "You need at least one active wallet.",
   "walletArchivedDone": "Wallet archived",
-  "walletDeletedDone": "Wallet deleted"
+  "walletDeletedDone": "Wallet deleted",
+  "categoriesTitle": "Categories",
+  "categoryKindExpense": "Expenses",
+  "categoryKindIncome": "Income",
+  "categoriesAdd": "Add category",
+  "categoriesArchived": "Archived ({count})",
+  "categoriesEmptyTitle": "No active categories",
+  "categoriesEmptyBody": "Add a category of this kind.",
+  "categoryNewTitle": "New category",
+  "categoryEditTitle": "Edit category",
+  "fieldCategoryName": "Category name",
+  "categoryDefaultNameHelper": "Built-in category names follow the app language.",
+  "categoryArchive": "Archive category",
+  "categoryArchiveHint": "Hidden from pickers; its transactions stay.",
+  "categoryDelete": "Delete category",
+  "categoryDeleteHint": "It hasn't been used, so it can be deleted.",
+  "categoryArchivedDone": "Category archived",
+  "categoryDeletedDone": "Category deleted"
 }
