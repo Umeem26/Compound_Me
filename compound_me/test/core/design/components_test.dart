@@ -19,6 +19,28 @@ void main() {
       expect(taps, 1);
     });
 
+    testWidgets('keeps its height in a loosely constrained slot', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: Scaffold(
+            body: const SizedBox.expand(),
+            bottomNavigationBar: PrimaryButton(
+              label: 'Simpan',
+              onPressed: () {},
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        tester.getSize(find.byType(PrimaryButton)).height,
+        AppSizes.buttonHeight,
+      );
+    });
+
     testWidgets('hugs its label when expand is false', (tester) async {
       await tester.pumpWidget(
         _wrap(
