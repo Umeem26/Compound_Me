@@ -306,7 +306,7 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 |---|---|
 | Hapus | Tidak pernah pakai dialog "Yakin?" untuk hal yang bisa di-undo. Pakai snackbar undo 4 detik. Dialog hanya untuk yang tidak bisa dibatalkan (hapus semua data). |
 | Simpan | Optimistic: UI langsung berubah, error ditampilkan lewat snackbar + rollback. |
-| Navigasi kembali | Tombol back sistem selalu bekerja. Sheet dengan input kotor minta konfirmasi. |
+| Navigasi kembali | Tombol back sistem selalu bekerja. **Sheet dan layar editor** dengan input kotor (belum disimpan) minta konfirmasi "Buang perubahan?" (Buang / Lanjut edit) saat ditutup lewat X, back, atau ketuk di luar sheet. Simpan tidak memicu konfirmasi. Sheet yang punya input mematikan tarik-tutup selama ada perubahan, karena tarikan menutup sheet tanpa konfirmasi (`UnsavedChangesGuard`, review PR #6). |
 | Keyboard | Field teks tidak pernah tertutup keyboard (`resizeToAvoidBottomInset` + scroll). |
 | Angka | Selalu tabular, selalu `Rp` di depan kecuali di grafik. |
 | Waktu | "Hari ini", "Kemarin", lalu nama hari untuk 7 hari terakhir, lalu tanggal lengkap. |

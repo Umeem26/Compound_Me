@@ -159,5 +159,9 @@
   "aboutSource": "Source code on GitHub",
   "aboutLicenses": "Open source licenses",
   "linkOpenFailed": "Couldn't open the link.",
-  "languageIndonesianShort": "Indonesia"
+  "languageIndonesianShort": "Indonesia",
+  "discardTitle": "Discard changes?",
+  "discardBody": "Your unsaved changes will be lost.",
+  "discardAction": "Discard",
+  "keepEditingAction": "Keep editing"
 }

@@ -9,10 +9,12 @@ import 'package:flutter/material.dart';
 
 /// Opens a bottom sheet with the motion tokens (§8) on the root navigator,
 /// so it covers the bottom navigation. The content moves above the
-/// keyboard.
+/// keyboard. Sheets that take input pass `enableDrag: false`, because a
+/// drag closes the sheet past an UnsavedChangesGuard.
 Future<T?> showAppSheet<T>(
   BuildContext context, {
   required WidgetBuilder builder,
+  bool enableDrag = true,
 }) {
   final duration = AppDurations.resolve(
     AppDurations.sheet,
@@ -23,6 +25,7 @@ Future<T?> showAppSheet<T>(
     useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
+    enableDrag: enableDrag,
     sheetAnimationStyle: AnimationStyle(
       duration: duration,
       reverseDuration: duration,

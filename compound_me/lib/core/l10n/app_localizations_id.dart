@@ -527,4 +527,16 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get languageIndonesianShort => 'Indonesia';
+
+  @override
+  String get discardTitle => 'Buang perubahan?';
+
+  @override
+  String get discardBody => 'Perubahan yang belum disimpan akan hilang.';
+
+  @override
+  String get discardAction => 'Buang';
+
+  @override
+  String get keepEditingAction => 'Lanjut edit';
 }

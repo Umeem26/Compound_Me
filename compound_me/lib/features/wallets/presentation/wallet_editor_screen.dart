@@ -77,6 +77,17 @@ class _WalletFormState extends ConsumerState<_WalletForm> {
   String? _nameError;
   bool _busy = false;
 
+  /// Anything differing from what the form opened with (03 §4).
+  bool get _hasChanges {
+    final wallet = _wallet;
+    const cash = WalletType.cash;
+    return _name.text.trim() != (wallet?.name ?? '') ||
+        _type != (wallet?.type ?? cash) ||
+        _iconKey != (wallet?.iconKey ?? cash.defaultIconKey) ||
+        _colorKey != (wallet?.colorKey ?? AppPresetColor.teal.key) ||
+        _initialBalance != (wallet?.initialBalance ?? 0);
+  }
+
   @override
   void dispose() {
     _name.dispose();
@@ -194,141 +205,146 @@ class _WalletFormState extends ConsumerState<_WalletForm> {
     final l10n = context.l10n;
     final colors = context.tokens.colors;
     final source = widget.source;
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(AppIcons.x),
-          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-          onPressed: () => Navigator.of(context).maybePop(),
+    return UnsavedChangesGuard(
+      hasChanges: _hasChanges,
+      labels: l10n.discardLabels,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(AppIcons.x),
+            tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+            onPressed: () => Navigator.of(context).maybePop(),
+          ),
+          title: Text(
+            source == null ? l10n.walletNewTitle : l10n.walletEditTitle,
+          ),
         ),
-        title: Text(
-          source == null ? l10n.walletNewTitle : l10n.walletEditTitle,
-        ),
-      ),
-      // The save button sits in the body so it rises above the keyboard;
-      // as a bottom bar it would stay hidden behind it.
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.screenHorizontal,
-                AppSpacing.space4,
-                AppSpacing.screenHorizontal,
-                AppSpacing.space8,
-              ),
-              children: [
-                Center(
-                  child: IconBadge(
-                    iconKey: _iconKey,
-                    colorKey: _colorKey,
-                    size: AppSizes.avatar,
-                    iconSize: AppSizes.iconLg,
-                  ),
+        // The save button sits in the body so it rises above the keyboard;
+        // as a bottom bar it would stay hidden behind it.
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.screenHorizontal,
+                  AppSpacing.space4,
+                  AppSpacing.screenHorizontal,
+                  AppSpacing.space8,
                 ),
-                const SizedBox(height: AppSpacing.space6),
-                AppTextField(
-                  label: l10n.fieldWalletName,
-                  controller: _name,
-                  errorText: _nameError,
-                  maxLength: walletNameMaxLength,
-                  autofocus: source == null,
-                  textCapitalization: TextCapitalization.words,
-                  onChanged: (_) {
-                    if (_nameError != null) setState(() => _nameError = null);
-                  },
-                ),
-                const SizedBox(height: AppSpacing.space4),
-                RowPicker(
-                  label: l10n.fieldWalletType,
-                  value: walletTypeLabel(l10n, _type),
-                  onTap: _pickType,
-                ),
-                const SizedBox(height: AppSpacing.space2),
-                RowPicker(
-                  label: l10n.fieldIcon,
-                  value: '',
-                  leading: IconBadge(iconKey: _iconKey, colorKey: _colorKey),
-                  onTap: _pickIcon,
-                ),
-                const SizedBox(height: AppSpacing.space4),
-                Text(
-                  l10n.fieldColor,
-                  style: AppTextStyles.label.copyWith(
-                    color: colors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.space1),
-                ColorPicker(
-                  selectedKey: _colorKey,
-                  onChanged: (key) => setState(() => _colorKey = key),
-                  semanticLabel: l10n.presetColorName,
-                ),
-                const SizedBox(height: AppSpacing.space4),
-                RowPicker(
-                  label: l10n.fieldInitialBalance,
-                  value: formatRupiah(_initialBalance),
-                  onTap: _editBalance,
-                ),
-                if (source != null) ...[
-                  const SizedBox(height: AppSpacing.space2),
-                  Text(
-                    l10n.walletBalanceHelper,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: colors.textSecondary,
+                children: [
+                  Center(
+                    child: IconBadge(
+                      iconKey: _iconKey,
+                      colorKey: _colorKey,
+                      size: AppSizes.avatar,
+                      iconSize: AppSizes.iconLg,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.space6),
-                  AppListGroup(
-                    children: [
-                      if (source.inUse)
-                        AppListTile(
-                          title: l10n.walletArchive,
-                          subtitle: source.lastActive
-                              ? l10n.walletLastActive
-                              : l10n.walletArchiveHint,
-                          showChevron: false,
-                          onTap: source.lastActive || _busy
-                              ? null
-                              : () =>
-                                    _archiveOrDelete(WalletEditAction.archived),
-                        )
-                      else
-                        AppListTile(
-                          title: l10n.walletDelete,
-                          subtitle: source.lastActive
-                              ? l10n.walletLastActive
-                              : l10n.walletDeleteHint,
-                          destructive: !source.lastActive,
-                          showChevron: false,
-                          onTap: source.lastActive || _busy
-                              ? null
-                              : () =>
-                                    _archiveOrDelete(WalletEditAction.deleted),
-                        ),
-                    ],
+                  AppTextField(
+                    label: l10n.fieldWalletName,
+                    controller: _name,
+                    errorText: _nameError,
+                    maxLength: walletNameMaxLength,
+                    autofocus: source == null,
+                    textCapitalization: TextCapitalization.words,
+                    // Rebuilds on every change so the discard guard knows.
+                    onChanged: (_) => setState(() => _nameError = null),
                   ),
+                  const SizedBox(height: AppSpacing.space4),
+                  RowPicker(
+                    label: l10n.fieldWalletType,
+                    value: walletTypeLabel(l10n, _type),
+                    onTap: _pickType,
+                  ),
+                  const SizedBox(height: AppSpacing.space2),
+                  RowPicker(
+                    label: l10n.fieldIcon,
+                    value: '',
+                    leading: IconBadge(iconKey: _iconKey, colorKey: _colorKey),
+                    onTap: _pickIcon,
+                  ),
+                  const SizedBox(height: AppSpacing.space4),
+                  Text(
+                    l10n.fieldColor,
+                    style: AppTextStyles.label.copyWith(
+                      color: colors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.space1),
+                  ColorPicker(
+                    selectedKey: _colorKey,
+                    onChanged: (key) => setState(() => _colorKey = key),
+                    semanticLabel: l10n.presetColorName,
+                  ),
+                  const SizedBox(height: AppSpacing.space4),
+                  RowPicker(
+                    label: l10n.fieldInitialBalance,
+                    value: formatRupiah(_initialBalance),
+                    onTap: _editBalance,
+                  ),
+                  if (source != null) ...[
+                    const SizedBox(height: AppSpacing.space2),
+                    Text(
+                      l10n.walletBalanceHelper,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.space6),
+                    AppListGroup(
+                      children: [
+                        if (source.inUse)
+                          AppListTile(
+                            title: l10n.walletArchive,
+                            subtitle: source.lastActive
+                                ? l10n.walletLastActive
+                                : l10n.walletArchiveHint,
+                            showChevron: false,
+                            onTap: source.lastActive || _busy
+                                ? null
+                                : () => _archiveOrDelete(
+                                    WalletEditAction.archived,
+                                  ),
+                          )
+                        else
+                          AppListTile(
+                            title: l10n.walletDelete,
+                            subtitle: source.lastActive
+                                ? l10n.walletLastActive
+                                : l10n.walletDeleteHint,
+                            destructive: !source.lastActive,
+                            showChevron: false,
+                            onTap: source.lastActive || _busy
+                                ? null
+                                : () => _archiveOrDelete(
+                                    WalletEditAction.deleted,
+                                  ),
+                          ),
+                      ],
+                    ),
+                  ],
                 ],
-              ],
-            ),
-          ),
-          SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.screenHorizontal,
-                AppSpacing.space3,
-                AppSpacing.screenHorizontal,
-                AppSpacing.space4,
-              ),
-              child: PrimaryButton(
-                label: l10n.actionSave,
-                loading: _busy,
-                onPressed: _save,
               ),
             ),
-          ),
-        ],
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.screenHorizontal,
+                  AppSpacing.space3,
+                  AppSpacing.screenHorizontal,
+                  AppSpacing.space4,
+                ),
+                child: PrimaryButton(
+                  label: l10n.actionSave,
+                  loading: _busy,
+                  onPressed: _save,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

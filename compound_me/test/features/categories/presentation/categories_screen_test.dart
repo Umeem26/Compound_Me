@@ -95,4 +95,22 @@ void main() {
     await _tap(tester, find.text('Urungkan'));
     expect(find.text('Kopi'), findsOneWidget);
   });
+
+  testApp('a new category with a typed name asks before it is dropped', (
+    tester,
+  ) async {
+    final db = await pumpApp(tester);
+    await goTo(tester, AppRoutes.categories);
+    await _tap(tester, find.text('Tambah kategori'));
+    await tester.enterText(find.byType(TextField), 'Kopi');
+    await tester.pump();
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text('Buang perubahan?'), findsOneWidget);
+    await _tap(tester, find.text('Buang'));
+
+    expect(find.text('Kategori baru'), findsNothing);
+    expect(await _byName(db, 'Kopi'), isNull);
+  });
 }

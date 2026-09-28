@@ -13,6 +13,7 @@ export 'components/pickers.dart';
 export 'components/segmented_toggle.dart';
 export 'components/selectable_card.dart';
 export 'components/undo_snackbar.dart';
+export 'components/unsaved_changes.dart';
 export 'icons.dart';
 export 'illustrations/onboarding_art.dart';
 export 'theme.dart';

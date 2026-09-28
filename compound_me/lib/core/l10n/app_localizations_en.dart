@@ -520,4 +520,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageIndonesianShort => 'Indonesia';
+
+  @override
+  String get discardTitle => 'Discard changes?';
+
+  @override
+  String get discardBody => 'Your unsaved changes will be lost.';
+
+  @override
+  String get discardAction => 'Discard';
+
+  @override
+  String get keepEditingAction => 'Keep editing';
 }

@@ -166,4 +166,57 @@ void main() {
     expect(saved.iconKey, 'deviceMobile', reason: 'icon follows the type');
     expect(saved.colorKey, 'green');
   });
+
+  group('unsaved changes (03 §4)', () {
+    Future<AppDatabase> openEditor(WidgetTester tester) async {
+      final db = await pumpApp(tester);
+      await goTo(tester, AppRoutes.wallets);
+      // Name and type label are both "Tunai"; the name comes first.
+      await _tap(tester, find.text('Tunai').first);
+      return db;
+    }
+
+    testApp('closing with changes asks first; keep editing stays', (
+      tester,
+    ) async {
+      final db = await openEditor(tester);
+      await tester.enterText(find.byType(TextField), 'Dompet harian');
+      await tester.pump();
+
+      await _tap(tester, find.byTooltip('Tutup'));
+      expect(find.text('Buang perubahan?'), findsOneWidget);
+      await _tap(tester, find.text('Lanjut edit'));
+      expect(find.text('Ubah dompet'), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Dompet harian'), findsOneWidget);
+
+      // The system back button asks the same question.
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text('Buang perubahan?'), findsOneWidget);
+      await _tap(tester, find.text('Buang'));
+
+      expect(find.text('Ubah dompet'), findsNothing);
+      expect((await db.select(db.wallets).getSingle()).name, 'Tunai');
+    });
+
+    testApp('closing without changes leaves at once', (tester) async {
+      await openEditor(tester);
+
+      await _tap(tester, find.byTooltip('Tutup'));
+
+      expect(find.text('Buang perubahan?'), findsNothing);
+      expect(find.text('Tambah dompet'), findsOneWidget);
+    });
+
+    testApp('saving never asks', (tester) async {
+      final db = await openEditor(tester);
+      await _tap(tester, find.bySemanticsLabel('Biru'));
+
+      await _tap(tester, find.text('Simpan'));
+
+      expect(find.text('Buang perubahan?'), findsNothing);
+      expect(find.text('Tambah dompet'), findsOneWidget);
+      expect((await db.select(db.wallets).getSingle()).colorKey, 'blue');
+    });
+  });
 }

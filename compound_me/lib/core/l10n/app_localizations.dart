@@ -1057,6 +1057,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Indonesia'**
   String get languageIndonesianShort;
+
+  /// Title of the confirmation when leaving a sheet or editor with unsaved input.
+  ///
+  /// In id, this message translates to:
+  /// **'Buang perubahan?'**
+  String get discardTitle;
+
+  /// Explains what discarding does.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan yang belum disimpan akan hilang.'**
+  String get discardBody;
+
+  /// Leaves without saving.
+  ///
+  /// In id, this message translates to:
+  /// **'Buang'**
+  String get discardAction;
+
+  /// Closes the confirmation and stays in the form.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut edit'**
+  String get keepEditingAction;
 }
 
 class _AppLocalizationsDelegate

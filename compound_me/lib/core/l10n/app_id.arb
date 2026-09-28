@@ -698,5 +698,21 @@
   "languageIndonesianShort": "Indonesia",
   "@languageIndonesianShort": {
     "description": "Short name of the Indonesian language for the settings segment (S-43: Indonesia / English)."
+  },
+  "discardTitle": "Buang perubahan?",
+  "@discardTitle": {
+    "description": "Title of the confirmation when leaving a sheet or editor with unsaved input."
+  },
+  "discardBody": "Perubahan yang belum disimpan akan hilang.",
+  "@discardBody": {
+    "description": "Explains what discarding does."
+  },
+  "discardAction": "Buang",
+  "@discardAction": {
+    "description": "Leaves without saving."
+  },
+  "keepEditingAction": "Lanjut edit",
+  "@keepEditingAction": {
+    "description": "Closes the confirmation and stays in the form."
   }
 }
