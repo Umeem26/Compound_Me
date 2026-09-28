@@ -474,11 +474,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get themeDark => 'Gelap';
 
   @override
-  String get settingsHideBalance => 'Sembunyikan saldo saat membuka app';
+  String get settingsHideBalance => 'Sembunyikan saldo';
 
   @override
   String get settingsHideBalanceHint =>
-      'Saldo di Beranda tertutup sampai kamu ketuk ikon mata.';
+      'Saldo tertutup saat app dibuka. Ketuk ikon mata untuk melihatnya.';
 
   @override
   String get settingsGroupData => 'Data';

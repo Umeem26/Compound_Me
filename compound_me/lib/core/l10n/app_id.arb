@@ -626,11 +626,11 @@
   "@themeDark": {
     "description": "Dark theme option."
   },
-  "settingsHideBalance": "Sembunyikan saldo saat membuka app",
+  "settingsHideBalance": "Sembunyikan saldo",
   "@settingsHideBalance": {
     "description": "Toggle that starts Home with the balance hidden."
   },
-  "settingsHideBalanceHint": "Saldo di Beranda tertutup sampai kamu ketuk ikon mata.",
+  "settingsHideBalanceHint": "Saldo tertutup saat app dibuka. Ketuk ikon mata untuk melihatnya.",
   "@settingsHideBalanceHint": {
     "description": "Explains the hide balance toggle."
   },

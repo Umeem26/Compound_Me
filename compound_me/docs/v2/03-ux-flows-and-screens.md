@@ -296,7 +296,7 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 - **Default pengeluaran:** Makanan & minuman, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Pendidikan, Lainnya. **Default pemasukan:** Uang saku / gaji, Freelance, Hadiah, Lainnya.
 
 ### S-43 Pengaturan
-- **Tampilan:** Bahasa (Indonesia / English), Tema (Ikuti sistem / Terang / Gelap), Sembunyikan saldo saat membuka app (toggle).
+- **Tampilan:** Bahasa (Indonesia / English), Tema (Ikuti sistem / Terang / Gelap), toggle **Sembunyikan saldo** dengan subjudul "Saldo tertutup saat app dibuka. Ketuk ikon mata untuk melihatnya."
 - **Data:** Hapus semua data (danger, konfirmasi 2 langkah + ketik `HAPUS`/`DELETE`). Ekspor & backup muncul di 2.1.
 - Info aplikasi (versi, pembuat, link repo, lisensi) tidak diulang di sini; tempatnya di Profil → Tentang CompoundMe (S-40).
 

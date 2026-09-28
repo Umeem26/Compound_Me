@@ -959,13 +959,13 @@ abstract class AppLocalizations {
   /// Toggle that starts Home with the balance hidden.
   ///
   /// In id, this message translates to:
-  /// **'Sembunyikan saldo saat membuka app'**
+  /// **'Sembunyikan saldo'**
   String get settingsHideBalance;
 
   /// Explains the hide balance toggle.
   ///
   /// In id, this message translates to:
-  /// **'Saldo di Beranda tertutup sampai kamu ketuk ikon mata.'**
+  /// **'Saldo tertutup saat app dibuka. Ketuk ikon mata untuk melihatnya.'**
   String get settingsHideBalanceHint;
 
   /// Settings group for deleting data.

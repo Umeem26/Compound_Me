@@ -467,11 +467,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDark => 'Dark';
 
   @override
-  String get settingsHideBalance => 'Hide balance when opening the app';
+  String get settingsHideBalance => 'Hide balance';
 
   @override
   String get settingsHideBalanceHint =>
-      'The Home balance stays hidden until you tap the eye icon.';
+      'Your balance is hidden when the app opens. Tap the eye icon to see it.';
 
   @override
   String get settingsGroupData => 'Data';

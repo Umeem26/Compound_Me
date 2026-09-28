@@ -86,7 +86,7 @@ void main() {
         Brightness.dark,
       );
 
-      await _tap(tester, find.text('Hide balance when opening the app'));
+      await _tap(tester, find.text('Hide balance'));
       final prefs = await AppPreferences.load();
       expect(prefs.localeCode, 'en');
       expect(prefs.themeMode, ThemeMode.dark);
