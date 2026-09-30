@@ -133,7 +133,8 @@ Cloud sync + akun (Supabase, arsitektur sudah disiapkan di v2.0), widget layar u
 
 ### F-03 Beranda
 - **US-03.1** Saya langsung melihat kondisi keuangan saya.
-  - AC: Total saldo semua dompet aktif tampil dengan format `Rp 1.250.000`. Ikon mata menyembunyikan angka menjadi `Rp ••••••`, dan pilihan ini tersimpan.
+  - AC: Total saldo semua dompet aktif tampil dengan format `Rp 1.250.000`. Ikon mata menyembunyikan angka menjadi `Rp ••••••` (pembaca layar: "Saldo disembunyikan").
+  - AC: Kalau "Sembunyikan saldo" di Pengaturan aktif, saldo tertutup setiap app dibuka. Ikon mata hanya mengubah tampilan untuk sesi itu dan tidak mengubah pengaturan. Semua tampilan saldo mengikuti keadaan yang sama (total di Beranda, total dan saldo per dompet di S-41). Nominal transaksi tidak disembunyikan.
   - AC: Ringkasan bulan berjalan: total masuk, total keluar, selisih.
 - **US-03.2** Saya bisa check-in kebiasaan hari ini dari Beranda.
   - AC: Strip horizontal berisi kebiasaan yang terjadwal hari ini. Tap = check-in, haptic ringan, dan snackbar "Dicatat · Urungkan" selama 4 detik.
