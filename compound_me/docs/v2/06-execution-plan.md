@@ -142,6 +142,7 @@ DoD + screenshot. PR tanpa merge.
 - [ ] Catat "kopi Rp 22.000" ≤ 5 detik (pakai stopwatch HP).
 - [ ] Hapus transaksi → Urungkan → kembali utuh, saldo benar.
 - [ ] Edit transaksi pindah dompet → saldo kedua dompet benar.
+- [ ] Toggle "Sembunyikan saldo" di Pengaturan: saat app dibuka, saldo di BalanceHeader tertutup; ikon mata membukanya. Matikan toggle → saldo terlihat saat app dibuka.
 
 ### Fase 4 — Kebiasaan
 **Branch:** `v2/phase-4-habits` · **Fitur:** F-08 + strip kebiasaan di Beranda · **Layar:** S-20, S-21, S-22
@@ -196,7 +197,7 @@ Termasuk:
 - Build release (R8) dan jalankan di emulator; pastikan tidak ada crash (keep rule, drift, sqlite3).
 - Cek kompatibilitas page size 16 KB (emulator image 16 KB).
 - README baru (bahasa Inggris): deskripsi jujur, fitur, screenshot, arsitektur, cara build. Hapus klaim Web.
-- Bump versi ke 2.0.0+1.
+- Naikkan `version` di pubspec dari 1.0.0+1 ke 2.0.0+2. Build number harus lebih besar dari APK v1, yang selalu 1.0.0+1 (commit ca79cb0 sampai tag v1-legacy), supaya v2 bisa dipasang menimpa v1.
 
 DoD + laporan audit sebelum/sesudah. PR tanpa merge.
 ```
@@ -204,6 +205,7 @@ DoD + laporan audit sebelum/sesudah. PR tanpa merge.
 **Checklist kamu (uji pengguna kecil):**
 - [ ] Minta 3–5 teman (persona target) mencoba tanpa penjelasan: onboarding, catat kopi, cari kebiasaan termahal. Catat di mana mereka ragu.
 - [ ] Isi skor SUS (10 pertanyaan standar) dari mereka. Target ≥ 75.
+- [ ] `version` di pubspec = 2.0.0+2 (build number > 1 milik APK v1). APK v2 terpasang menimpa APK v1 tanpa uninstall.
 
 ## 3. Setelah v2.0
 
@@ -242,6 +244,22 @@ Layar <S-xx> belum sesuai docs/v2/02-design-system.md: <sebutkan: ukuran judul t
 | 1 | Ganti jenis kebiasaan (build ↔ reduce) ditolak kalau sudah ada check-in; nama kategori kustom maks. 30 karakter | Menjaga riwayat dan transaksi; 05 §3 tidak menyebut batas nama kategori | Disetujui |
 | 1 | Ikon & warna kategori default dipilih sendiri (mis. Makanan = forkKnife/coral) | S-42 hanya menyebut nama | Disetujui |
 | 1 | Lint `recursive_getters` diabaikan per file tabel Drift | DSL CHECK Drift merujuk kolom di getter-nya sendiri; bukan rekursi runtime | Disetujui |
-| 1 | schemaVersion 3: `addColumn` `habit_logs.deletedAt`; upgrade dari v1 tetap `createAll` (langsung skema terbaru). Snapshot skema di `drift_schemas/`, diuji dengan `SchemaVerifier` | Migrasi diuji terhadap skema v3 yang dibuat dari nol, termasuk index unik; siap dipakai migrasi fase berikutnya | Perlu review |
-| 1 | Ganti jenis kebiasaan setelah check-in dibatalkan: log terhapusnya dibuang permanen | Transaksi reduce lama tidak boleh menaikkan count kebiasaan build saat di-restore; transaksinya kembali sebagai pengeluaran biasa | Perlu review |
-| 1 | Jatah hari longgar dihitung dari hari longgar terakhir yang diberikan, termasuk dari streak sebelumnya; hanya periode yang sudah dinilai yang dihitung | Batas "1 per 7 periode terjadwal" berlaku sebagai jendela bergeser; hari tidak terjadwal, hari ini yang terbuka, dan minggu berjalan tidak menghabiskan jatah | Perlu review |
+| 1 | schemaVersion 3: `addColumn` `habit_logs.deletedAt`; upgrade dari v1 tetap `createAll` (langsung skema terbaru). Snapshot skema di `drift_schemas/`, diuji dengan `SchemaVerifier` | Migrasi diuji terhadap skema v3 yang dibuat dari nol, termasuk index unik; siap dipakai migrasi fase berikutnya | Disetujui |
+| 1 | Ganti jenis kebiasaan setelah check-in dibatalkan: log terhapusnya dibuang permanen | Transaksi reduce lama tidak boleh menaikkan count kebiasaan build saat di-restore; transaksinya kembali sebagai pengeluaran biasa | Disetujui |
+| 1 | Jatah hari longgar dihitung dari hari longgar terakhir yang diberikan, termasuk dari streak sebelumnya; hanya periode yang sudah dinilai yang dihitung | Batas "1 per 7 periode terjadwal" berlaku sebagai jendela bergeser; hari tidak terjadwal, hari ini yang terbuka, dan minggu berjalan tidak menghabiskan jatah | Disetujui |
+| 1 | Batas 10 check-in per hari hanya untuk input (stepper/setCount). Restore pengeluaran boleh membuat count > 10 agar count selalu sama dengan jumlah pengeluaran aktif. Stepper di Fase 4 menampilkan count sebenarnya dan menonaktifkan tombol + saat count ≥ 10. | Review Fase 1; dijaga test repository (restore saat count 10 → count 11, pengeluaran aktif 11, `setCount(11)` tetap ditolak) | Disetujui |
+| 2 | Warna ikon preset dibuat per tema: gold, coral, green diganti di tema terang; teal, slate di tema gelap (tabel 02 §3.5). Key yang tersimpan tetap | Audit B: 5 preset di bawah 3:1 terhadap tint-nya (WCAG 1.4.11); dijaga `preset_colors_test.dart` | Disetujui |
+| 2 | Token baru `dangerTint`, `dangerTintPressed`, `onDangerTint` untuk `DestructiveButton` (02 §11.1) | Teks `danger` di atas tint-nya sendiri hanya 4,33–4,46, di bawah 4,5 | Disetujui |
+| 2 | Editor dompet dan kategori tampil layar penuh di root navigator (tanpa bottom nav); tombol Simpan di akhir body | Form layar penuh seperti S-21; di `bottomNavigationBar` tombol tertutup keyboard | Disetujui |
+| 2 | Hapus dompet/kategori kosong memakai snackbar undo 4 detik, bukan dialog; undo memasukkan kembali baris yang sama (`undoDelete`) | Pola global 03 §4: dialog hanya untuk yang tidak bisa dibatalkan | Disetujui |
+| 2 | Draft onboarding disimpan di preferensi (JSON) per perubahan; dompet dan kebiasaan dibuat sekaligus di akhir dalam satu `db.transaction` | Lanjut dari langkah terakhir tanpa data setengah jadi di DB | Disetujui |
+| 2 | Template: 4 Bangun + 4 Kurangi; Kurangi memakai kategori default (Makanan & minuman, Transportasi, Belanja), tanpa `weeklyLimit`; ikon & warna dipilih sendiri; nama disimpan dalam bahasa saat onboarding | S-01 hanya menyebut nama dan biaya | Disetujui |
+| 2 | Hapus semua data: sheet 2 langkah (bukan dialog), kata `HAPUS`/`DELETE` dicocokkan tanpa peduli huruf besar-kecil; ikut mereset bahasa, tema, dan nama lalu kembali ke onboarding | Hasilnya sama dengan instal baru | Disetujui |
+| 2 | Bahasa di Pengaturan dua opsi "Indonesia / English"; default awal tetap mengikuti perangkat sampai dipilih | S-43; label pendek supaya tidak terpotong di ukuran teks 1,3 | Disetujui |
+| 2 | Satu set baris Tentang (versi, pembuat, kode sumber, lisensi) dipakai di layar Tentang (dari S-40) dan grup Tentang di S-43 | S-40 dan S-43 sama-sama menyebut isi Tentang | Diubah (review PR #6): Tentang hanya di S-40 |
+| 2 | Toggle "Sembunyikan saldo saat membuka app" sudah disimpan, efeknya baru terlihat di `BalanceHeader` Fase 3 | S-43 masuk Fase 2, Beranda Fase 3 | Disetujui |
+| 2 | Dependensi baru `package_info_plus` (versi app) dan `url_launcher` (+ query `https` di AndroidManifest) | Versi dan link repo di Tentang | Disetujui |
+| 2 | Label `SegmentedToggle` boleh dua baris | Di ukuran teks 1,3 "Ikuti sistem" terpotong | Disetujui |
+| 2 | Widget test yang memompa seluruh app memakai `testApp` (melepas app agar timer Drift selesai) dan membaca DB dengan query biasa, bukan `watch().first` | Timer stream Drift tidak berjalan di waktu palsu test | Disetujui |
+| 2 | Status onboarding bersumber dari database: saat bootstrap (splash masih ditahan) `onboardingDone` = ada minimal satu dompet (aktif/arsip); draft yang tersisa dihapus; tanpa dompet padahal preferensi "selesai" = hapus semua data yang terputus, jadi preferensi dibersihkan. Nama disimpan sebelum transaksi DB. Preferensi tetap cache untuk redirect router | App yang mati di antara tulis DB dan tulis preferensi tidak boleh membuat dompet/kebiasaan dobel atau masuk Beranda tanpa dompet | Disetujui (review PR #6) |
+| 2 | Konfirmasi "Buang perubahan?" (Buang / Lanjut edit) untuk sheet dan layar editor dengan input belum disimpan: `UnsavedChangesGuard` + `confirmDiscardChanges` di `lib/core/design`, dipakai editor dompet/kategori dan nanti S-11 dan S-21. Simpan/arsip/hapus keluar tanpa konfirmasi. Sheet ber-input memakai `showAppSheet(enableDrag: false)` | Tarik-tutup sheet di Flutter 3.47 memanggil `Navigator.pop` langsung dan melewati `PopScope` | Disetujui (review PR #6) |

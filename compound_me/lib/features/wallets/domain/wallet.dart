@@ -1,7 +1,20 @@
 import 'package:compound_me/core/utils/money.dart';
 import 'package:meta/meta.dart';
 
-enum WalletType { cash, bank, ewallet, other }
+/// Wallet names are 1–30 characters (05 §3).
+const walletNameMaxLength = 30;
+
+enum WalletType {
+  cash('money'),
+  bank('bank'),
+  ewallet('deviceMobile'),
+  other('wallet');
+
+  const WalletType(this.defaultIconKey);
+
+  /// Icon a new wallet of this type starts with; the user can change it.
+  final String defaultIconKey;
+}
 
 @immutable
 class Wallet {

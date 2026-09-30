@@ -96,6 +96,92 @@ class GhostButton extends StatelessWidget {
   }
 }
 
+/// Like [SecondaryButton] in the danger color (§7.2). Only for confirming
+/// something that cannot be undone, inside a confirmation sheet.
+class DestructiveButton extends StatelessWidget {
+  const DestructiveButton({
+    required this.label,
+    required this.onPressed,
+    this.loading = false,
+    this.expand = true,
+    super.key,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final bool loading;
+  final bool expand;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.tokens.colors;
+    return _AppButton(
+      label: label,
+      onPressed: onPressed,
+      loading: loading,
+      expand: expand,
+      height: AppSizes.buttonHeight,
+      background: colors.dangerTint,
+      pressedBackground: colors.dangerTintPressed,
+      foreground: colors.onDangerTint,
+    );
+  }
+}
+
+/// 40 dp tonal circle with a 20 dp icon and a 48 dp tap area (§7.2).
+/// [label] is read by screen readers and shown as a tooltip.
+class IconButtonTonal extends StatelessWidget {
+  const IconButtonTonal({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    super.key,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.tokens.colors;
+    return Tooltip(
+      message: label,
+      child: Semantics(
+        button: true,
+        enabled: onPressed != null,
+        label: label,
+        onTap: onPressed,
+        excludeSemantics: true,
+        child: InkResponse(
+          onTap: onPressed,
+          radius: AppSizes.minTouchTarget / 2,
+          child: SizedBox.square(
+            dimension: AppSizes.minTouchTarget,
+            child: Center(
+              child: Container(
+                width: AppSizes.iconButtonTonal,
+                height: AppSizes.iconButtonTonal,
+                decoration: BoxDecoration(
+                  color: colors.surfaceMuted,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  size: AppSizes.iconSm,
+                  color: onPressed == null
+                      ? colors.textTertiary
+                      : colors.textPrimary,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _AppButton extends StatefulWidget {
   const _AppButton({
     required this.label,
@@ -174,9 +260,11 @@ class _AppButtonState extends State<_AppButton> {
           color: _pressed ? widget.pressedBackground : widget.background,
           borderRadius: radius,
         ),
-        // Container.alignment would stretch to the max width and break
-        // expand: false; widthFactor keeps a compact button hugging its label.
-        child: Center(widthFactor: 1, child: content),
+        // Container.alignment would stretch to the max size and break
+        // expand: false; the factors keep the button hugging its label, and
+        // heightFactor stops it filling a loosely constrained slot such as
+        // Scaffold.bottomNavigationBar.
+        child: Center(widthFactor: 1, heightFactor: 1, child: content),
       ),
     );
 

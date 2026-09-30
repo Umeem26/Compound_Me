@@ -1,5 +1,8 @@
 import 'package:meta/meta.dart';
 
+/// Custom category names are 1–30 characters.
+const categoryNameMaxLength = 30;
+
 enum CategoryKind { expense, income }
 
 @immutable

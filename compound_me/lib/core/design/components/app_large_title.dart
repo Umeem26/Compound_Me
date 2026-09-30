@@ -1,3 +1,4 @@
+import 'package:compound_me/core/design/icons.dart';
 import 'package:compound_me/core/design/theme.dart';
 import 'package:compound_me/core/design/tokens.dart';
 import 'package:compound_me/core/design/typography.dart';
@@ -5,13 +6,21 @@ import 'package:flutter/material.dart';
 
 /// iOS-style large title (§7.1): `titleLarge` aligned left under the status
 /// bar, collapsing into a small centered title while scrolling. Must be the
-/// first sliver of a [CustomScrollView].
+/// first sliver of a [CustomScrollView]. Pages below a tab root pass
+/// [backLabel] to get a back arrow.
 class AppLargeTitle extends StatelessWidget {
-  const AppLargeTitle({required this.title, this.actions = const [], super.key})
-    : assert(actions.length <= 2, 'At most two actions on the right');
+  const AppLargeTitle({
+    required this.title,
+    this.actions = const [],
+    this.backLabel,
+    super.key,
+  }) : assert(actions.length <= 2, 'At most two actions on the right');
 
   final String title;
   final List<Widget> actions;
+
+  /// Tooltip and screen reader label of the back arrow; null hides it.
+  final String? backLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +33,13 @@ class AppLargeTitle extends StatelessWidget {
     return SliverAppBar(
       pinned: true,
       automaticallyImplyLeading: false,
+      leading: backLabel == null
+          ? null
+          : IconButton(
+              icon: const Icon(AppIcons.arrowLeft),
+              tooltip: backLabel,
+              onPressed: () => Navigator.of(context).maybePop(),
+            ),
       backgroundColor: colors.bg,
       expandedHeight:
           AppSizes.appBarHeight + largeTitleLine + AppSpacing.space3,

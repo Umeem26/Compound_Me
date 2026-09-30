@@ -28,6 +28,10 @@ abstract interface class WalletRepository {
 
   Future<Wallet?> findById(String id);
 
+  /// Whether any wallet exists, active or archived. Onboarding always
+  /// creates one, so this tells whether onboarding really finished.
+  Future<bool> hasAny();
+
   /// Whether any transaction (deleted ones included) or habit uses it.
   Future<bool> isInUse(String id);
 
@@ -43,4 +47,8 @@ abstract interface class WalletRepository {
   Future<void> unarchive(String id);
 
   Future<void> delete(String id);
+
+  /// Puts back a wallet removed by [delete] exactly as it was, for the
+  /// undo snackbar (03 §4: undo instead of "are you sure?").
+  Future<void> undoDelete(Wallet wallet);
 }

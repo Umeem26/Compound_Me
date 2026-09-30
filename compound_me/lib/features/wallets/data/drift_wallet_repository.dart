@@ -12,8 +12,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'drift_wallet_repository.g.dart';
 
-const _nameMaxLength = 30;
-
 class DriftWalletRepository implements WalletRepository {
   DriftWalletRepository(this._db, {this._clock = systemClock});
 
@@ -66,6 +64,17 @@ class DriftWalletRepository implements WalletRepository {
 
   @override
   Future<Wallet?> findById(String id) async => (await _find(id))?.toDomain();
+
+  @override
+  Future<bool> hasAny() async {
+    final row = await _db
+        .customSelect(
+          'SELECT EXISTS(SELECT 1 FROM wallets) AS found',
+          readsFrom: {_db.wallets},
+        )
+        .getSingle();
+    return row.read<bool>('found');
+  }
 
   @override
   Future<bool> isInUse(String id) async =>
@@ -150,8 +159,26 @@ class DriftWalletRepository implements WalletRepository {
     await (_db.delete(_db.wallets)..where((w) => w.id.equals(id))).go();
   });
 
+  @override
+  Future<void> undoDelete(Wallet wallet) => _db
+      .into(_db.wallets)
+      .insert(
+        WalletsCompanion.insert(
+          id: wallet.id,
+          name: wallet.name,
+          type: wallet.type,
+          iconKey: wallet.iconKey,
+          colorKey: wallet.colorKey,
+          initialBalance: wallet.initialBalance,
+          sortOrder: Value(wallet.sortOrder),
+          archivedAt: Value(wallet.archivedAt),
+          createdAt: wallet.createdAt,
+          updatedAt: _now,
+        ),
+      );
+
   String _validate(WalletDraft draft) {
-    final name = validName(draft.name, maxLength: _nameMaxLength);
+    final name = validName(draft.name, maxLength: walletNameMaxLength);
     if (draft.initialBalance < 0) {
       throw const ValidationException(ValidationError.amountNegative);
     }

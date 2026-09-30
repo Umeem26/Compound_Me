@@ -52,14 +52,6 @@
   "@insightsEmptyBody": {
     "description": "Insights empty state explanation."
   },
-  "profileEmptyTitle": "Profil belum diatur",
-  "@profileEmptyTitle": {
-    "description": "Profile empty state title, shown before onboarding exists."
-  },
-  "profileEmptyBody": "Nama panggilan dan dompetmu akan tersimpan di sini.",
-  "@profileEmptyBody": {
-    "description": "Profile empty state explanation."
-  },
   "undoAction": "Urungkan",
   "@undoAction": {
     "description": "Action on the undo snackbar."
@@ -111,5 +103,616 @@
   "catOtherIncome": "Lainnya",
   "@catOtherIncome": {
     "description": "Default income category name (stored as nameKey catOtherIncome)."
+  },
+  "actionNext": "Lanjut",
+  "@actionNext": {
+    "description": "Button that moves to the next step."
+  },
+  "actionBack": "Kembali",
+  "@actionBack": {
+    "description": "Accessible label of the back arrow."
+  },
+  "actionSkip": "Lewati",
+  "@actionSkip": {
+    "description": "Skips the product value pages in onboarding."
+  },
+  "actionSave": "Simpan",
+  "@actionSave": {
+    "description": "Saves a form or sheet."
+  },
+  "actionGotIt": "Mengerti",
+  "@actionGotIt": {
+    "description": "Dismisses a one-time hint."
+  },
+  "errorSaveFailed": "Gagal menyimpan. Coba lagi.",
+  "@errorSaveFailed": {
+    "description": "Snackbar when saving fails (02 §9)."
+  },
+  "keypadBackspace": "Hapus satu angka",
+  "@keypadBackspace": {
+    "description": "Screen reader label of the keypad backspace key. Long press clears."
+  },
+  "languageIndonesian": "Bahasa Indonesia",
+  "@languageIndonesian": {
+    "description": "Name of the Indonesian language, always written in Indonesian."
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "Name of the English language, always written in English."
+  },
+  "onboardingLanguageTitle": "Pilih bahasa",
+  "@onboardingLanguageTitle": {
+    "description": "Onboarding language step title."
+  },
+  "onboardingLanguageBody": "Bisa diganti kapan saja di Pengaturan.",
+  "@onboardingLanguageBody": {
+    "description": "Onboarding language step explanation."
+  },
+  "onboardingValueGrowthTitle": "Kebiasaan kecil, dampak besar",
+  "@onboardingValueGrowthTitle": {
+    "description": "First product value page title."
+  },
+  "onboardingValueGrowthBody": "Lihat berapa sebenarnya harga rutinitasmu, lalu arahkan ke hal yang lebih berarti.",
+  "@onboardingValueGrowthBody": {
+    "description": "First product value page text."
+  },
+  "onboardingValueSpeedTitle": "Catat dalam hitungan detik",
+  "@onboardingValueSpeedTitle": {
+    "description": "Second product value page title."
+  },
+  "onboardingValueSpeedBody": "Keypad cepat untuk pengeluaran, satu ketukan untuk check-in kebiasaan.",
+  "@onboardingValueSpeedBody": {
+    "description": "Second product value page text."
+  },
+  "onboardingValuePrivacyTitle": "Privat di perangkatmu",
+  "@onboardingValuePrivacyTitle": {
+    "description": "Third product value page title."
+  },
+  "onboardingValuePrivacyBody": "Tanpa akun. Datamu tidak pernah keluar dari HP ini.",
+  "@onboardingValuePrivacyBody": {
+    "description": "Third product value page text."
+  },
+  "onboardingPageLabel": "Halaman {current} dari {total}",
+  "@onboardingPageLabel": {
+    "description": "Screen reader label of the onboarding page dots.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingNameTitle": "Panggil kamu siapa?",
+  "@onboardingNameTitle": {
+    "description": "Onboarding name step title."
+  },
+  "onboardingNameBody": "Dipakai untuk sapaan saja.",
+  "@onboardingNameBody": {
+    "description": "Onboarding name step explanation."
+  },
+  "fieldName": "Nama",
+  "@fieldName": {
+    "description": "Label of a name field."
+  },
+  "errorNameRequired": "Nama belum diisi.",
+  "@errorNameRequired": {
+    "description": "Validation error for an empty name."
+  },
+  "onboardingWalletTitle": "Dompet pertama",
+  "@onboardingWalletTitle": {
+    "description": "Onboarding wallet step title."
+  },
+  "onboardingWalletBody": "Tempat uangmu dicatat, misalnya uang tunai atau rekening bank.",
+  "@onboardingWalletBody": {
+    "description": "Onboarding wallet step explanation."
+  },
+  "onboardingWalletHelper": "Bisa ditambah atau diubah nanti.",
+  "@onboardingWalletHelper": {
+    "description": "Helper under the first wallet form."
+  },
+  "fieldWalletName": "Nama dompet",
+  "@fieldWalletName": {
+    "description": "Label of the wallet name field."
+  },
+  "fieldWalletType": "Tipe",
+  "@fieldWalletType": {
+    "description": "Label of the wallet type picker."
+  },
+  "fieldInitialBalance": "Saldo awal",
+  "@fieldInitialBalance": {
+    "description": "Label of the wallet starting balance."
+  },
+  "walletDefaultName": "Tunai",
+  "@walletDefaultName": {
+    "description": "Default name of the first wallet."
+  },
+  "walletTypeCash": "Tunai",
+  "@walletTypeCash": {
+    "description": "Wallet type: cash."
+  },
+  "walletTypeBank": "Bank",
+  "@walletTypeBank": {
+    "description": "Wallet type: bank account."
+  },
+  "walletTypeEwallet": "E-wallet",
+  "@walletTypeEwallet": {
+    "description": "Wallet type: e-wallet such as GoPay or OVO."
+  },
+  "walletTypeOther": "Lainnya",
+  "@walletTypeOther": {
+    "description": "Wallet type: anything else."
+  },
+  "onboardingHabitsTitle": "Pilih kebiasaan",
+  "@onboardingHabitsTitle": {
+    "description": "Onboarding habits step title."
+  },
+  "onboardingHabitsBody": "Pilih sampai 3. Semuanya bisa diubah nanti.",
+  "@onboardingHabitsBody": {
+    "description": "Onboarding habits step explanation."
+  },
+  "habitGroupBuild": "Ingin dibangun",
+  "@habitGroupBuild": {
+    "description": "Group of habits the user wants more of."
+  },
+  "habitGroupReduce": "Ingin dikurangi",
+  "@habitGroupReduce": {
+    "description": "Group of habits the user wants less of."
+  },
+  "templateExercise": "Olahraga",
+  "@templateExercise": {
+    "description": "Starter habit name."
+  },
+  "templateRead": "Baca 10 halaman",
+  "@templateRead": {
+    "description": "Starter habit name."
+  },
+  "templatePackLunch": "Bawa bekal",
+  "@templatePackLunch": {
+    "description": "Starter habit name."
+  },
+  "templateDrinkWater": "Minum air 8 gelas",
+  "@templateDrinkWater": {
+    "description": "Starter habit name."
+  },
+  "templateCafeCoffee": "Kopi kekinian",
+  "@templateCafeCoffee": {
+    "description": "Starter habit name."
+  },
+  "templateLateSnacks": "Jajan malam",
+  "@templateLateSnacks": {
+    "description": "Starter habit name."
+  },
+  "templateShortRides": "Ojol jarak dekat",
+  "@templateShortRides": {
+    "description": "Starter habit name."
+  },
+  "templateImpulseBuys": "Belanja impulsif",
+  "@templateImpulseBuys": {
+    "description": "Starter habit name."
+  },
+  "scheduleDaily": "Setiap hari",
+  "@scheduleDaily": {
+    "description": "Habit schedule: daily."
+  },
+  "scheduleWorkdays": "Hari kerja",
+  "@scheduleWorkdays": {
+    "description": "Habit schedule: Monday to Friday."
+  },
+  "scheduleTimesPerWeek": "{count}x seminggu",
+  "@scheduleTimesPerWeek": {
+    "description": "Habit schedule: a number of times per week.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "templateCostEdit": "Ubah biaya {template}, sekarang {amount}",
+  "@templateCostEdit": {
+    "description": "Screen reader label of the editable template cost.",
+    "placeholders": {
+      "template": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "templateCostTitle": "Biaya per kali",
+  "@templateCostTitle": {
+    "description": "Title of the sheet that edits a template cost."
+  },
+  "actionStart": "Mulai",
+  "@actionStart": {
+    "description": "Finishes onboarding with the picked habits."
+  },
+  "actionSkipForNow": "Lewati dulu",
+  "@actionSkipForNow": {
+    "description": "Finishes onboarding without picking habits."
+  },
+  "coachMarkAdd": "Catat pengeluaran dan pemasukan dari tombol ini.",
+  "@coachMarkAdd": {
+    "description": "One-time hint above the add button after onboarding."
+  },
+  "errorLoadTitle": "Data belum bisa dimuat",
+  "@errorLoadTitle": {
+    "description": "Error state title when reading data fails."
+  },
+  "errorLoadBody": "Coba lagi sebentar lagi.",
+  "@errorLoadBody": {
+    "description": "Error state explanation."
+  },
+  "actionRetry": "Coba lagi",
+  "@actionRetry": {
+    "description": "Retry button of the error state."
+  },
+  "actionRestore": "Pulihkan",
+  "@actionRestore": {
+    "description": "Brings an archived wallet or category back."
+  },
+  "fieldIcon": "Ikon",
+  "@fieldIcon": {
+    "description": "Label of the icon picker row."
+  },
+  "fieldColor": "Warna",
+  "@fieldColor": {
+    "description": "Label of the color picker."
+  },
+  "iconPickerTitle": "Pilih ikon",
+  "@iconPickerTitle": {
+    "description": "Title of the icon picker sheet."
+  },
+  "iconPosition": "Ikon {position} dari {total}",
+  "@iconPosition": {
+    "description": "Screen reader label of an icon in the picker.",
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "presetTeal": "Hijau toska",
+  "@presetTeal": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetGold": "Emas",
+  "@presetGold": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetCoral": "Koral",
+  "@presetCoral": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetViolet": "Ungu",
+  "@presetViolet": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetBlue": "Biru",
+  "@presetBlue": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetGreen": "Hijau",
+  "@presetGreen": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetRose": "Merah muda",
+  "@presetRose": {
+    "description": "Preset color name for screen readers."
+  },
+  "presetSlate": "Abu-abu",
+  "@presetSlate": {
+    "description": "Preset color name for screen readers."
+  },
+  "walletsTitle": "Dompet",
+  "@walletsTitle": {
+    "description": "Wallets screen title (S-41)."
+  },
+  "walletsTotal": "TOTAL SALDO",
+  "@walletsTotal": {
+    "description": "Overline above the total of active wallets. All caps on purpose."
+  },
+  "walletsAdd": "Tambah dompet",
+  "@walletsAdd": {
+    "description": "Row that opens the new wallet form."
+  },
+  "walletsArchived": "Diarsipkan ({count})",
+  "@walletsArchived": {
+    "description": "Folded section with archived wallets or categories.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walletsReorder": "Geser untuk mengurutkan {name}",
+  "@walletsReorder": {
+    "description": "Screen reader label of a drag handle.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "walletsEmptyTitle": "Belum ada dompet aktif",
+  "@walletsEmptyTitle": {
+    "description": "Wallets empty state title."
+  },
+  "walletsEmptyBody": "Tambahkan dompet untuk mulai mencatat.",
+  "@walletsEmptyBody": {
+    "description": "Wallets empty state explanation."
+  },
+  "walletNewTitle": "Dompet baru",
+  "@walletNewTitle": {
+    "description": "Title of the new wallet form."
+  },
+  "walletEditTitle": "Ubah dompet",
+  "@walletEditTitle": {
+    "description": "Title of the edit wallet form."
+  },
+  "walletBalanceHelper": "Saldo sekarang ikut berubah sesuai selisihnya.",
+  "@walletBalanceHelper": {
+    "description": "Helper under the starting balance of an existing wallet."
+  },
+  "walletArchive": "Arsipkan dompet",
+  "@walletArchive": {
+    "description": "Archives a wallet that has transactions."
+  },
+  "walletArchiveHint": "Disembunyikan dari pilihan, riwayatnya tetap ada.",
+  "@walletArchiveHint": {
+    "description": "Explains archiving a wallet."
+  },
+  "walletDelete": "Hapus dompet",
+  "@walletDelete": {
+    "description": "Deletes a wallet without transactions."
+  },
+  "walletDeleteHint": "Belum pernah dipakai, jadi bisa dihapus.",
+  "@walletDeleteHint": {
+    "description": "Explains why an unused wallet can be deleted."
+  },
+  "walletLastActive": "Minimal harus ada satu dompet aktif.",
+  "@walletLastActive": {
+    "description": "Why the last active wallet can't be archived or deleted."
+  },
+  "walletArchivedDone": "Dompet diarsipkan",
+  "@walletArchivedDone": {
+    "description": "Undo snackbar after archiving a wallet."
+  },
+  "walletDeletedDone": "Dompet dihapus",
+  "@walletDeletedDone": {
+    "description": "Undo snackbar after deleting a wallet."
+  },
+  "categoriesTitle": "Kategori",
+  "@categoriesTitle": {
+    "description": "Categories screen title (S-42)."
+  },
+  "categoryKindExpense": "Pengeluaran",
+  "@categoryKindExpense": {
+    "description": "Segment for expense categories."
+  },
+  "categoryKindIncome": "Pemasukan",
+  "@categoryKindIncome": {
+    "description": "Segment for income categories."
+  },
+  "categoriesAdd": "Tambah kategori",
+  "@categoriesAdd": {
+    "description": "Row that opens the new category form."
+  },
+  "categoriesArchived": "Diarsipkan ({count})",
+  "@categoriesArchived": {
+    "description": "Folded section with archived categories.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "categoriesEmptyTitle": "Belum ada kategori aktif",
+  "@categoriesEmptyTitle": {
+    "description": "Categories empty state title."
+  },
+  "categoriesEmptyBody": "Tambahkan kategori untuk jenis ini.",
+  "@categoriesEmptyBody": {
+    "description": "Categories empty state explanation."
+  },
+  "categoryNewTitle": "Kategori baru",
+  "@categoryNewTitle": {
+    "description": "Title of the new category form."
+  },
+  "categoryEditTitle": "Ubah kategori",
+  "@categoryEditTitle": {
+    "description": "Title of the edit category form."
+  },
+  "fieldCategoryName": "Nama kategori",
+  "@fieldCategoryName": {
+    "description": "Label of the category name field."
+  },
+  "categoryDefaultNameHelper": "Nama kategori bawaan mengikuti bahasa aplikasi.",
+  "@categoryDefaultNameHelper": {
+    "description": "Why a default category name can't be edited."
+  },
+  "categoryArchive": "Arsipkan kategori",
+  "@categoryArchive": {
+    "description": "Archives a category that is in use."
+  },
+  "categoryArchiveHint": "Disembunyikan dari pilihan, transaksinya tetap ada.",
+  "@categoryArchiveHint": {
+    "description": "Explains archiving a category."
+  },
+  "categoryDelete": "Hapus kategori",
+  "@categoryDelete": {
+    "description": "Deletes a category nothing uses."
+  },
+  "categoryDeleteHint": "Belum pernah dipakai, jadi bisa dihapus.",
+  "@categoryDeleteHint": {
+    "description": "Why an unused category can be deleted."
+  },
+  "categoryArchivedDone": "Kategori diarsipkan",
+  "@categoryArchivedDone": {
+    "description": "Undo snackbar after archiving a category."
+  },
+  "categoryDeletedDone": "Kategori dihapus",
+  "@categoryDeletedDone": {
+    "description": "Undo snackbar after deleting a category."
+  },
+  "profileEditName": "Ubah nama, {name}",
+  "@profileEditName": {
+    "description": "Screen reader label of the profile header that edits the name.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profileNameTitle": "Nama panggilan",
+  "@profileNameTitle": {
+    "description": "Title of the sheet that edits the name."
+  },
+  "profileTapToEdit": "Ketuk untuk mengubah",
+  "@profileTapToEdit": {
+    "description": "Hint under the name in the profile header."
+  },
+  "profileGroupFinance": "Keuangan",
+  "@profileGroupFinance": {
+    "description": "Profile group with wallets and categories."
+  },
+  "profileGroupApp": "Aplikasi",
+  "@profileGroupApp": {
+    "description": "Profile group with settings."
+  },
+  "profileGroupAbout": "Tentang",
+  "@profileGroupAbout": {
+    "description": "Profile and settings group about the app."
+  },
+  "profileActiveWallets": "{count, plural, =1{1 aktif} other{{count} aktif}}",
+  "@profileActiveWallets": {
+    "description": "Number of active wallets next to the Wallets row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsTitle": "Pengaturan",
+  "@settingsTitle": {
+    "description": "Settings screen title (S-43)."
+  },
+  "settingsGroupDisplay": "Tampilan",
+  "@settingsGroupDisplay": {
+    "description": "Settings group for language, theme and balance."
+  },
+  "settingsLanguage": "Bahasa",
+  "@settingsLanguage": {
+    "description": "Language setting label."
+  },
+  "settingsTheme": "Tema",
+  "@settingsTheme": {
+    "description": "Theme setting label."
+  },
+  "themeSystem": "Ikuti sistem",
+  "@themeSystem": {
+    "description": "Theme option that follows the device."
+  },
+  "themeLight": "Terang",
+  "@themeLight": {
+    "description": "Light theme option."
+  },
+  "themeDark": "Gelap",
+  "@themeDark": {
+    "description": "Dark theme option."
+  },
+  "settingsHideBalance": "Sembunyikan saldo",
+  "@settingsHideBalance": {
+    "description": "Toggle that starts Home with the balance hidden."
+  },
+  "settingsHideBalanceHint": "Saldo tertutup saat app dibuka. Ketuk ikon mata untuk melihatnya.",
+  "@settingsHideBalanceHint": {
+    "description": "Explains the hide balance toggle."
+  },
+  "settingsGroupData": "Data",
+  "@settingsGroupData": {
+    "description": "Settings group for deleting data."
+  },
+  "settingsDeleteAll": "Hapus semua data",
+  "@settingsDeleteAll": {
+    "description": "Row and button that delete everything."
+  },
+  "deleteAllTitle": "Hapus semua data?",
+  "@deleteAllTitle": {
+    "description": "First confirmation sheet title."
+  },
+  "deleteAllBody": "Semua transaksi, kebiasaan, dompet, kategori buatanmu, dan pengaturan akan dihapus dari HP ini. Ini tidak bisa dibatalkan.",
+  "@deleteAllBody": {
+    "description": "Explains what deleting all data removes."
+  },
+  "deleteAllContinue": "Lanjutkan",
+  "@deleteAllContinue": {
+    "description": "Goes to the second confirmation step."
+  },
+  "actionCancel": "Batal",
+  "@actionCancel": {
+    "description": "Closes a confirmation without doing anything."
+  },
+  "deleteAllWord": "HAPUS",
+  "@deleteAllWord": {
+    "description": "Word the user types to confirm deleting all data. Keep it one uppercase word."
+  },
+  "deleteAllTypeLabel": "Ketik {word} untuk menghapus",
+  "@deleteAllTypeLabel": {
+    "description": "Label of the confirmation field.",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutTitle": "Tentang CompoundMe",
+  "@aboutTitle": {
+    "description": "About screen title and profile row."
+  },
+  "aboutVersion": "Versi",
+  "@aboutVersion": {
+    "description": "App version row."
+  },
+  "aboutCreator": "Dibuat oleh Hisyam Khaeru Umam",
+  "@aboutCreator": {
+    "description": "Credits row with the author's name."
+  },
+  "aboutSource": "Kode sumber di GitHub",
+  "@aboutSource": {
+    "description": "Row that opens the repository in a browser."
+  },
+  "aboutLicenses": "Lisensi open source",
+  "@aboutLicenses": {
+    "description": "Row that opens the licenses page."
+  },
+  "linkOpenFailed": "Link tidak bisa dibuka.",
+  "@linkOpenFailed": {
+    "description": "Snackbar when the browser can't be opened."
+  },
+  "languageIndonesianShort": "Indonesia",
+  "@languageIndonesianShort": {
+    "description": "Short name of the Indonesian language for the settings segment (S-43: Indonesia / English)."
+  },
+  "discardTitle": "Buang perubahan?",
+  "@discardTitle": {
+    "description": "Title of the confirmation when leaving a sheet or editor with unsaved input."
+  },
+  "discardBody": "Perubahan yang belum disimpan akan hilang.",
+  "@discardBody": {
+    "description": "Explains what discarding does."
+  },
+  "discardAction": "Buang",
+  "@discardAction": {
+    "description": "Leaves without saving."
+  },
+  "keepEditingAction": "Lanjut edit",
+  "@keepEditingAction": {
+    "description": "Closes the confirmation and stays in the form."
   }
 }

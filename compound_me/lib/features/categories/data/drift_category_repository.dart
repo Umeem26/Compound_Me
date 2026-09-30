@@ -11,8 +11,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'drift_category_repository.g.dart';
 
-const _nameMaxLength = 30;
-
 class DriftCategoryRepository implements CategoryRepository {
   DriftCategoryRepository(this._db, {this._clock = systemClock});
 
@@ -51,7 +49,7 @@ class DriftCategoryRepository implements CategoryRepository {
 
   @override
   Future<String> create(CategoryDraft draft) async {
-    final name = validName(draft.name, maxLength: _nameMaxLength);
+    final name = validName(draft.name, maxLength: categoryNameMaxLength);
     final id = newId();
     final now = _now;
     await _db.transaction(() async {
@@ -94,7 +92,7 @@ class DriftCategoryRepository implements CategoryRepository {
       if (category.nameKey != null) {
         throw const ValidationException(ValidationError.defaultCategoryRename);
       }
-      customName = validName(name, maxLength: _nameMaxLength);
+      customName = validName(name, maxLength: categoryNameMaxLength);
     }
     await (_db.update(_db.categories)..where((c) => c.id.equals(id))).write(
       CategoriesCompanion(
@@ -130,6 +128,24 @@ class DriftCategoryRepository implements CategoryRepository {
     if (await isInUse(id)) throw CategoryInUseException(id);
     await (_db.delete(_db.categories)..where((c) => c.id.equals(id))).go();
   });
+
+  @override
+  Future<void> undoDelete(Category category) => _db
+      .into(_db.categories)
+      .insert(
+        CategoriesCompanion.insert(
+          id: category.id,
+          kind: category.kind,
+          nameKey: Value(category.nameKey),
+          customName: Value(category.customName),
+          iconKey: category.iconKey,
+          colorKey: category.colorKey,
+          sortOrder: Value(category.sortOrder),
+          archivedAt: Value(category.archivedAt),
+          createdAt: category.createdAt,
+          updatedAt: _now,
+        ),
+      );
 
   Future<CategoryRow> _require(String id) async =>
       await (_db.select(

@@ -18,10 +18,12 @@ dependencies:
   go_router: ^18.0.1
   intl: ^0.20.3
   meta: ^1.18.3
+  package_info_plus: ^10.2.1
   path: ^1.9.1
   path_provider: ^2.1.6
   riverpod_annotation: ^4.0.7
   shared_preferences: ^2.5.5
+  url_launcher: ^6.3.2
   uuid: ^4.6.0
 
 dev_dependencies:
@@ -30,14 +32,20 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
+  # Phase checklists run on the emulator (06 §1).
+  integration_test:
+    sdk: flutter
   riverpod_generator: ^4.0.9
   shared_preferences_platform_interface: ^2.4.2
+  url_launcher_platform_interface: ^2.3.2
   very_good_analysis: ^11.0.0
 
 flutter:
   uses-material-design: true
   generate: true
   assets:
+    # Shown on the About screen and the licenses page.
+    - assets/brand/app_icon_1024.png
     - assets/fonts/OFL.txt
     - assets/fonts/phosphor/LICENSE.txt
   fonts:

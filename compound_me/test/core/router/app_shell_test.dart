@@ -6,20 +6,22 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/pump_app.dart';
 
 /// Tab label in the bottom nav paired with the empty state title it shows.
+/// Tab label paired with a text only that tab shows (the empty state, or
+/// the user's name on Profile).
 typedef _Tab = ({String label, String emptyTitle});
 
 const _idTabs = <_Tab>[
   (label: 'Beranda', emptyTitle: 'Belum ada transaksi'),
   (label: 'Kebiasaan', emptyTitle: 'Mulai dari satu kebiasaan'),
   (label: 'Wawasan', emptyTitle: 'Wawasan muncul setelah seminggu mencatat'),
-  (label: 'Profil', emptyTitle: 'Profil belum diatur'),
+  (label: 'Profil', emptyTitle: 'Raka'),
 ];
 
 const _enTabs = <_Tab>[
   (label: 'Home', emptyTitle: 'No transactions yet'),
   (label: 'Habits', emptyTitle: 'Start with one habit'),
   (label: 'Insights', emptyTitle: 'Insights appear after a week of logging'),
-  (label: 'Profile', emptyTitle: "Your profile isn't set up yet"),
+  (label: 'Profile', emptyTitle: 'Raka'),
 ];
 
 Finder _navTab(String label) =>
@@ -36,7 +38,7 @@ Future<void> _visitAllTabs(WidgetTester tester, List<_Tab> tabs) async {
 
 void main() {
   group('AppShell', () {
-    testWidgets('opens on Beranda with its empty state', (tester) async {
+    testApp('opens on Beranda with its empty state', (tester) async {
       await pumpApp(tester);
 
       expect(find.byType(HomeScreen), findsOneWidget);
@@ -44,20 +46,20 @@ void main() {
       expect(find.text('Catat transaksi pertama'), findsOneWidget);
     });
 
-    testWidgets('bottom nav switches between the four tabs', (tester) async {
+    testApp('bottom nav switches between the four tabs', (tester) async {
       await pumpApp(tester);
 
       await _visitAllTabs(tester, _idTabs);
     });
 
-    testWidgets('every tab has an English empty state', (tester) async {
+    testApp('every tab has an English empty state', (tester) async {
       await pumpApp(tester, localeCode: 'en');
 
       expect(find.text(_enTabs.first.emptyTitle), findsOneWidget);
       await _visitAllTabs(tester, _enTabs);
     });
 
-    testWidgets('center add button opens the add transaction sheet', (
+    testApp('center add button opens the add transaction sheet', (
       tester,
     ) async {
       await pumpApp(tester);
@@ -75,7 +77,7 @@ void main() {
       );
     });
 
-    testWidgets('home empty state action opens the same sheet', (tester) async {
+    testApp('home empty state action opens the same sheet', (tester) async {
       await pumpApp(tester);
 
       await tester.tap(find.text('Catat transaksi pertama'));
@@ -84,7 +86,7 @@ void main() {
       expect(find.byType(BottomSheet), findsOneWidget);
     });
 
-    testWidgets('dark theme renders every tab without errors', (tester) async {
+    testApp('dark theme renders every tab without errors', (tester) async {
       await pumpApp(tester, themeMode: ThemeMode.dark);
 
       final context = tester.element(find.byType(HomeScreen));
@@ -93,9 +95,7 @@ void main() {
       await _visitAllTabs(tester, _idTabs);
     });
 
-    testWidgets('layout holds at text scale 1.3 on a small phone', (
-      tester,
-    ) async {
+    testApp('layout holds at text scale 1.3 on a small phone', (tester) async {
       await pumpApp(
         tester,
         textScale: 1.3,

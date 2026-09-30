@@ -31,6 +31,16 @@ class AppTokens extends ThemeExtension<AppTokens> {
 
 extension AppTokensContext on BuildContext {
   AppTokens get tokens => Theme.of(this).extension<AppTokens>()!;
+
+  /// Icon and tint colors of a stored preset key in the current theme.
+  ({Color foreground, Color background}) presetColor(String key) {
+    final preset = AppPresetColor.fromKey(key);
+    final brightness = Theme.of(this).brightness;
+    return (
+      foreground: preset.foreground(brightness),
+      background: preset.background(brightness),
+    );
+  }
 }
 
 abstract final class AppTheme {
@@ -150,6 +160,52 @@ abstract final class AppTheme {
         ),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(color: colors.primary),
+      dialogTheme: DialogThemeData(
+        backgroundColor: colors.surface,
+        surfaceTintColor: scheme.surfaceTint,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(AppRadius.lg)),
+        ),
+        titleTextStyle: AppTextStyles.titleSmall.copyWith(
+          color: colors.textPrimary,
+        ),
+        contentTextStyle: AppTextStyles.body.copyWith(
+          color: colors.textSecondary,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: colors.primary,
+          textStyle: AppTextStyles.label,
+          minimumSize: const Size(
+            AppSizes.minTouchTarget,
+            AppSizes.minTouchTarget,
+          ),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.onPrimary
+              : colors.textSecondary,
+        ),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.primary
+              : colors.surfaceMuted,
+        ),
+        trackOutlineColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.primary
+              : colors.textSecondary,
+        ),
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: colors.primary,
+        selectionColor: colors.primaryTintPressed,
+        selectionHandleColor: colors.primary,
+      ),
       iconTheme: IconThemeData(
         color: colors.textPrimary,
         size: AppSizes.iconMd,

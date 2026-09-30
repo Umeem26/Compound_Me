@@ -30,6 +30,42 @@ void main() {
     expect((await AppPreferences.load()).localeCode, isNull);
   });
 
+  test('onboarding status, draft, name and hint survive a reload', () async {
+    final prefs = await AppPreferences.load();
+    expect(prefs.onboardingDone, isFalse);
+    expect(prefs.userName, isEmpty);
+    expect(prefs.addCoachMarkSeen, isFalse);
+
+    await prefs.setOnboardingDraft('{"step":"name"}');
+    await prefs.setUserName('Raka');
+    await prefs.setOnboardingDone(done: true);
+    await prefs.setAddCoachMarkSeen();
+
+    final reloaded = await AppPreferences.load();
+    expect(reloaded.onboardingDraft, '{"step":"name"}');
+    expect(reloaded.userName, 'Raka');
+    expect(reloaded.onboardingDone, isTrue);
+    expect(reloaded.addCoachMarkSeen, isTrue);
+
+    await reloaded.setOnboardingDraft(null);
+    expect((await AppPreferences.load()).onboardingDraft, isNull);
+  });
+
+  test('hide balance is remembered and clear forgets everything', () async {
+    final prefs = await AppPreferences.load();
+    expect(prefs.hideBalanceOnLaunch, isFalse);
+    await prefs.setHideBalanceOnLaunch(hide: true);
+    await prefs.setThemeMode(ThemeMode.dark);
+    await prefs.setUserName('Raka');
+    expect((await AppPreferences.load()).hideBalanceOnLaunch, isTrue);
+
+    await prefs.clear();
+    final cleared = await AppPreferences.load();
+    expect(cleared.hideBalanceOnLaunch, isFalse);
+    expect(cleared.themeMode, ThemeMode.system);
+    expect(cleared.userName, isEmpty);
+  });
+
   test('ignores an unknown stored theme value', () async {
     SharedPreferencesAsyncPlatform.instance =
         InMemorySharedPreferencesAsync.withData({'themeMode': 'sepia'});

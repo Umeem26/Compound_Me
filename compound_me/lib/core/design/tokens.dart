@@ -25,23 +25,33 @@ abstract final class AppPalette {
 
 /// The eight preset colors for categories, wallets and habits (§3.5).
 /// Stored in the database by [key], never as a raw color value.
+///
+/// Each preset has an icon color per theme so the icon keeps at least 3:1
+/// against its own tint (WCAG 1.4.11). Where the §3.5 value falls short in
+/// one theme it is replaced there (§3.5 table); the others are unchanged.
 enum AppPresetColor {
-  teal('teal', AppPalette.teal700),
-  gold('gold', AppPalette.gold500),
-  coral('coral', Color(0xFFD9655B)),
+  teal('teal', AppPalette.teal700, dark: AppPalette.teal400),
+  gold('gold', AppPalette.gold800, dark: AppPalette.gold500),
+  coral('coral', Color(0xFFD45147), dark: Color(0xFFD9655B)),
   violet('violet', Color(0xFF7C6BC4)),
   blue('blue', Color(0xFF3F7FD1)),
-  green('green', Color(0xFF3E9A5C)),
+  green('green', Color(0xFF3B8E56), dark: Color(0xFF3E9A5C)),
   rose('rose', Color(0xFFC45A8A)),
-  slate('slate', Color(0xFF5F6F7A));
+  slate('slate', Color(0xFF5F6F7A), dark: Color(0xFF657883));
 
-  const AppPresetColor(this.key, this.foreground);
+  const AppPresetColor(this.key, this.light, {Color? dark})
+    : dark = dark ?? light;
 
   final String key;
-  final Color foreground;
+  final Color light;
+  final Color dark;
+
+  Color foreground(Brightness brightness) =>
+      brightness == Brightness.dark ? dark : light;
 
   /// Icons sit on a 12% tint of the preset, never on a solid fill.
-  Color get background => foreground.withValues(alpha: AppOpacity.presetTint);
+  Color background(Brightness brightness) =>
+      foreground(brightness).withValues(alpha: AppOpacity.presetTint);
 
   static AppPresetColor fromKey(String key) =>
       values.firstWhere((c) => c.key == key, orElse: () => AppPresetColor.teal);
@@ -71,6 +81,9 @@ class AppColors {
     required this.expense,
     required this.danger,
     required this.onDanger,
+    required this.dangerTint,
+    required this.dangerTintPressed,
+    required this.onDangerTint,
     required this.warning,
     required this.success,
     required this.inverseSurface,
@@ -98,6 +111,12 @@ class AppColors {
   final Color expense;
   final Color danger;
   final Color onDanger;
+  final Color dangerTint;
+  final Color dangerTintPressed;
+
+  /// Text on [dangerTint]; one step deeper than [danger] so labels keep
+  /// 4.5:1 even while pressed (02 §11.1).
+  final Color onDangerTint;
   final Color warning;
   final Color success;
   final Color inverseSurface;
@@ -125,6 +144,9 @@ class AppColors {
     expense: Color(0xFF121917),
     danger: Color(0xFFC53B3B),
     onDanger: AppPalette.white,
+    dangerTint: Color(0xFFFAEFEF),
+    dangerTintPressed: Color(0xFFF8E7E7),
+    onDangerTint: Color(0xFFB23434),
     warning: AppPalette.gold800,
     success: AppPalette.teal700,
     inverseSurface: Color(0xFF121917),
@@ -156,6 +178,10 @@ class AppColors {
     expense: Color(0xFFE8EEEC),
     danger: Color(0xFFF07070),
     onDanger: AppPalette.teal900,
+    // danger at 16% (pressed: 24%) over the dark surface, precomputed opaque.
+    dangerTint: Color(0xFF372928),
+    dangerTintPressed: Color(0xFF49302F),
+    onDangerTint: Color(0xFFF48686),
     warning: AppPalette.gold300,
     success: AppPalette.teal400,
     inverseSurface: Color(0xFFE8EEEC),
@@ -188,6 +214,13 @@ class AppColors {
     expense: Color.lerp(expense, other.expense, t)!,
     danger: Color.lerp(danger, other.danger, t)!,
     onDanger: Color.lerp(onDanger, other.onDanger, t)!,
+    dangerTint: Color.lerp(dangerTint, other.dangerTint, t)!,
+    dangerTintPressed: Color.lerp(
+      dangerTintPressed,
+      other.dangerTintPressed,
+      t,
+    )!,
+    onDangerTint: Color.lerp(onDangerTint, other.onDangerTint, t)!,
     warning: Color.lerp(warning, other.warning, t)!,
     success: Color.lerp(success, other.success, t)!,
     inverseSurface: Color.lerp(inverseSurface, other.inverseSurface, t)!,
@@ -234,12 +267,33 @@ abstract final class AppSizes {
   static const double spinner = 20;
   static const double spinnerStroke = 2;
   static const double border = 1;
+  static const double borderSelected = 2;
+
+  /// List rows, RowPicker and settings rows (§7.5).
+  static const double row = 56;
+  static const double textField = 52;
+  static const double keypadKey = 56;
+  static const double iconBadge = 40;
+  static const double iconButtonTonal = 40;
+  static const double avatar = 64;
+  static const double colorSwatch = 32;
+  static const double selectableCardMin = 72;
+  static const double pageDot = 8;
+  static const double pageDotActive = 24;
+  static const double onboardingArt = 240;
+  static const double coachMarkPointer = 8;
+  static const double coachMarkMaxWidth = 280;
+  static const double skeletonLine = 16;
+  static const double appIcon = 72;
 }
 
 abstract final class AppOpacity {
   static const double disabled = 0.4;
   static const double presetTint = 0.12;
   static const double shadow = 0.06;
+
+  /// Low point of the skeleton shimmer (§7.6: 0.5 to 1).
+  static const double skeletonLow = 0.5;
 }
 
 abstract final class AppScale {
@@ -253,6 +307,11 @@ abstract final class AppDurations {
   static const Duration base = Duration(milliseconds: 250);
   static const Duration sheet = Duration(milliseconds: 320);
   static const Duration undoWindow = Duration(seconds: 4);
+
+  /// Local data is usually instant; a skeleton only appears after this
+  /// (03 §4) so nothing flickers.
+  static const Duration skeletonDelay = Duration(milliseconds: 300);
+  static const Duration shimmer = Duration(milliseconds: 1200);
 
   static const Curve fastCurve = Curves.easeOut;
   static const Curve baseCurve = Curves.easeOutCubic;

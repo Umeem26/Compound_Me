@@ -176,18 +176,6 @@ abstract class AppLocalizations {
   /// **'Catat setiap hari, lalu lihat polanya di sini.'**
   String get insightsEmptyBody;
 
-  /// Profile empty state title, shown before onboarding exists.
-  ///
-  /// In id, this message translates to:
-  /// **'Profil belum diatur'**
-  String get profileEmptyTitle;
-
-  /// Profile empty state explanation.
-  ///
-  /// In id, this message translates to:
-  /// **'Nama panggilan dan dompetmu akan tersimpan di sini.'**
-  String get profileEmptyBody;
-
   /// Action on the undo snackbar.
   ///
   /// In id, this message translates to:
@@ -265,6 +253,834 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lainnya'**
   String get catOtherIncome;
+
+  /// Button that moves to the next step.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut'**
+  String get actionNext;
+
+  /// Accessible label of the back arrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali'**
+  String get actionBack;
+
+  /// Skips the product value pages in onboarding.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati'**
+  String get actionSkip;
+
+  /// Saves a form or sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get actionSave;
+
+  /// Dismisses a one-time hint.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengerti'**
+  String get actionGotIt;
+
+  /// Snackbar when saving fails (02 §9).
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan. Coba lagi.'**
+  String get errorSaveFailed;
+
+  /// Screen reader label of the keypad backspace key. Long press clears.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus satu angka'**
+  String get keypadBackspace;
+
+  /// Name of the Indonesian language, always written in Indonesian.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa Indonesia'**
+  String get languageIndonesian;
+
+  /// Name of the English language, always written in English.
+  ///
+  /// In id, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// Onboarding language step title.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih bahasa'**
+  String get onboardingLanguageTitle;
+
+  /// Onboarding language step explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Bisa diganti kapan saja di Pengaturan.'**
+  String get onboardingLanguageBody;
+
+  /// First product value page title.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan kecil, dampak besar'**
+  String get onboardingValueGrowthTitle;
+
+  /// First product value page text.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat berapa sebenarnya harga rutinitasmu, lalu arahkan ke hal yang lebih berarti.'**
+  String get onboardingValueGrowthBody;
+
+  /// Second product value page title.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat dalam hitungan detik'**
+  String get onboardingValueSpeedTitle;
+
+  /// Second product value page text.
+  ///
+  /// In id, this message translates to:
+  /// **'Keypad cepat untuk pengeluaran, satu ketukan untuk check-in kebiasaan.'**
+  String get onboardingValueSpeedBody;
+
+  /// Third product value page title.
+  ///
+  /// In id, this message translates to:
+  /// **'Privat di perangkatmu'**
+  String get onboardingValuePrivacyTitle;
+
+  /// Third product value page text.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa akun. Datamu tidak pernah keluar dari HP ini.'**
+  String get onboardingValuePrivacyBody;
+
+  /// Screen reader label of the onboarding page dots.
+  ///
+  /// In id, this message translates to:
+  /// **'Halaman {current} dari {total}'**
+  String onboardingPageLabel(int current, int total);
+
+  /// Onboarding name step title.
+  ///
+  /// In id, this message translates to:
+  /// **'Panggil kamu siapa?'**
+  String get onboardingNameTitle;
+
+  /// Onboarding name step explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Dipakai untuk sapaan saja.'**
+  String get onboardingNameBody;
+
+  /// Label of a name field.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama'**
+  String get fieldName;
+
+  /// Validation error for an empty name.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama belum diisi.'**
+  String get errorNameRequired;
+
+  /// Onboarding wallet step title.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet pertama'**
+  String get onboardingWalletTitle;
+
+  /// Onboarding wallet step explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempat uangmu dicatat, misalnya uang tunai atau rekening bank.'**
+  String get onboardingWalletBody;
+
+  /// Helper under the first wallet form.
+  ///
+  /// In id, this message translates to:
+  /// **'Bisa ditambah atau diubah nanti.'**
+  String get onboardingWalletHelper;
+
+  /// Label of the wallet name field.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama dompet'**
+  String get fieldWalletName;
+
+  /// Label of the wallet type picker.
+  ///
+  /// In id, this message translates to:
+  /// **'Tipe'**
+  String get fieldWalletType;
+
+  /// Label of the wallet starting balance.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo awal'**
+  String get fieldInitialBalance;
+
+  /// Default name of the first wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunai'**
+  String get walletDefaultName;
+
+  /// Wallet type: cash.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunai'**
+  String get walletTypeCash;
+
+  /// Wallet type: bank account.
+  ///
+  /// In id, this message translates to:
+  /// **'Bank'**
+  String get walletTypeBank;
+
+  /// Wallet type: e-wallet such as GoPay or OVO.
+  ///
+  /// In id, this message translates to:
+  /// **'E-wallet'**
+  String get walletTypeEwallet;
+
+  /// Wallet type: anything else.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get walletTypeOther;
+
+  /// Onboarding habits step title.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kebiasaan'**
+  String get onboardingHabitsTitle;
+
+  /// Onboarding habits step explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih sampai 3. Semuanya bisa diubah nanti.'**
+  String get onboardingHabitsBody;
+
+  /// Group of habits the user wants more of.
+  ///
+  /// In id, this message translates to:
+  /// **'Ingin dibangun'**
+  String get habitGroupBuild;
+
+  /// Group of habits the user wants less of.
+  ///
+  /// In id, this message translates to:
+  /// **'Ingin dikurangi'**
+  String get habitGroupReduce;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Olahraga'**
+  String get templateExercise;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Baca 10 halaman'**
+  String get templateRead;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Bawa bekal'**
+  String get templatePackLunch;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Minum air 8 gelas'**
+  String get templateDrinkWater;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Kopi kekinian'**
+  String get templateCafeCoffee;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Jajan malam'**
+  String get templateLateSnacks;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Ojol jarak dekat'**
+  String get templateShortRides;
+
+  /// Starter habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Belanja impulsif'**
+  String get templateImpulseBuys;
+
+  /// Habit schedule: daily.
+  ///
+  /// In id, this message translates to:
+  /// **'Setiap hari'**
+  String get scheduleDaily;
+
+  /// Habit schedule: Monday to Friday.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari kerja'**
+  String get scheduleWorkdays;
+
+  /// Habit schedule: a number of times per week.
+  ///
+  /// In id, this message translates to:
+  /// **'{count}x seminggu'**
+  String scheduleTimesPerWeek(int count);
+
+  /// Screen reader label of the editable template cost.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah biaya {template}, sekarang {amount}'**
+  String templateCostEdit(String template, String amount);
+
+  /// Title of the sheet that edits a template cost.
+  ///
+  /// In id, this message translates to:
+  /// **'Biaya per kali'**
+  String get templateCostTitle;
+
+  /// Finishes onboarding with the picked habits.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai'**
+  String get actionStart;
+
+  /// Finishes onboarding without picking habits.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati dulu'**
+  String get actionSkipForNow;
+
+  /// One-time hint above the add button after onboarding.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat pengeluaran dan pemasukan dari tombol ini.'**
+  String get coachMarkAdd;
+
+  /// Error state title when reading data fails.
+  ///
+  /// In id, this message translates to:
+  /// **'Data belum bisa dimuat'**
+  String get errorLoadTitle;
+
+  /// Error state explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi sebentar lagi.'**
+  String get errorLoadBody;
+
+  /// Retry button of the error state.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get actionRetry;
+
+  /// Brings an archived wallet or category back.
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan'**
+  String get actionRestore;
+
+  /// Label of the icon picker row.
+  ///
+  /// In id, this message translates to:
+  /// **'Ikon'**
+  String get fieldIcon;
+
+  /// Label of the color picker.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna'**
+  String get fieldColor;
+
+  /// Title of the icon picker sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih ikon'**
+  String get iconPickerTitle;
+
+  /// Screen reader label of an icon in the picker.
+  ///
+  /// In id, this message translates to:
+  /// **'Ikon {position} dari {total}'**
+  String iconPosition(int position, int total);
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Hijau toska'**
+  String get presetTeal;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Emas'**
+  String get presetGold;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Koral'**
+  String get presetCoral;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Ungu'**
+  String get presetViolet;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Biru'**
+  String get presetBlue;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Hijau'**
+  String get presetGreen;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Merah muda'**
+  String get presetRose;
+
+  /// Preset color name for screen readers.
+  ///
+  /// In id, this message translates to:
+  /// **'Abu-abu'**
+  String get presetSlate;
+
+  /// Wallets screen title (S-41).
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet'**
+  String get walletsTitle;
+
+  /// Overline above the total of active wallets. All caps on purpose.
+  ///
+  /// In id, this message translates to:
+  /// **'TOTAL SALDO'**
+  String get walletsTotal;
+
+  /// Row that opens the new wallet form.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah dompet'**
+  String get walletsAdd;
+
+  /// Folded section with archived wallets or categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Diarsipkan ({count})'**
+  String walletsArchived(int count);
+
+  /// Screen reader label of a drag handle.
+  ///
+  /// In id, this message translates to:
+  /// **'Geser untuk mengurutkan {name}'**
+  String walletsReorder(String name);
+
+  /// Wallets empty state title.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada dompet aktif'**
+  String get walletsEmptyTitle;
+
+  /// Wallets empty state explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan dompet untuk mulai mencatat.'**
+  String get walletsEmptyBody;
+
+  /// Title of the new wallet form.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet baru'**
+  String get walletNewTitle;
+
+  /// Title of the edit wallet form.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah dompet'**
+  String get walletEditTitle;
+
+  /// Helper under the starting balance of an existing wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo sekarang ikut berubah sesuai selisihnya.'**
+  String get walletBalanceHelper;
+
+  /// Archives a wallet that has transactions.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan dompet'**
+  String get walletArchive;
+
+  /// Explains archiving a wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Disembunyikan dari pilihan, riwayatnya tetap ada.'**
+  String get walletArchiveHint;
+
+  /// Deletes a wallet without transactions.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus dompet'**
+  String get walletDelete;
+
+  /// Explains why an unused wallet can be deleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum pernah dipakai, jadi bisa dihapus.'**
+  String get walletDeleteHint;
+
+  /// Why the last active wallet can't be archived or deleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Minimal harus ada satu dompet aktif.'**
+  String get walletLastActive;
+
+  /// Undo snackbar after archiving a wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet diarsipkan'**
+  String get walletArchivedDone;
+
+  /// Undo snackbar after deleting a wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet dihapus'**
+  String get walletDeletedDone;
+
+  /// Categories screen title (S-42).
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get categoriesTitle;
+
+  /// Segment for expense categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengeluaran'**
+  String get categoryKindExpense;
+
+  /// Segment for income categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Pemasukan'**
+  String get categoryKindIncome;
+
+  /// Row that opens the new category form.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah kategori'**
+  String get categoriesAdd;
+
+  /// Folded section with archived categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Diarsipkan ({count})'**
+  String categoriesArchived(int count);
+
+  /// Categories empty state title.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kategori aktif'**
+  String get categoriesEmptyTitle;
+
+  /// Categories empty state explanation.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan kategori untuk jenis ini.'**
+  String get categoriesEmptyBody;
+
+  /// Title of the new category form.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori baru'**
+  String get categoryNewTitle;
+
+  /// Title of the edit category form.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah kategori'**
+  String get categoryEditTitle;
+
+  /// Label of the category name field.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kategori'**
+  String get fieldCategoryName;
+
+  /// Why a default category name can't be edited.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kategori bawaan mengikuti bahasa aplikasi.'**
+  String get categoryDefaultNameHelper;
+
+  /// Archives a category that is in use.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan kategori'**
+  String get categoryArchive;
+
+  /// Explains archiving a category.
+  ///
+  /// In id, this message translates to:
+  /// **'Disembunyikan dari pilihan, transaksinya tetap ada.'**
+  String get categoryArchiveHint;
+
+  /// Deletes a category nothing uses.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kategori'**
+  String get categoryDelete;
+
+  /// Why an unused category can be deleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum pernah dipakai, jadi bisa dihapus.'**
+  String get categoryDeleteHint;
+
+  /// Undo snackbar after archiving a category.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori diarsipkan'**
+  String get categoryArchivedDone;
+
+  /// Undo snackbar after deleting a category.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori dihapus'**
+  String get categoryDeletedDone;
+
+  /// Screen reader label of the profile header that edits the name.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah nama, {name}'**
+  String profileEditName(String name);
+
+  /// Title of the sheet that edits the name.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama panggilan'**
+  String get profileNameTitle;
+
+  /// Hint under the name in the profile header.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk mengubah'**
+  String get profileTapToEdit;
+
+  /// Profile group with wallets and categories.
+  ///
+  /// In id, this message translates to:
+  /// **'Keuangan'**
+  String get profileGroupFinance;
+
+  /// Profile group with settings.
+  ///
+  /// In id, this message translates to:
+  /// **'Aplikasi'**
+  String get profileGroupApp;
+
+  /// Profile and settings group about the app.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang'**
+  String get profileGroupAbout;
+
+  /// Number of active wallets next to the Wallets row.
+  ///
+  /// In id, this message translates to:
+  /// **'{count, plural, =1{1 aktif} other{{count} aktif}}'**
+  String profileActiveWallets(int count);
+
+  /// Settings screen title (S-43).
+  ///
+  /// In id, this message translates to:
+  /// **'Pengaturan'**
+  String get settingsTitle;
+
+  /// Settings group for language, theme and balance.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilan'**
+  String get settingsGroupDisplay;
+
+  /// Language setting label.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa'**
+  String get settingsLanguage;
+
+  /// Theme setting label.
+  ///
+  /// In id, this message translates to:
+  /// **'Tema'**
+  String get settingsTheme;
+
+  /// Theme option that follows the device.
+  ///
+  /// In id, this message translates to:
+  /// **'Ikuti sistem'**
+  String get themeSystem;
+
+  /// Light theme option.
+  ///
+  /// In id, this message translates to:
+  /// **'Terang'**
+  String get themeLight;
+
+  /// Dark theme option.
+  ///
+  /// In id, this message translates to:
+  /// **'Gelap'**
+  String get themeDark;
+
+  /// Toggle that starts Home with the balance hidden.
+  ///
+  /// In id, this message translates to:
+  /// **'Sembunyikan saldo'**
+  String get settingsHideBalance;
+
+  /// Explains the hide balance toggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo tertutup saat app dibuka. Ketuk ikon mata untuk melihatnya.'**
+  String get settingsHideBalanceHint;
+
+  /// Settings group for deleting data.
+  ///
+  /// In id, this message translates to:
+  /// **'Data'**
+  String get settingsGroupData;
+
+  /// Row and button that delete everything.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus semua data'**
+  String get settingsDeleteAll;
+
+  /// First confirmation sheet title.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus semua data?'**
+  String get deleteAllTitle;
+
+  /// Explains what deleting all data removes.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua transaksi, kebiasaan, dompet, kategori buatanmu, dan pengaturan akan dihapus dari HP ini. Ini tidak bisa dibatalkan.'**
+  String get deleteAllBody;
+
+  /// Goes to the second confirmation step.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan'**
+  String get deleteAllContinue;
+
+  /// Closes a confirmation without doing anything.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get actionCancel;
+
+  /// Word the user types to confirm deleting all data. Keep it one uppercase word.
+  ///
+  /// In id, this message translates to:
+  /// **'HAPUS'**
+  String get deleteAllWord;
+
+  /// Label of the confirmation field.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik {word} untuk menghapus'**
+  String deleteAllTypeLabel(String word);
+
+  /// About screen title and profile row.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang CompoundMe'**
+  String get aboutTitle;
+
+  /// App version row.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi'**
+  String get aboutVersion;
+
+  /// Credits row with the author's name.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibuat oleh Hisyam Khaeru Umam'**
+  String get aboutCreator;
+
+  /// Row that opens the repository in a browser.
+  ///
+  /// In id, this message translates to:
+  /// **'Kode sumber di GitHub'**
+  String get aboutSource;
+
+  /// Row that opens the licenses page.
+  ///
+  /// In id, this message translates to:
+  /// **'Lisensi open source'**
+  String get aboutLicenses;
+
+  /// Snackbar when the browser can't be opened.
+  ///
+  /// In id, this message translates to:
+  /// **'Link tidak bisa dibuka.'**
+  String get linkOpenFailed;
+
+  /// Short name of the Indonesian language for the settings segment (S-43: Indonesia / English).
+  ///
+  /// In id, this message translates to:
+  /// **'Indonesia'**
+  String get languageIndonesianShort;
+
+  /// Title of the confirmation when leaving a sheet or editor with unsaved input.
+  ///
+  /// In id, this message translates to:
+  /// **'Buang perubahan?'**
+  String get discardTitle;
+
+  /// Explains what discarding does.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan yang belum disimpan akan hilang.'**
+  String get discardBody;
+
+  /// Leaves without saving.
+  ///
+  /// In id, this message translates to:
+  /// **'Buang'**
+  String get discardAction;
+
+  /// Closes the confirmation and stays in the form.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut edit'**
+  String get keepEditingAction;
 }
 
 class _AppLocalizationsDelegate

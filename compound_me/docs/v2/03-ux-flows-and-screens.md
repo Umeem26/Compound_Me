@@ -279,7 +279,8 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 
 ### S-40 Profil
 - Header: avatar inisial (lingkaran `teal50`, huruf `teal700`), nama (tap untuk ubah).
-- Grup list: **Keuangan**: Dompet (jumlah aktif), Kategori. **Aplikasi**: Pengaturan. **Tentang**: Tentang CompoundMe (versi, lisensi open source, link GitHub).
+- Grup list: **Keuangan**: Dompet (jumlah aktif), Kategori. **Aplikasi**: Pengaturan. **Tentang**: Tentang CompoundMe.
+- Layar **Tentang CompoundMe**: ikon app, nama, versi (sekali, di bawah nama), "Dibuat oleh Hisyam Khaeru Umam", link kode sumber di GitHub, dan "Lisensi open source" (halaman lisensi Flutter, termasuk font OFL dan ikon MIT). Ini satu-satunya tempat info aplikasi (review PR #6).
 - Tidak ada item yang belum berfungsi.
 
 ### S-41 Dompet
@@ -295,9 +296,9 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 - **Default pengeluaran:** Makanan & minuman, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Pendidikan, Lainnya. **Default pemasukan:** Uang saku / gaji, Freelance, Hadiah, Lainnya.
 
 ### S-43 Pengaturan
-- **Tampilan:** Bahasa (Indonesia / English), Tema (Ikuti sistem / Terang / Gelap), Sembunyikan saldo saat membuka app (toggle).
+- **Tampilan:** Bahasa (Indonesia / English), Tema (Ikuti sistem / Terang / Gelap), toggle **Sembunyikan saldo** dengan subjudul "Saldo tertutup saat app dibuka. Ketuk ikon mata untuk melihatnya."
 - **Data:** Hapus semua data (danger, konfirmasi 2 langkah + ketik `HAPUS`/`DELETE`). Ekspor & backup muncul di 2.1.
-- **Tentang:** versi app, "Dibuat oleh Hisyam Khaeru Umam", link repo.
+- Info aplikasi (versi, pembuat, link repo, lisensi) tidak diulang di sini; tempatnya di Profil → Tentang CompoundMe (S-40).
 
 ## 4. Pola interaksi global
 
@@ -305,7 +306,7 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 |---|---|
 | Hapus | Tidak pernah pakai dialog "Yakin?" untuk hal yang bisa di-undo. Pakai snackbar undo 4 detik. Dialog hanya untuk yang tidak bisa dibatalkan (hapus semua data). |
 | Simpan | Optimistic: UI langsung berubah, error ditampilkan lewat snackbar + rollback. |
-| Navigasi kembali | Tombol back sistem selalu bekerja. Sheet dengan input kotor minta konfirmasi. |
+| Navigasi kembali | Tombol back sistem selalu bekerja. **Sheet dan layar editor** dengan input kotor (belum disimpan) minta konfirmasi "Buang perubahan?" (Buang / Lanjut edit) saat ditutup lewat X, back, atau ketuk di luar sheet. Simpan tidak memicu konfirmasi. Sheet yang punya input mematikan tarik-tutup selama ada perubahan, karena tarikan menutup sheet tanpa konfirmasi (`UnsavedChangesGuard`, review PR #6). |
 | Keyboard | Field teks tidak pernah tertutup keyboard (`resizeToAvoidBottomInset` + scroll). |
 | Angka | Selalu tabular, selalu `Rp` di depan kecuali di grafik. |
 | Waktu | "Hari ini", "Kemarin", lalu nama hari untuk 7 hari terakhir, lalu tanggal lengkap. |
