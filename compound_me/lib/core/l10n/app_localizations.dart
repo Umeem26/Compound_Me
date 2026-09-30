@@ -1417,6 +1417,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Selisih'**
   String get txNet;
+
+  /// Category in the history filter when both kinds share its name, e.g. 'Lainnya (Pemasukan)'.
+  ///
+  /// In id, this message translates to:
+  /// **'{name} ({kind})'**
+  String txFilterCategoryWithKind(String name, String kind);
 }
 
 class _AppLocalizationsDelegate

@@ -356,6 +356,31 @@ void main() {
       expect(find.byType(TransactionTile), findsNWidgets(3));
     });
 
+    testApp('the category filter tells same-named categories apart', (
+      tester,
+    ) async {
+      await pumpApp(tester, now: _now, seed: seedHistory);
+      await goTo(tester, AppRoutes.transactions);
+
+      await _tap(tester, find.widgetWithText(AppChip, 'Kategori'));
+      expect(find.text('Lainnya (Pengeluaran)'), findsOneWidget);
+      expect(find.text('Lainnya (Pemasukan)'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(BottomSheet),
+          matching: find.text('Transportasi'),
+        ),
+        findsOneWidget,
+        reason: 'a unique name stays as it is',
+      );
+
+      await _tap(tester, find.text('Lainnya (Pemasukan)'));
+      expect(
+        find.widgetWithText(AppChip, 'Lainnya (Pemasukan)'),
+        findsOneWidget,
+      );
+    });
+
     testApp('swiping left deletes, with undo', (tester) async {
       late AppDatabase database;
       await pumpApp(

@@ -717,4 +717,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get txNet => 'Net';
+
+  @override
+  String txFilterCategoryWithKind(String name, String kind) {
+    return '$name ($kind)';
+  }
 }

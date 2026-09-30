@@ -137,6 +137,21 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     if (picked != null && picked != _month) _refilter(() => _month = picked);
   }
 
+  /// Category name for the filter; a name both kinds use ("Lainnya") gets
+  /// its kind, so the two can be told apart.
+  String _filterName(Category category, List<Category> all) {
+    final l10n = context.l10n;
+    final name = categoryName(l10n, category);
+    final shared = all.any(
+      (c) => c.kind != category.kind && categoryName(l10n, c) == name,
+    );
+    if (!shared) return name;
+    final kind = category.kind == CategoryKind.expense
+        ? l10n.txKindExpense
+        : l10n.txKindIncome;
+    return l10n.txFilterCategoryWithKind(name, kind);
+  }
+
   Future<void> _pickCategory(List<Category> categories) async {
     final l10n = context.l10n;
     final picked = await showOptionSheet<String>(
@@ -148,7 +163,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         for (final category in categories)
           SheetOption(
             value: category.id,
-            label: categoryName(l10n, category),
+            label: _filterName(category, categories),
             leading: IconBadge(
               iconKey: category.iconKey,
               colorKey: category.colorKey,
@@ -224,7 +239,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     final categoryLabel = nameOf<Category>(
       categories,
       _categoryId,
-      (c) => categoryName(l10n, c),
+      (c) => _filterName(c, categories),
       (c) => c.id,
     );
     final walletLabel = nameOf<Wallet>(

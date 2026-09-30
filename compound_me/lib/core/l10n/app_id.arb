@@ -984,5 +984,17 @@
   "txNet": "Selisih",
   "@txNet": {
     "description": "Summary label: income minus expenses."
+  },
+  "txFilterCategoryWithKind": "{name} ({kind})",
+  "@txFilterCategoryWithKind": {
+    "description": "Category in the history filter when both kinds share its name, e.g. 'Lainnya (Pemasukan)'.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      }
+    }
   }
 }

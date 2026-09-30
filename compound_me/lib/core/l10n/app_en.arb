@@ -219,5 +219,6 @@
   "txClearFilters": "Clear filters",
   "txIncome": "In",
   "txExpense": "Out",
-  "txNet": "Net"
+  "txNet": "Net",
+  "txFilterCategoryWithKind": "{name} ({kind})"
 }

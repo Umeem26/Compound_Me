@@ -724,4 +724,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get txNet => 'Selisih';
+
+  @override
+  String txFilterCategoryWithKind(String name, String kind) {
+    return '$name ($kind)';
+  }
 }
