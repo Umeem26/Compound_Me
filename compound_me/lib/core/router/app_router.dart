@@ -5,6 +5,8 @@ import 'package:compound_me/core/utils/dates.dart';
 import 'package:compound_me/features/categories/domain/category.dart';
 import 'package:compound_me/features/categories/presentation/categories_screen.dart';
 import 'package:compound_me/features/categories/presentation/category_editor_screen.dart';
+import 'package:compound_me/features/habits/presentation/habit_detail_screen.dart';
+import 'package:compound_me/features/habits/presentation/habit_editor_screen.dart';
 import 'package:compound_me/features/habits/presentation/habits_screen.dart';
 import 'package:compound_me/features/home/presentation/home_screen.dart';
 import 'package:compound_me/features/insights/presentation/insights_screen.dart';
@@ -80,6 +82,32 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.habits,
                 builder: (context, state) => const HabitsScreen(),
+                routes: [
+                  // Before ':id', so "new" is not read as an id.
+                  GoRoute(
+                    path: 'new',
+                    parentNavigatorKey: rootNavigator,
+                    builder: (context, state) => HabitEditorScreen(
+                      seed: state.extra is HabitEditorSeed
+                          ? state.extra! as HabitEditorSeed
+                          : null,
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) =>
+                        HabitDetailScreen(habitId: state.pathParameters['id']!),
+                    routes: [
+                      GoRoute(
+                        path: 'edit',
+                        parentNavigatorKey: rootNavigator,
+                        builder: (context, state) => HabitEditorScreen(
+                          habitId: state.pathParameters['id'],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

@@ -1003,5 +1003,433 @@
   "txMonthEmptyBody": "Transaksi bulan itu muncul di sini setelah dicatat.",
   "@txMonthEmptyBody": {
     "description": "History empty state for a month without transactions."
+  },
+  "habitKindBuild": "Bangun",
+  "@habitKindBuild": {
+    "description": "Habit kind: do more of it (PRD §5)."
+  },
+  "habitKindReduce": "Kurangi",
+  "@habitKindReduce": {
+    "description": "Habit kind: do less of it, it costs money (PRD §5)."
+  },
+  "habitCreate": "Buat kebiasaan",
+  "@habitCreate": {
+    "description": "Button and tooltip that open the new habit form."
+  },
+  "habitFromTemplate": "Pilih dari template",
+  "@habitFromTemplate": {
+    "description": "Opens the starter habits."
+  },
+  "habitTemplatesTitle": "Pilih dari template",
+  "@habitTemplatesTitle": {
+    "description": "Title of the starter habits sheet."
+  },
+  "habitsFilterToday": "Hari ini",
+  "@habitsFilterToday": {
+    "description": "Habits list filter: scheduled today."
+  },
+  "habitsFilterAll": "Semua",
+  "@habitsFilterAll": {
+    "description": "Habits list filter: every habit."
+  },
+  "habitsMore": "Menu lainnya",
+  "@habitsMore": {
+    "description": "Tooltip of the ⋯ menu."
+  },
+  "habitsReorder": "Atur urutan",
+  "@habitsReorder": {
+    "description": "Menu item that turns on reordering."
+  },
+  "habitsReorderDone": "Selesai",
+  "@habitsReorderDone": {
+    "description": "Ends reordering."
+  },
+  "habitsNoneToday": "Tidak ada kebiasaan terjadwal hari ini.",
+  "@habitsNoneToday": {
+    "description": "Shown when nothing is scheduled today."
+  },
+  "streakDays": "{count} hari",
+  "@streakDays": {
+    "description": "Streak in days.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "streakWeeks": "{count} minggu",
+  "@streakWeeks": {
+    "description": "Streak in weeks.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habitCostPer": "{amount} per kali",
+  "@habitCostPer": {
+    "description": "Cost of one occurrence of a reduce habit.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "habitThisWeek": "minggu ini {count}",
+  "@habitThisWeek": {
+    "description": "Occurrences this week without a limit.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habitThisWeekOf": "minggu ini {count}/{limit}",
+  "@habitThisWeekOf": {
+    "description": "Occurrences this week against the weekly limit.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "habitSetLimitCta": "Atur batas mingguan untuk mulai streak",
+  "@habitSetLimitCta": {
+    "description": "Reduce habit without a weekly limit: it has no streak yet."
+  },
+  "habitCheckInOpen": "{name}, belum check-in hari ini",
+  "@habitCheckInOpen": {
+    "description": "Screen reader label of an open check-in.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habitCheckInDone": "{name}, sudah check-in hari ini",
+  "@habitCheckInDone": {
+    "description": "Screen reader label of a done check-in.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habitCheckInCount": "{name}, sudah check-in {count} kali hari ini",
+  "@habitCheckInCount": {
+    "description": "Screen reader label of a reduce check-in with its count.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habitLogged": "Dicatat",
+  "@habitLogged": {
+    "description": "Snackbar after a check-in."
+  },
+  "habitUnlogged": "Check-in dibatalkan",
+  "@habitUnlogged": {
+    "description": "Snackbar after undoing a check-in with a tap."
+  },
+  "habitCountToday": "Jumlah hari ini",
+  "@habitCountToday": {
+    "description": "Stepper sheet of a reduce habit."
+  },
+  "habitCountValue": "{count} kali",
+  "@habitCountValue": {
+    "description": "A number of occurrences.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habitCountCost": "{count} × {cost} = {total}",
+  "@habitCountCost": {
+    "description": "Cost of today's occurrences.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "cost": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "habitCountMax": "Maksimal {max} kali per hari.",
+  "@habitCountMax": {
+    "description": "The stepper reached its limit.",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "stepperDecrease": "Kurangi satu",
+  "@stepperDecrease": {
+    "description": "Tooltip of a stepper minus button."
+  },
+  "stepperIncrease": "Tambah satu",
+  "@stepperIncrease": {
+    "description": "Tooltip of a stepper plus button."
+  },
+  "homeHabitsTitle": "Kebiasaan hari ini",
+  "@homeHabitsTitle": {
+    "description": "Home section with the check-in strip."
+  },
+  "homeHabitsAll": "Semua",
+  "@homeHabitsAll": {
+    "description": "Opens the habits tab."
+  },
+  "homeHabitsFirst": "Tambah kebiasaan pertamamu",
+  "@homeHabitsFirst": {
+    "description": "Home card without any habit."
+  },
+  "habitNewTitle": "Kebiasaan baru",
+  "@habitNewTitle": {
+    "description": "Title of the habit form when creating."
+  },
+  "habitEditTitle": "Edit kebiasaan",
+  "@habitEditTitle": {
+    "description": "Title of the habit form when editing."
+  },
+  "habitKindField": "Jenis",
+  "@habitKindField": {
+    "description": "Label above the build/reduce cards."
+  },
+  "habitKindBuildHint": "Ingin diperbanyak, misalnya olahraga atau baca buku.",
+  "@habitKindBuildHint": {
+    "description": "Explains a build habit."
+  },
+  "habitKindReduceHint": "Punya biaya dan ingin dikurangi, misalnya kopi kekinian.",
+  "@habitKindReduceHint": {
+    "description": "Explains a reduce habit."
+  },
+  "fieldHabitName": "Nama kebiasaan",
+  "@fieldHabitName": {
+    "description": "Name field of the habit form."
+  },
+  "habitNameHint": "Misalnya: Baca 10 halaman",
+  "@habitNameHint": {
+    "description": "Placeholder of the habit name."
+  },
+  "habitScheduleField": "Jadwal",
+  "@habitScheduleField": {
+    "description": "Label above the schedule options."
+  },
+  "scheduleSpecificDays": "Hari tertentu",
+  "@scheduleSpecificDays": {
+    "description": "Schedule option: chosen weekdays."
+  },
+  "scheduleTimesOption": "N kali seminggu",
+  "@scheduleTimesOption": {
+    "description": "Schedule option: a number of times per week."
+  },
+  "habitTimesPerWeekField": "Target per minggu",
+  "@habitTimesPerWeekField": {
+    "description": "Label of the times per week stepper."
+  },
+  "habitTimesPerWeekValue": "{count} kali seminggu",
+  "@habitTimesPerWeekValue": {
+    "description": "Screen reader value of the times per week stepper.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habitDaysError": "Pilih minimal satu hari.",
+  "@habitDaysError": {
+    "description": "No weekday chosen."
+  },
+  "habitCostField": "Biaya per kali",
+  "@habitCostField": {
+    "description": "Cost row of a reduce habit."
+  },
+  "habitCostSet": "Atur biaya",
+  "@habitCostSet": {
+    "description": "Cost row before a cost is set."
+  },
+  "habitCostError": "Isi biaya lebih dari Rp 0.",
+  "@habitCostError": {
+    "description": "Reduce habit without a cost."
+  },
+  "habitWalletError": "Pilih dompet.",
+  "@habitWalletError": {
+    "description": "Reduce habit without a wallet."
+  },
+  "habitCategoryField": "Kategori",
+  "@habitCategoryField": {
+    "description": "Category row of a reduce habit."
+  },
+  "habitCategoryError": "Pilih kategori pengeluaran.",
+  "@habitCategoryError": {
+    "description": "Reduce habit without a category."
+  },
+  "habitLimitField": "Batas per minggu",
+  "@habitLimitField": {
+    "description": "Weekly limit stepper of a reduce habit."
+  },
+  "habitLimitNone": "Tanpa batas",
+  "@habitLimitNone": {
+    "description": "Weekly limit not set."
+  },
+  "habitLimitValue": "{count} kali",
+  "@habitLimitValue": {
+    "description": "Screen reader value of the weekly limit.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habitLimitHelper": "Minggu dengan kejadian di bawah batas dihitung berhasil dan menjaga streak.",
+  "@habitLimitHelper": {
+    "description": "Explains the weekly limit."
+  },
+  "habitArchive": "Arsipkan kebiasaan",
+  "@habitArchive": {
+    "description": "Archives a habit with check-ins."
+  },
+  "habitArchiveHint": "Riwayat dan transaksinya tetap tersimpan.",
+  "@habitArchiveHint": {
+    "description": "Explains archiving a habit."
+  },
+  "habitDelete": "Hapus kebiasaan",
+  "@habitDelete": {
+    "description": "Deletes a habit without check-ins."
+  },
+  "habitDeleteHint": "Belum ada check-in, jadi bisa dihapus.",
+  "@habitDeleteHint": {
+    "description": "Explains deleting a habit."
+  },
+  "habitArchivedDone": "Kebiasaan diarsipkan",
+  "@habitArchivedDone": {
+    "description": "Snackbar after archiving a habit."
+  },
+  "habitDeletedDone": "Kebiasaan dihapus",
+  "@habitDeletedDone": {
+    "description": "Snackbar after deleting a habit."
+  },
+  "habitKindLockedTitle": "Jenis tidak bisa diganti",
+  "@habitKindLockedTitle": {
+    "description": "Title when a habit with check-ins would change kind."
+  },
+  "habitKindLockedBody": "Kebiasaan ini sudah punya check-in, jadi riwayat dan transaksinya tetap di jenis sekarang. Buat kebiasaan baru untuk jenis {kind}.",
+  "@habitKindLockedBody": {
+    "description": "Explains why the kind is fixed.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "habitKindLockedAction": "Buat kebiasaan baru",
+  "@habitKindLockedAction": {
+    "description": "Opens a new habit form with the other kind."
+  },
+  "habitStatStreak": "Streak",
+  "@habitStatStreak": {
+    "description": "Current streak stat."
+  },
+  "habitStatBest": "Terbaik",
+  "@habitStatBest": {
+    "description": "Best streak stat."
+  },
+  "habitStatConsistency": "Konsistensi 30 hari",
+  "@habitStatConsistency": {
+    "description": "Build habit consistency stat."
+  },
+  "habitStatThisWeek": "Minggu ini",
+  "@habitStatThisWeek": {
+    "description": "Reduce habit occurrences this week."
+  },
+  "habitStatNone": "–",
+  "@habitStatNone": {
+    "description": "A stat without a value."
+  },
+  "percent": "{value}%",
+  "@percent": {
+    "description": "A whole percentage.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "legendDone": "Selesai",
+  "@legendDone": {
+    "description": "Calendar legend: checked in."
+  },
+  "legendLogged": "Tercatat",
+  "@legendLogged": {
+    "description": "Calendar legend: a reduce habit happened."
+  },
+  "legendGrace": "Hari longgar",
+  "@legendGrace": {
+    "description": "Calendar legend: a forgiven miss."
+  },
+  "legendMissed": "Terlewat",
+  "@legendMissed": {
+    "description": "Calendar legend: a missed scheduled day."
+  },
+  "legendOpen": "Belum check-in",
+  "@legendOpen": {
+    "description": "Calendar day: today, still open."
+  },
+  "calendarDay": "{date}, {status}",
+  "@calendarDay": {
+    "description": "Screen reader label of a calendar day.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "monthPrevious": "Bulan sebelumnya",
+  "@monthPrevious": {
+    "description": "Calendar arrow."
+  },
+  "monthNext": "Bulan berikutnya",
+  "@monthNext": {
+    "description": "Calendar arrow."
+  },
+  "habitCostMonth": "Biaya bulan ini",
+  "@habitCostMonth": {
+    "description": "Reduce habit cost card."
+  },
+  "habitCostYear": "Proyeksi setahun ±{amount} dengan pola sekarang",
+  "@habitCostYear": {
+    "description": "Yearly projection of a reduce habit.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "habitRecentTitle": "Check-in terakhir",
+  "@habitRecentTitle": {
+    "description": "Section of the habit detail."
+  },
+  "habitRecentEmpty": "Belum ada check-in.",
+  "@habitRecentEmpty": {
+    "description": "Habit detail without check-ins."
+  },
+  "habitArchivedBanner": "Kebiasaan ini diarsipkan.",
+  "@habitArchivedBanner": {
+    "description": "Banner on an archived habit."
   }
 }

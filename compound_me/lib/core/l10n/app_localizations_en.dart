@@ -730,4 +730,324 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get txMonthEmptyBody =>
       'Transactions of that month show up here once logged.';
+
+  @override
+  String get habitKindBuild => 'Build';
+
+  @override
+  String get habitKindReduce => 'Reduce';
+
+  @override
+  String get habitCreate => 'Create a habit';
+
+  @override
+  String get habitFromTemplate => 'Pick from a template';
+
+  @override
+  String get habitTemplatesTitle => 'Pick from a template';
+
+  @override
+  String get habitsFilterToday => 'Today';
+
+  @override
+  String get habitsFilterAll => 'All';
+
+  @override
+  String get habitsMore => 'More options';
+
+  @override
+  String get habitsReorder => 'Reorder';
+
+  @override
+  String get habitsReorderDone => 'Done';
+
+  @override
+  String get habitsNoneToday => 'No habits scheduled today.';
+
+  @override
+  String streakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String streakWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weeks',
+      one: '1 week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String habitCostPer(String amount) {
+    return '$amount each time';
+  }
+
+  @override
+  String habitThisWeek(int count) {
+    return 'this week $count';
+  }
+
+  @override
+  String habitThisWeekOf(int count, int limit) {
+    return 'this week $count/$limit';
+  }
+
+  @override
+  String get habitSetLimitCta => 'Set a weekly limit to start a streak';
+
+  @override
+  String habitCheckInOpen(String name) {
+    return '$name, not checked in today';
+  }
+
+  @override
+  String habitCheckInDone(String name) {
+    return '$name, checked in today';
+  }
+
+  @override
+  String habitCheckInCount(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: 'once',
+    );
+    return '$name, checked in $_temp0 today';
+  }
+
+  @override
+  String get habitLogged => 'Logged';
+
+  @override
+  String get habitUnlogged => 'Check-in undone';
+
+  @override
+  String get habitCountToday => 'How many today';
+
+  @override
+  String habitCountValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: 'once',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String habitCountCost(int count, String cost, String total) {
+    return '$count × $cost = $total';
+  }
+
+  @override
+  String habitCountMax(int max) {
+    return 'At most $max times a day.';
+  }
+
+  @override
+  String get stepperDecrease => 'One less';
+
+  @override
+  String get stepperIncrease => 'One more';
+
+  @override
+  String get homeHabitsTitle => 'Today\'s habits';
+
+  @override
+  String get homeHabitsAll => 'All';
+
+  @override
+  String get homeHabitsFirst => 'Add your first habit';
+
+  @override
+  String get habitNewTitle => 'New habit';
+
+  @override
+  String get habitEditTitle => 'Edit habit';
+
+  @override
+  String get habitKindField => 'Kind';
+
+  @override
+  String get habitKindBuildHint =>
+      'Something to do more, like exercise or reading.';
+
+  @override
+  String get habitKindReduceHint =>
+      'It costs money and you want less of it, like café coffee.';
+
+  @override
+  String get fieldHabitName => 'Habit name';
+
+  @override
+  String get habitNameHint => 'For example: Read 10 pages';
+
+  @override
+  String get habitScheduleField => 'Schedule';
+
+  @override
+  String get scheduleSpecificDays => 'Some days';
+
+  @override
+  String get scheduleTimesOption => 'N times a week';
+
+  @override
+  String get habitTimesPerWeekField => 'Target per week';
+
+  @override
+  String habitTimesPerWeekValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times a week',
+      one: 'once a week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get habitDaysError => 'Pick at least one day.';
+
+  @override
+  String get habitCostField => 'Cost each time';
+
+  @override
+  String get habitCostSet => 'Set the cost';
+
+  @override
+  String get habitCostError => 'Enter a cost above Rp 0.';
+
+  @override
+  String get habitWalletError => 'Choose a wallet.';
+
+  @override
+  String get habitCategoryField => 'Category';
+
+  @override
+  String get habitCategoryError => 'Choose an expense category.';
+
+  @override
+  String get habitLimitField => 'Weekly limit';
+
+  @override
+  String get habitLimitNone => 'No limit';
+
+  @override
+  String habitLimitValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: 'once',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get habitLimitHelper =>
+      'A week at or under the limit counts as a success and keeps the streak.';
+
+  @override
+  String get habitArchive => 'Archive habit';
+
+  @override
+  String get habitArchiveHint => 'Its history and expenses stay.';
+
+  @override
+  String get habitDelete => 'Delete habit';
+
+  @override
+  String get habitDeleteHint =>
+      'It has no check-ins yet, so it can be deleted.';
+
+  @override
+  String get habitArchivedDone => 'Habit archived';
+
+  @override
+  String get habitDeletedDone => 'Habit deleted';
+
+  @override
+  String get habitKindLockedTitle => 'The kind can\'t change';
+
+  @override
+  String habitKindLockedBody(String kind) {
+    return 'This habit has check-ins, so its history and expenses stay with its current kind. Create a new habit to make it $kind.';
+  }
+
+  @override
+  String get habitKindLockedAction => 'Create a new habit';
+
+  @override
+  String get habitStatStreak => 'Streak';
+
+  @override
+  String get habitStatBest => 'Best';
+
+  @override
+  String get habitStatConsistency => '30-day consistency';
+
+  @override
+  String get habitStatThisWeek => 'This week';
+
+  @override
+  String get habitStatNone => '–';
+
+  @override
+  String percent(int value) {
+    return '$value%';
+  }
+
+  @override
+  String get legendDone => 'Done';
+
+  @override
+  String get legendLogged => 'Logged';
+
+  @override
+  String get legendGrace => 'Grace day';
+
+  @override
+  String get legendMissed => 'Missed';
+
+  @override
+  String get legendOpen => 'Not checked in yet';
+
+  @override
+  String calendarDay(String date, String status) {
+    return '$date, $status';
+  }
+
+  @override
+  String get monthPrevious => 'Previous month';
+
+  @override
+  String get monthNext => 'Next month';
+
+  @override
+  String get habitCostMonth => 'Cost this month';
+
+  @override
+  String habitCostYear(String amount) {
+    return 'About $amount a year at this pace';
+  }
+
+  @override
+  String get habitRecentTitle => 'Latest check-ins';
+
+  @override
+  String get habitRecentEmpty => 'No check-ins yet.';
+
+  @override
+  String get habitArchivedBanner => 'This habit is archived.';
 }

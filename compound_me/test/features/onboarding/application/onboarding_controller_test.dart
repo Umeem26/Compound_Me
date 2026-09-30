@@ -1,7 +1,7 @@
 import 'package:compound_me/core/preferences/app_preferences.dart';
+import 'package:compound_me/features/habits/domain/habit_templates.dart';
 import 'package:compound_me/features/onboarding/application/onboarding_controller.dart';
 import 'package:compound_me/features/onboarding/data/drift_onboarding_setup.dart';
-import 'package:compound_me/features/onboarding/domain/habit_templates.dart';
 import 'package:compound_me/features/onboarding/domain/onboarding_draft.dart';
 import 'package:compound_me/features/onboarding/domain/onboarding_setup.dart';
 import 'package:compound_me/features/wallets/domain/wallet.dart';

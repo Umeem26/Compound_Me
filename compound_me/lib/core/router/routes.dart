@@ -4,6 +4,9 @@ abstract final class AppRoutes {
   static const home = '/home';
   static const transactions = '/transactions';
   static const habits = '/habits';
+  static const habitNew = '/habits/new';
+  static String habit(String id) => '/habits/$id';
+  static String habitEdit(String id) => '/habits/$id/edit';
   static const insights = '/insights';
   static const me = '/me';
   static const wallets = '/me/wallets';

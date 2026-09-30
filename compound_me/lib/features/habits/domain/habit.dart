@@ -122,3 +122,18 @@ class HabitLog {
   final LocalDate date;
   final int count;
 }
+
+/// A day's check-in with the money its expenses took (S-22 list). [spent]
+/// is 0 for build habits.
+@immutable
+class HabitCheckIn {
+  const HabitCheckIn({
+    required this.date,
+    required this.count,
+    required this.spent,
+  });
+
+  final LocalDate date;
+  final int count;
+  final Money spent;
+}

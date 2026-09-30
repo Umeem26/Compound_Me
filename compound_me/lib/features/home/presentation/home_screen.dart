@@ -8,6 +8,7 @@ import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/router/routes.dart';
 import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/core/utils/dates.dart';
+import 'package:compound_me/features/home/presentation/home_habit_strip.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
 import 'package:compound_me/features/transactions/domain/day_groups.dart';
 import 'package:compound_me/features/transactions/domain/transaction_entry.dart';
@@ -22,8 +23,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 /// Home (S-10): greeting, total balance, the month summary card and the
-/// latest transactions per day. The habit strip and the insight card come
-/// in phases 4 and 5. Everything follows Drift streams.
+/// latest transactions per day, with today's habits in between. The
+/// insight card comes in phase 5. Everything follows Drift streams.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -113,6 +114,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           ),
+        ),
+        const SliverPadding(
+          padding: EdgeInsets.only(top: AppSpacing.space6),
+          sliver: SliverToBoxAdapter(child: HomeHabitStrip()),
         ),
         SliverPadding(
           padding: pad.copyWith(top: AppSpacing.space6),

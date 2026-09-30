@@ -3,10 +3,11 @@ import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/utils/money.dart';
 import 'package:compound_me/features/habits/domain/habit.dart';
+import 'package:compound_me/features/habits/domain/habit_templates.dart';
+import 'package:compound_me/features/habits/presentation/habit_template_card.dart';
+import 'package:compound_me/features/habits/presentation/template_labels.dart';
 import 'package:compound_me/features/onboarding/application/onboarding_controller.dart';
-import 'package:compound_me/features/onboarding/domain/habit_templates.dart';
 import 'package:compound_me/features/onboarding/domain/onboarding_draft.dart';
-import 'package:compound_me/features/onboarding/presentation/template_labels.dart';
 import 'package:compound_me/features/wallets/domain/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -495,7 +496,7 @@ class _HabitsStepState extends ConsumerState<_HabitsStep> {
         for (final template in HabitTemplate.values)
           if (template.kind == kind) ...[
             const SizedBox(height: AppSpacing.space2),
-            _TemplateCard(
+            HabitTemplateCard(
               template: template,
               selected: draft.selected.contains(template),
               cost: draft.costOf(template),
@@ -531,109 +532,6 @@ class _HabitsStepState extends ConsumerState<_HabitsStep> {
             : l10n.actionStart,
         loading: _saving,
         onPressed: _finish,
-      ),
-    );
-  }
-}
-
-class _TemplateCard extends StatelessWidget {
-  const _TemplateCard({
-    required this.template,
-    required this.selected,
-    required this.cost,
-    required this.onTap,
-    required this.onEditCost,
-  });
-
-  final HabitTemplate template;
-  final bool selected;
-  final Money? cost;
-  final VoidCallback? onTap;
-  final ValueChanged<Money> onEditCost;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final name = templateName(l10n, template);
-    final reduce = template.kind == HabitKind.reduce;
-    return SelectableCard(
-      title: name,
-      subtitle: reduce
-          ? l10n.templateCostTitle
-          : templateSchedule(l10n, template),
-      leading: IconBadge(
-        iconKey: template.iconKey,
-        colorKey: template.colorKey,
-      ),
-      trailing: reduce && cost != null
-          ? _CostChip(
-              amount: cost!,
-              semanticLabel: l10n.templateCostEdit(name, formatRupiah(cost!)),
-              onTap: () => onEditCost(cost!),
-            )
-          : null,
-      selected: selected,
-      onTap: onTap,
-    );
-  }
-}
-
-/// Tappable cost of a reduce template, opening the amount sheet.
-class _CostChip extends StatelessWidget {
-  const _CostChip({
-    required this.amount,
-    required this.semanticLabel,
-    required this.onTap,
-  });
-
-  final Money amount;
-  final String semanticLabel;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.tokens.colors;
-    const radius = BorderRadius.all(Radius.circular(AppRadius.full));
-    return Semantics(
-      button: true,
-      label: semanticLabel,
-      excludeSemantics: true,
-      onTap: onTap,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: AppSizes.minTouchTarget),
-        child: Center(
-          child: Material(
-            color: colors.surfaceMuted,
-            borderRadius: radius,
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: radius,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.space3,
-                  vertical: AppSpacing.space2,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      formatRupiah(amount),
-                      style: AppTextStyles.label.tabular.copyWith(
-                        color: colors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.space1),
-                    Icon(
-                      AppIcons.pencilSimple,
-                      size: AppSizes.iconSm,
-                      color: colors.textSecondary,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

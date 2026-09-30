@@ -109,6 +109,30 @@ class DriftHabitRepository implements HabitRepository {
   });
 
   @override
+  Future<void> undoDelete(Habit habit) => _db
+      .into(_db.habits)
+      .insert(
+        HabitsCompanion.insert(
+          id: habit.id,
+          name: habit.name,
+          kind: habit.kind,
+          iconKey: habit.iconKey,
+          colorKey: habit.colorKey,
+          scheduleType: habit.scheduleType,
+          scheduleDays: Value(habit.scheduleDays),
+          timesPerWeek: Value(habit.timesPerWeek),
+          costPerOccurrence: Value(habit.costPerOccurrence),
+          walletId: Value(habit.walletId),
+          categoryId: Value(habit.categoryId),
+          weeklyLimit: Value(habit.weeklyLimit),
+          sortOrder: Value(habit.sortOrder),
+          archivedAt: Value(habit.archivedAt),
+          createdAt: habit.createdAt,
+          updatedAt: _now,
+        ),
+      );
+
+  @override
   Stream<List<HabitLog>> watchLogs(
     String habitId, {
     LocalDate? from,
@@ -134,6 +158,64 @@ class DriftHabitRepository implements HabitRepository {
       ..where((l) => l.date.equals(date.toIso()) & l.deletedAt.isNull());
     return query.watch().map((rows) => [for (final r in rows) r.toDomain()]);
   }
+
+  @override
+  Stream<List<HabitLog>> watchAllLogs() {
+    final query = _db.select(_db.habitLogs)
+      ..where((l) => l.deletedAt.isNull())
+      ..orderBy([(l) => OrderingTerm.asc(l.date)]);
+    return query.watch().map((rows) => [for (final r in rows) r.toDomain()]);
+  }
+
+  @override
+  Future<bool> hasCheckIns(String habitId) => _ledger.hasActiveLogs(habitId);
+
+  @override
+  Stream<List<HabitCheckIn>> watchCheckIns(String habitId, {int limit = 10}) =>
+      _db
+          .customSelect(
+            'SELECT l.date AS date, l.count AS count, '
+            'COALESCE(SUM(t.amount), 0) AS spent '
+            'FROM habit_logs l '
+            'LEFT JOIN transactions t '
+            'ON t.habit_log_id = l.id AND t.deleted_at IS NULL '
+            'WHERE l.habit_id = ? AND l.deleted_at IS NULL '
+            'GROUP BY l.id ORDER BY l.date DESC LIMIT ?',
+            variables: [Variable.withString(habitId), Variable.withInt(limit)],
+            readsFrom: {_db.habitLogs, _db.transactions},
+          )
+          .watch()
+          .map(
+            (rows) => [
+              for (final row in rows)
+                HabitCheckIn(
+                  date: LocalDate.parse(row.read<String>('date')),
+                  count: row.read<int>('count'),
+                  spent: row.read<int>('spent'),
+                ),
+            ],
+          );
+
+  @override
+  Stream<int> watchSpent(
+    String habitId, {
+    required LocalDate from,
+    required LocalDate to,
+  }) => _db
+      .customSelect(
+        'SELECT COALESCE(SUM(t.amount), 0) AS spent '
+        'FROM transactions t JOIN habit_logs l ON l.id = t.habit_log_id '
+        'WHERE l.habit_id = ? AND l.deleted_at IS NULL '
+        'AND t.deleted_at IS NULL AND l.date >= ? AND l.date <= ?',
+        variables: [
+          Variable.withString(habitId),
+          Variable.withString(from.toIso()),
+          Variable.withString(to.toIso()),
+        ],
+        readsFrom: {_db.habitLogs, _db.transactions},
+      )
+      .watchSingle()
+      .map((row) => row.read<int>('spent'));
 
   @override
   Future<int> toggleCheckIn(String habitId, LocalDate date) {

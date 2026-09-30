@@ -4,6 +4,7 @@ import 'package:compound_me/core/design/design.dart';
 import 'package:compound_me/core/l10n/category_names.dart';
 import 'package:compound_me/core/l10n/date_labels.dart';
 import 'package:compound_me/core/l10n/l10n.dart';
+import 'package:compound_me/core/router/routes.dart';
 import 'package:compound_me/core/utils/money.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
 import 'package:compound_me/features/transactions/domain/transaction_entry.dart';
@@ -11,8 +12,9 @@ import 'package:compound_me/features/transactions/presentation/transaction_form_
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-enum _DetailAction { edit, delete }
+enum _DetailAction { edit, delete, habit }
 
 /// Opens the transaction detail (S-12). Edit and delete continue from
 /// [context] once the sheet has closed, so it must outlive the sheet.
@@ -30,6 +32,9 @@ Future<void> openTransactionDetail(
       await openTransactionForm(context, editing: item);
     case _DetailAction.delete:
       await deleteTransaction(context, item);
+    case _DetailAction.habit:
+      final habitId = item.habitId;
+      if (habitId != null) context.go(AppRoutes.habit(habitId));
   }
 }
 
@@ -66,7 +71,7 @@ Future<bool> deleteTransaction(
 }
 
 /// S-12: large category icon, the amount, and wallet, date, note and the
-/// habit it came from, with Edit and Delete.
+/// habit it came from (tap opens S-22), with Edit and Delete.
 class TransactionDetailSheet extends StatelessWidget {
   const TransactionDetailSheet({required this.item, super.key});
 
@@ -137,6 +142,9 @@ class TransactionDetailSheet extends StatelessWidget {
                     title: item.habitName == null
                         ? l10n.txFromHabitUnknown
                         : l10n.txFromHabit(item.habitName!),
+                    onTap: item.habitId == null
+                        ? null
+                        : () => Navigator.of(context).pop(_DetailAction.habit),
                   ),
               ],
             ),

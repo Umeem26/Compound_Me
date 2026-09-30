@@ -172,12 +172,14 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
   Future<void> _pickDate() async {
     final now = ref.read(nowProvider);
     final current = _form.occurredAt;
+    final l10n = context.l10n;
     final day = await showDateSheet(
       context,
-      title: context.l10n.txDatePickerTitle,
+      title: l10n.txDatePickerTitle,
       initial: current.isAfter(now) ? now : current,
-      first: DateTime(2000),
       last: now,
+      labels: l10n.monthGridLabels,
+      dayLabel: l10n.fullDate,
     );
     if (day == null) return;
     // Keeps the time of day; only the day changes.

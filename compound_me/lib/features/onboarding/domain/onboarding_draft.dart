@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:compound_me/core/utils/money.dart';
-import 'package:compound_me/features/onboarding/domain/habit_templates.dart';
+import 'package:compound_me/features/habits/domain/habit_templates.dart';
 import 'package:compound_me/features/wallets/domain/wallet.dart';
 import 'package:meta/meta.dart';
 
