@@ -43,7 +43,17 @@ abstract final class AppIcons {
   static const IconData sun = IconData(0xe472, fontFamily: _regular);
   static const IconData moon = IconData(0xe330, fontFamily: _regular);
   static const IconData circleHalf = IconData(0xe18c, fontFamily: _regular);
+  static const IconData eye = IconData(0xe220, fontFamily: _regular);
   static const IconData eyeSlash = IconData(0xe224, fontFamily: _regular);
+  static const IconData arrowDownLeft = IconData(0xe040, fontFamily: _regular);
+  static const IconData arrowUpRight = IconData(0xe092, fontFamily: _regular);
+  static const IconData plusMinus = IconData(0xe3d8, fontFamily: _regular);
+  static const IconData calendarBlank = IconData(0xe10a, fontFamily: _regular);
+  static const IconData notePencil = IconData(0xe34c, fontFamily: _regular);
+  static const IconData magnifyingGlass = IconData(
+    0xe30c,
+    fontFamily: _regular,
+  );
   static const IconData warningCircle = IconData(0xe4e2, fontFamily: _regular);
   static const IconData info = IconData(0xe2ce, fontFamily: _regular);
   static const IconData arrowSquareOut = IconData(0xe5de, fontFamily: _regular);

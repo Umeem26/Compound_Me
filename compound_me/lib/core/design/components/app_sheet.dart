@@ -10,7 +10,8 @@ import 'package:flutter/material.dart';
 /// Opens a bottom sheet with the motion tokens (§8) on the root navigator,
 /// so it covers the bottom navigation. The content moves above the
 /// keyboard. Sheets that take input pass `enableDrag: false`, because a
-/// drag closes the sheet past an UnsavedChangesGuard.
+/// drag closes the sheet past an UnsavedChangesGuard; they have no drag
+/// handle then and close through a [SheetHeader] X, back, or a tap outside.
 Future<T?> showAppSheet<T>(
   BuildContext context, {
   required WidgetBuilder builder,
@@ -26,6 +27,7 @@ Future<T?> showAppSheet<T>(
     isScrollControlled: true,
     useSafeArea: true,
     enableDrag: enableDrag,
+    showDragHandle: enableDrag,
     sheetAnimationStyle: AnimationStyle(
       duration: duration,
       reverseDuration: duration,
@@ -70,6 +72,63 @@ class SheetBody extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.space4),
           Flexible(child: child),
+        ],
+      ),
+    );
+  }
+}
+
+/// Title row of a sheet without a drag handle, with an X that closes it
+/// through `Navigator.maybePop`, so an UnsavedChangesGuard still asks.
+class SheetHeader extends StatelessWidget {
+  const SheetHeader({
+    required this.title,
+    required this.closeLabel,
+    this.subtitle,
+    super.key,
+  });
+
+  final String title;
+  final String closeLabel;
+
+  /// A line under the title, e.g. the amount while the keypad is hidden.
+  final Widget? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.tokens.colors;
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(
+        start: AppSpacing.screenHorizontal,
+        end: AppSpacing.space2,
+        top: AppSpacing.space2,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Semantics(
+                  header: true,
+                  child: Text(
+                    title,
+                    style: AppTextStyles.titleMedium.copyWith(
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                ),
+                ?subtitle,
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: () => Navigator.of(context).maybePop(),
+            tooltip: closeLabel,
+            icon: const Icon(AppIcons.x),
+            color: colors.textSecondary,
+          ),
         ],
       ),
     );
@@ -140,13 +199,20 @@ class _AmountSheetState extends State<_AmountSheet> {
   }
 }
 
-/// One choice in [showOptionSheet].
+/// One choice in [showOptionSheet]; [leading] replaces [icon] when both
+/// are given, e.g. a colored badge.
 class SheetOption<T> {
-  const SheetOption({required this.value, required this.label, this.icon});
+  const SheetOption({
+    required this.value,
+    required this.label,
+    this.icon,
+    this.leading,
+  });
 
   final T value;
   final String label;
   final IconData? icon;
+  final Widget? leading;
 }
 
 /// Single choice list in a sheet, the current value marked with a check.
@@ -176,7 +242,10 @@ Future<T?> showOptionSheet<T>(
                   constraints: const BoxConstraints(minHeight: AppSizes.row),
                   child: Row(
                     children: [
-                      if (option.icon != null) ...[
+                      if (option.leading != null) ...[
+                        option.leading!,
+                        const SizedBox(width: AppSpacing.space3),
+                      ] else if (option.icon != null) ...[
                         Icon(
                           option.icon,
                           size: AppSizes.iconMd,
@@ -207,4 +276,25 @@ Future<T?> showOptionSheet<T>(
       ),
     );
   },
+);
+
+/// Calendar in a sheet (S-11 date row). Returns the picked day at local
+/// midnight, or null when dismissed.
+Future<DateTime?> showDateSheet(
+  BuildContext context, {
+  required String title,
+  required DateTime initial,
+  required DateTime first,
+  required DateTime last,
+}) => showAppSheet<DateTime>(
+  context,
+  builder: (context) => SheetBody(
+    title: title,
+    child: CalendarDatePicker(
+      initialDate: initial,
+      firstDate: first,
+      lastDate: last,
+      onDateChanged: (day) => Navigator.of(context).pop(day),
+    ),
+  ),
 );

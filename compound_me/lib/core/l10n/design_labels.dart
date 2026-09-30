@@ -17,6 +17,12 @@ extension DesignLabels on AppLocalizations {
   AsyncErrorLabels get loadErrorLabels =>
       (title: errorLoadTitle, message: errorLoadBody, retry: actionRetry);
 
+  BalanceVisibilityLabels get balanceVisibilityLabels =>
+      (show: balanceShow, hide: balanceHide, hidden: balanceHidden);
+
+  PeriodSummaryLabels get periodSummaryLabels =>
+      (income: txIncome, expense: txExpense, net: txNet);
+
   DiscardLabels get discardLabels => (
     title: discardTitle,
     message: discardBody,

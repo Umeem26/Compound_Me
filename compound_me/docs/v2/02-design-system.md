@@ -195,8 +195,9 @@ State: pressed = warna 1 tingkat lebih gelap + skala 0,98 (`motionFast`, 120 ms)
 
 ### 7.3 Kartu & list
 - **`AppCard`**: `surface`, radius `radiusLg`, border 1 px, padding 16.
-- **`BalanceHeader`**: overline "TOTAL SALDO", `amountHero`, tombol mata di sebelah kanan angka. Di bawahnya dua pill kecil berlatar `surfaceMuted`: ikon Phosphor `ArrowDownLeft` + "Masuk Rp …" (warna `income`) dan ikon `ArrowUpRight` + "Keluar Rp …" (warna `textPrimary`). Tanpa kartu berwarna penuh.
-- **`TransactionTile`**: tinggi 64. Kiri: ikon kategori (lingkaran 40, `bg`/`fg` kategori). Tengah: nama kategori (`titleSmall`) + catatan atau dompet (`bodySmall`, `textSecondary`, 1 baris ellipsis). Kanan: nominal (`bodyStrong`, tabular, `+` teal atau `−` netral) + jam (`caption`). Label kecil "Kebiasaan" kalau berasal dari check-in.
+- **`BalanceHeader`**: overline "TOTAL SALDO", `amountHero`, tombol mata di sebelah kanan angka. Tanpa kartu berwarna penuh. Tombol mata = `IconButtonTonal`; saldo tersembunyi tampil `Rp ••••••` dan dibacakan "Saldo disembunyikan" (`BalanceText`, dipakai juga di S-41).
+- **`PeriodSummaryCard`**: `AppCard` dengan header (teks `label` `textSecondary` + chip opsional, mis. `PickerPill` bulan) dan 3 kolom: ikon `ArrowDownLeft` + "Masuk" (nominal warna `income`), `ArrowUpRight` + "Keluar", `PlusMinus` + "Selisih" (`caption` di atas `bodyStrong` tabular). Satu baris di 360 dp dan ukuran teks 1,3: nominal mengecil lewat `FittedBox`, tidak terpotong. Dipakai S-10 dan S-13 (review PR #7, menggantikan pill Masuk/Keluar).
+- **`TransactionTile`**: tinggi 64. Kiri: ikon kategori (lingkaran 40, `bg`/`fg` kategori). Tengah: nama kategori (`titleSmall`) + catatan atau dompet (`bodySmall`, `textSecondary`, 1 baris ellipsis). Kanan: nominal (`bodyStrong`, tabular, `+` teal atau `−` netral, maks. setengah lebar layar lalu mengecil) + jam (`caption`). Label kecil "Kebiasaan" kalau berasal dari check-in.
 - **`DayHeader`**: "Hari ini" / "Kemarin" / "Senin, 21 Sep" (`label`, `textSecondary`) + subtotal hari di kanan.
 - **`SectionHeader`**: `titleSmall` + aksi teks "Lihat semua" di kanan.
 

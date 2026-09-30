@@ -55,6 +55,17 @@ class DriftWalletRepository implements WalletRepository {
   );
 
   @override
+  Future<List<Wallet>> listActive() async {
+    final query = _db.select(_db.wallets)
+      ..where((w) => w.archivedAt.isNull())
+      ..orderBy([
+        (w) => OrderingTerm.asc(w.sortOrder),
+        (w) => OrderingTerm.asc(w.createdAt),
+      ]);
+    return [for (final r in await query.get()) r.toDomain()];
+  }
+
+  @override
   Stream<List<Wallet>> watchArchived() {
     final query = _db.select(_db.wallets)
       ..where((w) => w.archivedAt.isNotNull())

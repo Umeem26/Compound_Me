@@ -2,6 +2,7 @@ import 'package:compound_me/app.dart';
 import 'package:compound_me/core/database/app_database.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/router/app_router.dart';
+import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/features/onboarding/application/onboarding_status.dart';
 import 'package:compound_me/features/wallets/data/drift_wallet_repository.dart';
 import 'package:compound_me/features/wallets/domain/wallet.dart';
@@ -24,7 +25,9 @@ const pixel9Ratio = 2.625;
 ///
 /// [seed] fills the database before the onboarding flag is synced with it,
 /// as bootstrap does. Without it, an onboarded app gets the one wallet
-/// onboarding always creates. Returns the in-memory database.
+/// onboarding always creates. [now] fixes the screens' clock (greeting,
+/// "Hari ini"); [clock] is a clock the test moves itself. Returns the
+/// in-memory database.
 Future<AppDatabase> pumpApp(
   WidgetTester tester, {
   ThemeMode themeMode = ThemeMode.light,
@@ -33,6 +36,8 @@ Future<AppDatabase> pumpApp(
   Map<String, Object> prefs = const {},
   Future<void> Function(AppDatabase db)? seed,
   double textScale = 1,
+  DateTime? now,
+  DateTime Function()? clock,
   Size physicalSize = pixel9,
   double devicePixelRatio = pixel9Ratio,
 }) async {
@@ -83,6 +88,10 @@ Future<AppDatabase> pumpApp(
       overrides: [
         appDatabaseProvider.overrideWithValue(database),
         appPreferencesProvider.overrideWithValue(preferences),
+        if (clock != null)
+          clockProvider.overrideWithValue(clock)
+        else if (now != null)
+          clockProvider.overrideWithValue(() => now),
       ],
       child: const CompoundMeApp(),
     ),
@@ -108,9 +117,14 @@ void testApp(
   Future<void> Function(WidgetTester tester) body,
 ) {
   testWidgets(description, (tester) async {
-    await body(tester);
-    await tester.pumpWidget(const SizedBox.shrink());
-    // A plain pump() doesn't advance fake time, so the timer wouldn't fire.
-    await tester.pump(Duration.zero);
+    try {
+      await body(tester);
+    } finally {
+      // Also after a failure, or the pending timers hang the whole run.
+      await tester.pumpWidget(const SizedBox.shrink());
+      // A plain pump() doesn't advance fake time, so the timer wouldn't
+      // fire.
+      await tester.pump(Duration.zero);
+    }
   });
 }

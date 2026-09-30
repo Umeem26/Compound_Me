@@ -45,7 +45,7 @@ final class OnboardingControllerProvider
 }
 
 String _$onboardingControllerHash() =>
-    r'bdea65ec1c3191b38b584e050e142ccf2bbe3ab4';
+    r'5a07901170fbb3fec899a70d831f7f223422afb5';
 
 /// Holds Flow A's progress and saves it after every change.
 

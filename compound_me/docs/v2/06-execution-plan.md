@@ -26,13 +26,19 @@
 ## 1. Pola kerja per fase
 
 ```
-Prompt fase (plan mode) → review rencana → setujui
+Prompt fase (plan mode, atau rencana ditulis di deskripsi PR) → setujui
 → Claude Code eksekusi di branch v2/phase-N-...
 → flutter analyze (0 issue) + flutter test (hijau) + jalan di emulator
+→ Checklist fase dijalankan OTOMATIS di emulator sebelum PR:
+    integration test  compound_me/integration_test/phaseN_checklist_test.dart
+    skrip adb         compound_me/tool/qa/qa_phaseN.py (force stop, font 1,3, mode gelap, intent)
+  hasilnya ditulis sebagai tabel lulus/gagal di PR (cara pakai: compound_me/tool/qa/README.md)
 → Claude Code ambil screenshot layar baru (adb) dan buat PR (JANGAN merge)
-→ Kamu: tes manual pakai checklist fase → kirim catatan ke Cowork untuk review
+→ Kamu: review PR + tabel QA → kirim catatan ke Cowork untuk review
 → Revisi kalau perlu → merge
 ```
+
+Checklist tiap fase di §2 adalah daftar yang dijalankan otomatis itu. Yang hanya bisa dinilai manusia (waktu, rasa, TalkBack, HP sungguhan) dikumpulkan di Fase 6, "QA manual sebelum rilis", dan setiap fase menambahkan itemnya ke sana.
 
 Perintah screenshot yang bisa dipakai Claude Code:
 ```
@@ -113,8 +119,8 @@ Widget test: onboarding sampai selesai, validasi nama kosong, dompet dengan tran
 DoD seperti biasa + screenshot semua layar baru (terang & gelap, bahasa id & en untuk onboarding). PR tanpa merge.
 ```
 
-**Checklist kamu:**
-- [ ] Onboarding selesai ≤ 60 detik tanpa bingung.
+**Checklist fase (otomatis, §1):**
+- [ ] Onboarding selesai: jumlah tap dan layar dilaporkan (waktu ≤ 60 detik tanpa bingung dinilai di QA manual Fase 6).
 - [ ] Tutup app di tengah onboarding → buka lagi, lanjut dari langkah terakhir.
 - [ ] Ganti ke English → semua teks berganti, tanggal berbahasa Inggris, uang tetap `Rp 25.000`.
 - [ ] Tidak ada teks yang kepotong dengan ukuran font HP diperbesar.
@@ -138,8 +144,8 @@ Ukur dan laporkan: berapa tap dari tombol Tambah sampai tersimpan untuk pengelua
 DoD + screenshot. PR tanpa merge.
 ```
 
-**Checklist kamu:**
-- [ ] Catat "kopi Rp 22.000" ≤ 5 detik (pakai stopwatch HP).
+**Checklist fase (otomatis, §1):**
+- [ ] Catat "kopi Rp 22.000": jumlah tap dari tombol Tambah sampai tersimpan dilaporkan (≤ 5 detik dinilai di QA manual Fase 6).
 - [ ] Hapus transaksi → Urungkan → kembali utuh, saldo benar.
 - [ ] Edit transaksi pindah dompet → saldo kedua dompet benar.
 - [ ] Toggle "Sembunyikan saldo" di Pengaturan: saat app dibuka, saldo di BalanceHeader tertutup; ikon mata membukanya. Matikan toggle → saldo terlihat saat app dibuka.
@@ -157,7 +163,7 @@ Widget test: tap cepat 5x tetap konsisten, check-in reduce mengurangi saldo dan 
 DoD + screenshot. PR tanpa merge.
 ```
 
-**Checklist kamu:**
+**Checklist fase (otomatis, §1):**
 - [ ] Buat "Kopi Rp 25.000, pakai GoPay, kategori Makanan" → check-in → transaksi masuk ke GoPay, bukan dompet pertama.
 - [ ] Long-press → set 2 kopi → 2 transaksi. Turunkan ke 1 → tinggal 1.
 - [ ] Bolong satu hari (ubah tanggal HP atau pakai data uji) → streak tidak putus, ditandai hari longgar.
@@ -176,7 +182,7 @@ Test: InsightsCalculator dengan data contoh, widget test empty state.
 DoD + screenshot (dengan data contoh). PR tanpa merge.
 ```
 
-**Checklist kamu:**
+**Checklist fase (otomatis, §1):**
 - [ ] Angka di Wawasan cocok dengan hitungan manual kamu untuk satu kebiasaan.
 - [ ] Simulator: 50% dari kopi 3x/minggu × Rp 25.000 ≈ Rp 1,95 jt/tahun.
 - [ ] Disclaimer selalu terlihat.
@@ -201,6 +207,16 @@ Termasuk:
 
 DoD + laporan audit sebelum/sesudah. PR tanpa merge.
 ```
+
+### QA manual sebelum rilis
+Hal yang hanya bisa dinilai manusia di HP sungguhan. Semua checklist fase lain sudah dijalankan otomatis (§1); fase berikutnya menambahkan itemnya di sini.
+- [ ] Onboarding selesai ≤ 60 detik tanpa bingung (Fase 2, Flow A).
+- [ ] Catat transaksi ≤ 5 detik dengan stopwatch, misalnya "kopi Rp 22.000" (Fase 3, Flow B).
+- [ ] Rasa tampilan mode gelap di semua layar: kontras, tidak ada yang terlalu terang atau hilang.
+- [ ] TalkBack langsung, minimal S-10, S-11, S-20 (03 §5): urutan fokus, label tombol ikon, nominal dibaca lengkap, "Saldo disembunyikan".
+- [ ] App dimatikan di tengah proses (tepat setelah "Mulai" di onboarding, dan saat "Hapus semua data") di HP sungguhan → dibuka lagi tanpa data dobel atau Beranda kosong.
+- [ ] Link "Kode sumber di GitHub" membuka halaman repo yang benar di browser HP sungguhan.
+- [ ] Haptic terasa pas (keypad, check-in, hapus) di HP sungguhan, karena emulator tidak bergetar.
 
 **Checklist kamu (uji pengguna kecil):**
 - [ ] Minta 3–5 teman (persona target) mencoba tanpa penjelasan: onboarding, catat kopi, cari kebiasaan termahal. Catat di mana mereka ragu.
@@ -263,3 +279,19 @@ Layar <S-xx> belum sesuai docs/v2/02-design-system.md: <sebutkan: ukuran judul t
 | 2 | Widget test yang memompa seluruh app memakai `testApp` (melepas app agar timer Drift selesai) dan membaca DB dengan query biasa, bukan `watch().first` | Timer stream Drift tidak berjalan di waktu palsu test | Disetujui |
 | 2 | Status onboarding bersumber dari database: saat bootstrap (splash masih ditahan) `onboardingDone` = ada minimal satu dompet (aktif/arsip); draft yang tersisa dihapus; tanpa dompet padahal preferensi "selesai" = hapus semua data yang terputus, jadi preferensi dibersihkan. Nama disimpan sebelum transaksi DB. Preferensi tetap cache untuk redirect router | App yang mati di antara tulis DB dan tulis preferensi tidak boleh membuat dompet/kebiasaan dobel atau masuk Beranda tanpa dompet | Disetujui (review PR #6) |
 | 2 | Konfirmasi "Buang perubahan?" (Buang / Lanjut edit) untuk sheet dan layar editor dengan input belum disimpan: `UnsavedChangesGuard` + `confirmDiscardChanges` di `lib/core/design`, dipakai editor dompet/kategori dan nanti S-11 dan S-21. Simpan/arsip/hapus keluar tanpa konfirmasi. Sheet ber-input memakai `showAppSheet(enableDrag: false)` | Tarik-tutup sheet di Flutter 3.47 memanggil `Navigator.pop` langsung dan melewati `PopScope` | Disetujui (review PR #6) |
+| 3 | Saldo tersembunyi = state sesi (`BalanceHidden`, dibaca sekali dari pengaturan saat app dibuka). Ikon mata tidak mengubah pengaturan; mengubah toggle di S-43 berlaku mulai app dibuka berikutnya. Total & saldo per dompet di S-41 ikut; nominal transaksi dan pill ringkasan bulan tidak disembunyikan | Permintaan Fase 3 (A); ringkasan bulan adalah jumlah transaksi yang tetap terlihat di list | Disetujui |
+| 3 | Pill ringkasan Beranda memakai nominal penuh (`Masuk Rp 3.500.000`), bukan `Rp 3,5 jt` seperti sketsa/mockup; pill membungkus ke baris berikut bila perlu. Ditambah pill ketiga "Selisih" | 02 §9 membatasi singkatan untuk grafik; PRD US-03.1 meminta total masuk, keluar, dan selisih | Diubah (review PR #7): kartu 3 kolom `PeriodSummaryCard` di S-10 dan S-13, pemilih bulan = chip di header kartu |
+| 3 | Beranda: baris tanggal ("Jumat, 25 September") di atas sapaan seperti mockup; avatar membuka tab Profil; tanpa nama sapaan menjadi "Selamat pagi" saja | Mockup S-10; permintaan Fase 3 (C) | Disetujui |
+| 3 | S-11: default dimuat sebelum sheet terbuka dengan query biasa (`recentCategoryIds`, `lastUsedWalletId`, `listActive`). Transaksi pertama tanpa kategori terpilih; chip = 6 kategori terakhir dipakai, ditambah urutan tampilan bila kurang; kategori dari "Semua ›" mengambil chip pertama | Kategori terakhir hanya ada kalau pernah dipakai; menebak kategori bisa salah catat | Disetujui |
+| 3 | S-11: sheet tanpa handle dengan header judul + X (`SheetHeader`); picker opsi/tanggal tetap bisa ditarik. Gagal simpan tampil sebagai teks error di atas tombol Simpan | Permintaan Fase 3 (B); snackbar akan tertutup sheet | Disetujui |
+| 3 | S-11 edit transaksi dari kebiasaan: tipe dan tanggal terkunci, catatan boleh diubah | Tipe dan tanggal terikat ke log check-in hari itu (03 S-11 diperbarui) | Disetujui |
+| 3 | S-11 tanggal: kalender dalam sheet sampai hari ini (tanpa tanggal masa depan), jam dipertahankan; tidak ada pemilih jam | 03 S-11 hanya menyebut tanggal | Disetujui |
+| 3 | "Urungkan" setelah simpan: transaksi baru di-soft-delete (terhapus permanen setelah 30 hari), hasil edit dikembalikan ke nilai sebelumnya | Satu jalur undo yang sama dengan hapus | Disetujui |
+| 3 | S-12 label "Dari kebiasaan: Kopi" belum bisa di-tap; tautan ke S-22 dipasang di Fase 4 saat layarnya ada | Tanpa tombol yang tidak berfungsi | Disetujui |
+| 3 | S-13 di rute `/transactions` dalam cabang Beranda (bottom nav tetap tampil), query `month`, `category`, `wallet`. Infinite scroll per bulan mulai dari bulan terpilih; ringkasan = bulan terpilih dengan filter aktif; filter kategori/dompet ikut menampilkan yang diarsipkan | Transaksi lama bisa memakai kategori/dompet arsip | Diubah (review PR #7): bulan = filter tegas + tombol "Lihat <bulan sebelumnya>"; pencarian meliputi semua bulan, dimuat per 50 |
+| 3 | Filter kategori S-13 memuat kedua jenis; nama yang dipakai keduanya diberi jenisnya: "Lainnya (Pengeluaran)" / "Lainnya (Pemasukan)" | Ditemukan saat QA screenshot: dua "Lainnya" tidak bisa dibedakan | Disetujui |
+| 3 | Haptic: `selectionClick` di chip, keypad, segmented; `mediumImpact` saat hapus transaksi; tidak ada haptic saat simpan | 02 §8 | Disetujui |
+| 3 | Jam layar lewat `clockProvider` (bisa diganti di test); repository tetap memakai `Clock` sendiri | Sapaan dan label "Hari ini" harus deterministik di test | Disetujui |
+| 3 | Satu sumber "sekarang/hari ini" (`nowProvider`): diperbarui saat app kembali ke depan (`AppLifecycleListener`) dan lewat `Timer` ke batas berikutnya (tengah malam lokal, juga jam sapaan 04/10/15/18). Dipakai sapaan, label Hari ini/Kemarin, bulan default Beranda & S-13 (selama belum dipilih manual), dan tanggal default S-11 (S-11 membaca jam segar lewat `refresh()`) | App yang terbuka melewati tengah malam atau lama di latar belakang tidak boleh menampilkan "Hari ini" untuk kemarin (review PR #7) | Disetujui (review PR #7) |
+| 3 | Kartu ringkasan S-13 dihitung di database (`watchTotals(filter)`) supaya pencarian lintas bulan yang dimuat bertahap tetap menjumlah semua hasil | Ringkasan tidak boleh bergantung pada halaman yang sudah dimuat | Perlu review |
+| 3 | Nominal di `TransactionTile` maks. setengah lebar layar dan mengecil (`FittedBox`); mode catatan S-11 menampilkan nominal kecil di bawah judul sheet dan menyembunyikan tipe + nominal besar | Ditemukan saat test 360 dp/1,3: nominal sangat besar membuat baris overflow; review PR #7 poin 4 | Perlu review |

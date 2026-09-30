@@ -258,6 +258,7 @@ abstract final class AppSizes {
   static const double bottomNavHeight = 64;
   static const double addButton = 56;
   static const double addButtonLift = 8;
+  static const double iconXs = 16;
   static const double iconSm = 20;
   static const double iconMd = 24;
   static const double iconLg = 28;
@@ -274,8 +275,12 @@ abstract final class AppSizes {
   static const double textField = 52;
   static const double keypadKey = 56;
   static const double iconBadge = 40;
+  static const double iconBadgeLarge = 56;
+  static const double transactionTile = 64;
+  static const double chip = 40;
   static const double iconButtonTonal = 40;
   static const double avatar = 64;
+  static const double avatarSmall = 40;
   static const double colorSwatch = 32;
   static const double selectableCardMin = 72;
   static const double pageDot = 8;
@@ -284,6 +289,7 @@ abstract final class AppSizes {
   static const double coachMarkPointer = 8;
   static const double coachMarkMaxWidth = 280;
   static const double skeletonLine = 16;
+  static const double skeletonAmount = 180;
   static const double appIcon = 72;
 }
 

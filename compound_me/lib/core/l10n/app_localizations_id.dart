@@ -539,4 +539,202 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get keepEditingAction => 'Lanjut edit';
+
+  @override
+  String get greetingMorning => 'Selamat pagi';
+
+  @override
+  String get greetingMidday => 'Selamat siang';
+
+  @override
+  String get greetingAfternoon => 'Selamat sore';
+
+  @override
+  String get greetingNight => 'Selamat malam';
+
+  @override
+  String greetingWithName(String greeting, String name) {
+    return '$greeting, $name';
+  }
+
+  @override
+  String get dayToday => 'Hari ini';
+
+  @override
+  String get dayYesterday => 'Kemarin';
+
+  @override
+  String dateTimeJoin(String date, String time) {
+    return '$date, $time';
+  }
+
+  @override
+  String get balanceShow => 'Tampilkan saldo';
+
+  @override
+  String get balanceHide => 'Sembunyikan saldo';
+
+  @override
+  String get balanceHidden => 'Saldo disembunyikan';
+
+  @override
+  String get homeRecentTitle => 'Transaksi terbaru';
+
+  @override
+  String get homeSeeAll => 'Lihat semua';
+
+  @override
+  String summaryMonthPicker(String month) {
+    return 'Ringkasan $month, ganti bulan';
+  }
+
+  @override
+  String get monthPickerTitle => 'Pilih bulan';
+
+  @override
+  String get txAddTitle => 'Tambah transaksi';
+
+  @override
+  String get txEditTitle => 'Edit transaksi';
+
+  @override
+  String get actionClose => 'Tutup';
+
+  @override
+  String get txKindExpense => 'Pengeluaran';
+
+  @override
+  String get txKindIncome => 'Pemasukan';
+
+  @override
+  String get txWallet => 'Dompet';
+
+  @override
+  String get txDate => 'Tanggal';
+
+  @override
+  String get txNote => 'Catatan';
+
+  @override
+  String get txNoteHint => 'Misalnya: makan siang kantor';
+
+  @override
+  String get txNoteAdd => 'Tambah catatan (opsional)';
+
+  @override
+  String get txSaveChanges => 'Simpan perubahan';
+
+  @override
+  String get txCategoryAll => 'Semua';
+
+  @override
+  String get txCategoryPickerTitle => 'Pilih kategori';
+
+  @override
+  String get txWalletPickerTitle => 'Pilih dompet';
+
+  @override
+  String get txDatePickerTitle => 'Pilih tanggal';
+
+  @override
+  String get txSaved => 'Tersimpan';
+
+  @override
+  String get txDeleted => 'Transaksi dihapus';
+
+  @override
+  String get txHabitTag => 'Kebiasaan';
+
+  @override
+  String txFromHabit(String name) {
+    return 'Dari kebiasaan: $name';
+  }
+
+  @override
+  String get txFromHabitUnknown => 'Dari check-in kebiasaan';
+
+  @override
+  String get actionEdit => 'Edit';
+
+  @override
+  String get actionDelete => 'Hapus';
+
+  @override
+  String get txDeleteHabitTitle => 'Hapus transaksi ini?';
+
+  @override
+  String txDeleteHabitBody(String name) {
+    return 'Ini juga membatalkan check-in $name hari itu.';
+  }
+
+  @override
+  String get txDeleteHabitBodyUnknown =>
+      'Ini juga membatalkan check-in kebiasaan hari itu.';
+
+  @override
+  String get transactionsTitle => 'Transaksi';
+
+  @override
+  String get txSearchHint => 'Cari catatan atau kategori';
+
+  @override
+  String get txSearchClear => 'Hapus pencarian';
+
+  @override
+  String get txFilterCategory => 'Kategori';
+
+  @override
+  String get txFilterAllCategories => 'Semua kategori';
+
+  @override
+  String get txFilterWallet => 'Dompet';
+
+  @override
+  String get txFilterAllWallets => 'Semua dompet';
+
+  @override
+  String get txNoMatchTitle => 'Tidak ada transaksi yang cocok';
+
+  @override
+  String get txNoMatchBody => 'Coba kata lain atau hapus filter.';
+
+  @override
+  String get txClearFilters => 'Hapus filter';
+
+  @override
+  String get txIncome => 'Masuk';
+
+  @override
+  String get txExpense => 'Keluar';
+
+  @override
+  String get txNet => 'Selisih';
+
+  @override
+  String txFilterCategoryWithKind(String name, String kind) {
+    return '$name ($kind)';
+  }
+
+  @override
+  String get summaryTitle => 'Ringkasan';
+
+  @override
+  String get txSearchResults => 'Hasil pencarian';
+
+  @override
+  String get txAllMonths => 'Semua bulan';
+
+  @override
+  String txShowMonth(String month) {
+    return 'Lihat $month';
+  }
+
+  @override
+  String txMonthEmptyTitle(String month) {
+    return 'Belum ada transaksi di $month';
+  }
+
+  @override
+  String get txMonthEmptyBody =>
+      'Transaksi bulan itu muncul di sini setelah dicatat.';
 }

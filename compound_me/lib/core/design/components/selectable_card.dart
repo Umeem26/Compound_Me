@@ -159,11 +159,17 @@ class PageIndicator extends StatelessWidget {
   }
 }
 
-/// Initial of the user's name in a tinted circle (S-40 header).
+/// Initial of the user's name in a tinted circle (S-40 header, S-10). An
+/// empty name shows the user icon instead.
 class InitialAvatar extends StatelessWidget {
-  const InitialAvatar({required this.name, super.key});
+  const InitialAvatar({
+    required this.name,
+    this.size = AppSizes.avatar,
+    super.key,
+  });
 
   final String name;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -174,17 +180,29 @@ class InitialAvatar extends StatelessWidget {
         : String.fromCharCode(trimmed.runes.first).toUpperCase();
     return ExcludeSemantics(
       child: Container(
-        width: AppSizes.avatar,
-        height: AppSizes.avatar,
+        width: size,
+        height: size,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: colors.primaryTint,
           shape: BoxShape.circle,
         ),
-        child: Text(
-          initial,
-          style: AppTextStyles.titleLarge.copyWith(color: colors.onPrimaryTint),
-        ),
+        child: initial.isEmpty
+            ? Icon(
+                AppIcons.user,
+                size: size < AppSizes.avatar
+                    ? AppSizes.iconSm
+                    : AppSizes.iconLg,
+                color: colors.onPrimaryTint,
+              )
+            : Text(
+                initial,
+                style:
+                    (size < AppSizes.avatar
+                            ? AppTextStyles.titleSmall
+                            : AppTextStyles.titleLarge)
+                        .copyWith(color: colors.onPrimaryTint),
+              ),
       ),
     );
   }

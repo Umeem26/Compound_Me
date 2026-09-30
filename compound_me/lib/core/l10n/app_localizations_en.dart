@@ -532,4 +532,202 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get keepEditingAction => 'Keep editing';
+
+  @override
+  String get greetingMorning => 'Good morning';
+
+  @override
+  String get greetingMidday => 'Good afternoon';
+
+  @override
+  String get greetingAfternoon => 'Good afternoon';
+
+  @override
+  String get greetingNight => 'Good evening';
+
+  @override
+  String greetingWithName(String greeting, String name) {
+    return '$greeting, $name';
+  }
+
+  @override
+  String get dayToday => 'Today';
+
+  @override
+  String get dayYesterday => 'Yesterday';
+
+  @override
+  String dateTimeJoin(String date, String time) {
+    return '$date, $time';
+  }
+
+  @override
+  String get balanceShow => 'Show balance';
+
+  @override
+  String get balanceHide => 'Hide balance';
+
+  @override
+  String get balanceHidden => 'Balance hidden';
+
+  @override
+  String get homeRecentTitle => 'Recent transactions';
+
+  @override
+  String get homeSeeAll => 'See all';
+
+  @override
+  String summaryMonthPicker(String month) {
+    return 'Summary for $month, change month';
+  }
+
+  @override
+  String get monthPickerTitle => 'Choose month';
+
+  @override
+  String get txAddTitle => 'Add transaction';
+
+  @override
+  String get txEditTitle => 'Edit transaction';
+
+  @override
+  String get actionClose => 'Close';
+
+  @override
+  String get txKindExpense => 'Expense';
+
+  @override
+  String get txKindIncome => 'Income';
+
+  @override
+  String get txWallet => 'Wallet';
+
+  @override
+  String get txDate => 'Date';
+
+  @override
+  String get txNote => 'Note';
+
+  @override
+  String get txNoteHint => 'For example: office lunch';
+
+  @override
+  String get txNoteAdd => 'Add a note (optional)';
+
+  @override
+  String get txSaveChanges => 'Save changes';
+
+  @override
+  String get txCategoryAll => 'All';
+
+  @override
+  String get txCategoryPickerTitle => 'Choose category';
+
+  @override
+  String get txWalletPickerTitle => 'Choose wallet';
+
+  @override
+  String get txDatePickerTitle => 'Choose date';
+
+  @override
+  String get txSaved => 'Saved';
+
+  @override
+  String get txDeleted => 'Transaction deleted';
+
+  @override
+  String get txHabitTag => 'Habit';
+
+  @override
+  String txFromHabit(String name) {
+    return 'From habit: $name';
+  }
+
+  @override
+  String get txFromHabitUnknown => 'From a habit check-in';
+
+  @override
+  String get actionEdit => 'Edit';
+
+  @override
+  String get actionDelete => 'Delete';
+
+  @override
+  String get txDeleteHabitTitle => 'Delete this transaction?';
+
+  @override
+  String txDeleteHabitBody(String name) {
+    return 'This also undoes that day\'s $name check-in.';
+  }
+
+  @override
+  String get txDeleteHabitBodyUnknown =>
+      'This also undoes that day\'s habit check-in.';
+
+  @override
+  String get transactionsTitle => 'Transactions';
+
+  @override
+  String get txSearchHint => 'Search notes or categories';
+
+  @override
+  String get txSearchClear => 'Clear search';
+
+  @override
+  String get txFilterCategory => 'Category';
+
+  @override
+  String get txFilterAllCategories => 'All categories';
+
+  @override
+  String get txFilterWallet => 'Wallet';
+
+  @override
+  String get txFilterAllWallets => 'All wallets';
+
+  @override
+  String get txNoMatchTitle => 'No matching transactions';
+
+  @override
+  String get txNoMatchBody => 'Try other words or clear the filters.';
+
+  @override
+  String get txClearFilters => 'Clear filters';
+
+  @override
+  String get txIncome => 'In';
+
+  @override
+  String get txExpense => 'Out';
+
+  @override
+  String get txNet => 'Net';
+
+  @override
+  String txFilterCategoryWithKind(String name, String kind) {
+    return '$name ($kind)';
+  }
+
+  @override
+  String get summaryTitle => 'Summary';
+
+  @override
+  String get txSearchResults => 'Search results';
+
+  @override
+  String get txAllMonths => 'All months';
+
+  @override
+  String txShowMonth(String month) {
+    return 'See $month';
+  }
+
+  @override
+  String txMonthEmptyTitle(String month) {
+    return 'No transactions in $month';
+  }
+
+  @override
+  String get txMonthEmptyBody =>
+      'Transactions of that month show up here once logged.';
 }

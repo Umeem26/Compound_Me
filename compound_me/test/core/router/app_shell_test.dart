@@ -5,20 +5,19 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/pump_app.dart';
 
-/// Tab label in the bottom nav paired with the empty state title it shows.
-/// Tab label paired with a text only that tab shows (the empty state, or
-/// the user's name on Profile).
+/// Tab label paired with a text only that tab shows (an empty state, a
+/// section title, or the user's name on Profile).
 typedef _Tab = ({String label, String emptyTitle});
 
 const _idTabs = <_Tab>[
-  (label: 'Beranda', emptyTitle: 'Belum ada transaksi'),
+  (label: 'Beranda', emptyTitle: 'Transaksi terbaru'),
   (label: 'Kebiasaan', emptyTitle: 'Mulai dari satu kebiasaan'),
   (label: 'Wawasan', emptyTitle: 'Wawasan muncul setelah seminggu mencatat'),
   (label: 'Profil', emptyTitle: 'Raka'),
 ];
 
 const _enTabs = <_Tab>[
-  (label: 'Home', emptyTitle: 'No transactions yet'),
+  (label: 'Home', emptyTitle: 'Recent transactions'),
   (label: 'Habits', emptyTitle: 'Start with one habit'),
   (label: 'Insights', emptyTitle: 'Insights appear after a week of logging'),
   (label: 'Profile', emptyTitle: 'Raka'),

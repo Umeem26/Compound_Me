@@ -2,6 +2,7 @@
 abstract final class AppRoutes {
   static const onboarding = '/onboarding';
   static const home = '/home';
+  static const transactions = '/transactions';
   static const habits = '/habits';
   static const insights = '/insights';
   static const me = '/me';

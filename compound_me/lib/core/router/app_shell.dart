@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:compound_me/core/design/design.dart';
 import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
-import 'package:compound_me/features/transactions/presentation/add_transaction_sheet.dart';
+import 'package:compound_me/features/transactions/presentation/transaction_form_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -71,7 +73,7 @@ class AppShell extends ConsumerWidget {
         ),
         addIcon: AppIcons.plus,
         addLabel: l10n.navAdd,
-        onAdd: () => showAddTransactionSheet(context),
+        onAdd: () => unawaited(openTransactionForm(context)),
       ),
     );
   }
