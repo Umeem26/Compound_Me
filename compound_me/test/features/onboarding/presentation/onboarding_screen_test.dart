@@ -36,9 +36,7 @@ String _draftAt(OnboardingStep step) => OnboardingDraft(
 ).encode();
 
 void main() {
-  testWidgets('a new user goes from language to Home in one pass', (
-    tester,
-  ) async {
+  testApp('a new user goes from language to Home in one pass', (tester) async {
     final db = await pumpApp(
       tester,
       onboarded: false,
@@ -150,7 +148,7 @@ void main() {
     expect(find.widgetWithText(TextField, 'Dompet utama'), findsOneWidget);
   });
 
-  testWidgets('at most three habits can be picked, zero skips', (tester) async {
+  testApp('at most three habits can be picked, zero skips', (tester) async {
     final db = await pumpApp(
       tester,
       onboarded: false,
@@ -181,7 +179,7 @@ void main() {
     expect((await db.select(db.wallets).getSingle()).name, 'Dompet utama');
   });
 
-  testWidgets('a finished onboarding cannot be reopened', (tester) async {
+  testApp('a finished onboarding cannot be reopened', (tester) async {
     await pumpApp(tester);
 
     expect(find.byType(AppBottomNav), findsOneWidget);

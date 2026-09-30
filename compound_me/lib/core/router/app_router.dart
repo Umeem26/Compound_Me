@@ -1,6 +1,7 @@
 import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/router/app_shell.dart';
 import 'package:compound_me/core/router/routes.dart';
+import 'package:compound_me/core/utils/dates.dart';
 import 'package:compound_me/features/categories/domain/category.dart';
 import 'package:compound_me/features/categories/presentation/categories_screen.dart';
 import 'package:compound_me/features/categories/presentation/category_editor_screen.dart';
@@ -11,6 +12,7 @@ import 'package:compound_me/features/onboarding/presentation/onboarding_screen.d
 import 'package:compound_me/features/settings/presentation/about_screen.dart';
 import 'package:compound_me/features/settings/presentation/profile_screen.dart';
 import 'package:compound_me/features/settings/presentation/settings_screen.dart';
+import 'package:compound_me/features/transactions/presentation/transactions_screen.dart';
 import 'package:compound_me/features/wallets/presentation/wallet_editor_screen.dart';
 import 'package:compound_me/features/wallets/presentation/wallets_screen.dart';
 import 'package:flutter/widgets.dart';
@@ -58,6 +60,18 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.home,
                 builder: (context, state) => const HomeScreen(),
+              ),
+              // In the Home branch so the bottom navigation stays (S-13).
+              GoRoute(
+                path: AppRoutes.transactions,
+                builder: (context, state) {
+                  final query = state.uri.queryParameters;
+                  return TransactionsScreen(
+                    month: YearMonth.tryParse(query['month']),
+                    categoryId: query['category'],
+                    walletId: query['wallet'],
+                  );
+                },
               ),
             ],
           ),

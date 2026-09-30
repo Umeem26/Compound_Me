@@ -5,6 +5,7 @@ import 'package:compound_me/core/l10n/design_labels.dart';
 import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/router/routes.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/features/wallets/application/balance_visibility.dart';
 import 'package:compound_me/features/wallets/data/drift_wallet_repository.dart';
 import 'package:compound_me/features/wallets/domain/wallet.dart';
 import 'package:compound_me/features/wallets/presentation/wallet_editor_screen.dart';
@@ -102,32 +103,42 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
     final colors = context.tokens.colors;
     const pad = EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal);
     final total = wallets.fold<Money>(0, (sum, w) => sum + w.balance);
+    final hidden = ref.watch(balanceHiddenProvider);
     return [
       SliverPadding(
         padding: pad,
         sliver: SliverToBoxAdapter(
           child: AppCard(
-            child: Semantics(
-              label: '${l10n.walletsTotal}, ${formatRupiah(total)}',
-              excludeSemantics: true,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.walletsTotal,
-                    style: AppTextStyles.overline.copyWith(
-                      color: colors.textSecondary,
-                    ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.walletsTotal,
+                        style: AppTextStyles.overline.copyWith(
+                          color: colors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.space1),
+                      BalanceText(
+                        amount: total,
+                        hidden: hidden,
+                        hiddenLabel: l10n.balanceHidden,
+                        style: AppTextStyles.titleLarge.tabular.copyWith(
+                          color: colors.textPrimary,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: AppSpacing.space1),
-                  Text(
-                    formatRupiah(total),
-                    style: AppTextStyles.titleLarge.tabular.copyWith(
-                      color: colors.textPrimary,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                BalanceEyeButton(
+                  hidden: hidden,
+                  onPressed: ref.read(balanceHiddenProvider.notifier).toggle,
+                  labels: l10n.balanceVisibilityLabels,
+                ),
+              ],
             ),
           ),
         ),
@@ -155,6 +166,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                 child: _WalletRow(
                   wallet: item.wallet,
                   balance: item.balance,
+                  hidden: hidden,
                   index: index,
                   onTap: () => _open(item.wallet.id),
                 ),
@@ -231,12 +243,14 @@ class _WalletRow extends StatelessWidget {
   const _WalletRow({
     required this.wallet,
     required this.balance,
+    required this.hidden,
     required this.index,
     required this.onTap,
   });
 
   final Wallet wallet;
   final Money balance;
+  final bool hidden;
   final int index;
   final VoidCallback onTap;
 
@@ -287,8 +301,10 @@ class _WalletRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.space2),
-                Text(
-                  formatRupiah(balance),
+                BalanceText(
+                  amount: balance,
+                  hidden: hidden,
+                  hiddenLabel: l10n.balanceHidden,
                   style: AppTextStyles.bodyStrong.tabular.copyWith(
                     color: colors.textPrimary,
                   ),
