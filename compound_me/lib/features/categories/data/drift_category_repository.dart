@@ -165,7 +165,8 @@ class DriftCategoryRepository implements CategoryRepository {
   }
 }
 
-extension on CategoryRow {
+/// Shared with the transaction list query, which joins categories.
+extension CategoryRowToDomain on CategoryRow {
   Category toDomain() => Category(
     id: id,
     kind: kind,

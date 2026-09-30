@@ -10,6 +10,26 @@ abstract interface class TransactionRepository {
   /// The newest non-deleted transactions (home, S-10).
   Stream<List<TransactionEntry>> watchRecent({int limit = 10});
 
+  /// Like [watch], with each row's category, wallet and habit name for
+  /// lists (S-10, S-13); at most [limit] rows when given.
+  Stream<List<TransactionListItem>> watchItems(
+    TransactionFilter filter, {
+    int? limit,
+  });
+
+  /// Income and expense of one local calendar month (S-10 summary).
+  Stream<PeriodTotals> watchMonthTotals(int year, int month);
+
+  /// When the oldest non-deleted transaction happened, for month pickers.
+  Future<DateTime?> firstOccurredAt();
+
+  /// Active categories of [kind], most recently used first (S-11 chips).
+  Future<List<String>> recentCategoryIds(TransactionKind kind, {int limit = 6});
+
+  /// Wallet of the newest transaction while it is still active (S-11
+  /// default), or null.
+  Future<String?> lastUsedWalletId();
+
   Future<TransactionEntry?> findById(String id);
 
   Future<String> add(TransactionDraft draft);

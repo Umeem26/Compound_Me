@@ -1,7 +1,10 @@
 import 'package:compound_me/core/database/app_database.dart';
+import 'package:compound_me/core/utils/dates.dart';
 import 'package:compound_me/core/utils/validation.dart';
 import 'package:compound_me/features/categories/data/drift_category_repository.dart';
 import 'package:compound_me/features/categories/domain/category.dart';
+import 'package:compound_me/features/habits/data/drift_habit_repository.dart';
+import 'package:compound_me/features/habits/domain/habit.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
 import 'package:compound_me/features/transactions/domain/transaction_entry.dart';
 import 'package:compound_me/features/wallets/data/drift_wallet_repository.dart';
@@ -234,6 +237,142 @@ void main() {
         transactions.softDelete('missing'),
         throwsA(isA<NotFoundException>()),
       );
+    });
+  });
+
+  group('lists and pickers', () {
+    test('list items carry category, wallet and habit name', () async {
+      final manual = await transactions.add(draft(note: 'nasi padang'));
+      final habits = DriftHabitRepository(db, clock: clock.call);
+      final coffee = await habits.create(
+        HabitDraft(
+          name: 'Kopi',
+          kind: HabitKind.reduce,
+          iconKey: 'coffee',
+          colorKey: 'coral',
+          scheduleType: ScheduleType.daily,
+          costPerOccurrence: 25000,
+          walletId: bank,
+          categoryId: food,
+        ),
+      );
+      await habits.setCount(coffee, LocalDate(2026, 9, 27), 1);
+
+      final items = await transactions
+          .watchItems(const TransactionFilter())
+          .first;
+      final byId = {for (final i in items) i.entry.id: i};
+      expect(byId[manual]!.category.nameKey, 'catFood');
+      expect(byId[manual]!.walletName, 'Tunai');
+      expect(byId[manual]!.habitName, isNull);
+      final checkIn = items.firstWhere((i) => i.entry.isFromHabit);
+      expect(checkIn.habitName, 'Kopi');
+      expect(checkIn.walletName, 'Bank');
+
+      final limited = await transactions
+          .watchItems(const TransactionFilter(), limit: 1)
+          .first;
+      expect(limited, hasLength(1));
+    });
+
+    test('monthsBack reaches into earlier months', () async {
+      final august = await transactions.add(draft(at: DateTime(2026, 8, 20)));
+      final september = await transactions.add(draft(at: DateTime(2026, 9, 2)));
+      await transactions.add(draft(at: DateTime(2026, 7, 31)));
+
+      Future<List<String>> ids(int back) async => [
+        for (final i
+            in await transactions
+                .watchItems(
+                  TransactionFilter(year: 2026, month: 9, monthsBack: back),
+                )
+                .first)
+          i.entry.id,
+      ];
+      expect(await ids(0), [september]);
+      expect(await ids(1), [september, august]);
+    });
+
+    test(
+      'month totals split income and expense within the local month',
+      () async {
+        await transactions.add(draft());
+        await transactions.add(
+          draft(
+            amount: 500000,
+            kind: TransactionKind.income,
+            categoryId: salary,
+          ),
+        );
+        await transactions.add(
+          draft(amount: 9000, at: DateTime(2026, 10, 1, 7)),
+        );
+        final gone = await transactions.add(draft(amount: 1000));
+        await transactions.softDelete(gone);
+
+        final totals = await transactions.watchMonthTotals(2026, 9).first;
+        expect(totals.income, 500000);
+        expect(totals.expense, 22000);
+        expect(totals.net, 478000);
+        final empty = await transactions.watchMonthTotals(2026, 1).first;
+        expect(empty.income, 0);
+        expect(empty.expense, 0);
+      },
+    );
+
+    test('the oldest transaction bounds the month picker', () async {
+      expect(await transactions.firstOccurredAt(), isNull);
+      await transactions.add(draft(at: DateTime(2026, 9, 2)));
+      await transactions.add(draft(at: DateTime(2026, 6, 15, 10)));
+
+      expect(
+        await transactions.firstOccurredAt(),
+        DateTime(2026, 6, 15, 10).toUtc(),
+      );
+    });
+
+    test(
+      'recent categories come newest first, active and of one kind',
+      () async {
+        final shopping = await defaultCategoryId(db, 'catShopping');
+        await transactions.add(draft(categoryId: food));
+        clock.now = DateTime(2026, 9, 27, 10);
+        await transactions.add(draft(categoryId: transport));
+        clock.now = DateTime(2026, 9, 27, 11);
+        await transactions.add(draft(categoryId: shopping));
+        clock.now = DateTime(2026, 9, 27, 12);
+        await transactions.add(draft(categoryId: food));
+        await transactions.add(
+          draft(kind: TransactionKind.income, categoryId: salary),
+        );
+        await DriftCategoryRepository(db).archive(shopping);
+
+        expect(await transactions.recentCategoryIds(TransactionKind.expense), [
+          food,
+          transport,
+        ]);
+        expect(await transactions.recentCategoryIds(TransactionKind.income), [
+          salary,
+        ]);
+        expect(
+          await transactions.recentCategoryIds(
+            TransactionKind.expense,
+            limit: 1,
+          ),
+          [food],
+        );
+      },
+    );
+
+    test('the last used wallet skips archived ones', () async {
+      expect(await transactions.lastUsedWalletId(), isNull);
+      await transactions.add(draft(walletId: cash));
+      clock.now = DateTime(2026, 9, 27, 10);
+      await transactions.add(draft(walletId: bank));
+      expect(await transactions.lastUsedWalletId(), bank);
+
+      await DriftWalletRepository(db).archive(bank);
+      expect(await transactions.lastUsedWalletId(), cash);
     });
   });
 }

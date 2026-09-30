@@ -3,6 +3,7 @@ import 'package:compound_me/core/utils/clock.dart';
 import 'package:compound_me/core/utils/dates.dart';
 import 'package:compound_me/core/utils/id.dart';
 import 'package:compound_me/core/utils/validation.dart';
+import 'package:compound_me/features/categories/data/drift_category_repository.dart';
 import 'package:compound_me/features/habits/data/habit_ledger.dart';
 import 'package:compound_me/features/transactions/domain/transaction_entry.dart';
 import 'package:compound_me/features/transactions/domain/transaction_repository.dart';
@@ -28,16 +29,70 @@ class DriftTransactionRepository implements TransactionRepository {
   Stream<List<TransactionEntry>> watch(TransactionFilter filter) {
     final t = _db.transactions;
     final c = _db.categories;
-    final query = _db.select(t).join([
-      innerJoin(c, c.id.equalsExp(t.categoryId), useColumns: false),
-    ]);
+    final query =
+        _db.select(t).join([
+            innerJoin(c, c.id.equalsExp(t.categoryId), useColumns: false),
+          ])
+          ..where(_matches(filter))
+          ..orderBy([
+            OrderingTerm.desc(t.occurredAt),
+            OrderingTerm.desc(t.createdAt),
+          ]);
+    return query.watch().map(
+      (rows) => [for (final row in rows) row.readTable(t).toDomain()],
+    );
+  }
 
+  @override
+  Stream<List<TransactionListItem>> watchItems(
+    TransactionFilter filter, {
+    int? limit,
+  }) {
+    final t = _db.transactions;
+    final c = _db.categories;
+    final w = _db.wallets;
+    final l = _db.habitLogs;
+    final h = _db.habits;
+    final query =
+        _db.select(t).join([
+            innerJoin(c, c.id.equalsExp(t.categoryId)),
+            innerJoin(w, w.id.equalsExp(t.walletId)),
+            leftOuterJoin(l, l.id.equalsExp(t.habitLogId), useColumns: false),
+            leftOuterJoin(h, h.id.equalsExp(l.habitId)),
+          ])
+          ..where(_matches(filter))
+          ..orderBy([
+            OrderingTerm.desc(t.occurredAt),
+            OrderingTerm.desc(t.createdAt),
+          ]);
+    if (limit != null) query.limit(limit);
+    return query.watch().map(
+      (rows) => [
+        for (final row in rows)
+          TransactionListItem(
+            entry: row.readTable(t).toDomain(),
+            category: row.readTable(c).toDomain(),
+            walletName: row.readTable(w).name,
+            habitName: row.readTableOrNull(h)?.name,
+          ),
+      ],
+    );
+  }
+
+  /// Filter conditions shared by [watch] and [watchItems]; both join
+  /// categories so the text search can match custom names.
+  Expression<bool> _matches(TransactionFilter filter) {
+    final t = _db.transactions;
+    final c = _db.categories;
     var where = t.deletedAt.isNull();
     if (filter.year != null) {
-      final range = localMonthRangeUtc(filter.year!, filter.month!);
+      final start = toStoredUtc(
+        DateTime(filter.year!, filter.month! - filter.monthsBack),
+      );
+      final end = localMonthRangeUtc(filter.year!, filter.month!).end;
       where &=
-          t.occurredAt.isBiggerOrEqualValue(range.start) &
-          t.occurredAt.isSmallerThanValue(range.end);
+          t.occurredAt.isBiggerOrEqualValue(start) &
+          t.occurredAt.isSmallerThanValue(end);
     }
     if (filter.categoryId != null) {
       where &= t.categoryId.equals(filter.categoryId!);
@@ -54,16 +109,74 @@ class DriftTransactionRepository implements TransactionRepository {
       }
       where &= matches;
     }
+    return where;
+  }
 
-    query
-      ..where(where)
-      ..orderBy([
-        OrderingTerm.desc(t.occurredAt),
-        OrderingTerm.desc(t.createdAt),
-      ]);
-    return query.watch().map(
-      (rows) => [for (final row in rows) row.readTable(t).toDomain()],
+  @override
+  Stream<PeriodTotals> watchMonthTotals(int year, int month) {
+    final t = _db.transactions;
+    final range = localMonthRangeUtc(year, month);
+    final income = t.amount.sum(
+      filter: t.kind.equalsValue(TransactionKind.income),
     );
+    final expense = t.amount.sum(
+      filter: t.kind.equalsValue(TransactionKind.expense),
+    );
+    final query = _db.selectOnly(t)
+      ..addColumns([income, expense])
+      ..where(
+        t.deletedAt.isNull() &
+            t.occurredAt.isBiggerOrEqualValue(range.start) &
+            t.occurredAt.isSmallerThanValue(range.end),
+      );
+    return query.watchSingle().map(
+      (row) => PeriodTotals(
+        income: row.read(income) ?? 0,
+        expense: row.read(expense) ?? 0,
+      ),
+    );
+  }
+
+  @override
+  Future<DateTime?> firstOccurredAt() {
+    final t = _db.transactions;
+    final first = t.occurredAt.min();
+    final query = _db.selectOnly(t)
+      ..addColumns([first])
+      ..where(t.deletedAt.isNull());
+    return query.map((row) => row.read(first)).getSingle();
+  }
+
+  @override
+  Future<List<String>> recentCategoryIds(
+    TransactionKind kind, {
+    int limit = 6,
+  }) async {
+    final rows = await _db
+        .customSelect(
+          'SELECT t.category_id AS id FROM transactions t '
+          'JOIN categories c ON c.id = t.category_id '
+          'WHERE t.kind = ? AND t.deleted_at IS NULL AND c.archived_at IS NULL '
+          'GROUP BY t.category_id ORDER BY MAX(t.created_at) DESC LIMIT ?',
+          variables: [Variable.withString(kind.name), Variable.withInt(limit)],
+          readsFrom: {_db.transactions, _db.categories},
+        )
+        .get();
+    return [for (final row in rows) row.read<String>('id')];
+  }
+
+  @override
+  Future<String?> lastUsedWalletId() async {
+    final row = await _db
+        .customSelect(
+          'SELECT t.wallet_id AS id FROM transactions t '
+          'JOIN wallets w ON w.id = t.wallet_id '
+          'WHERE t.deleted_at IS NULL AND w.archived_at IS NULL '
+          'ORDER BY t.created_at DESC LIMIT 1',
+          readsFrom: {_db.transactions, _db.wallets},
+        )
+        .getSingleOrNull();
+    return row?.read<String>('id');
   }
 
   @override
