@@ -81,10 +81,18 @@ class SheetBody extends StatelessWidget {
 /// Title row of a sheet without a drag handle, with an X that closes it
 /// through `Navigator.maybePop`, so an UnsavedChangesGuard still asks.
 class SheetHeader extends StatelessWidget {
-  const SheetHeader({required this.title, required this.closeLabel, super.key});
+  const SheetHeader({
+    required this.title,
+    required this.closeLabel,
+    this.subtitle,
+    super.key,
+  });
 
   final String title;
   final String closeLabel;
+
+  /// A line under the title, e.g. the amount while the keypad is hidden.
+  final Widget? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -98,14 +106,21 @@ class SheetHeader extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Semantics(
-              header: true,
-              child: Text(
-                title,
-                style: AppTextStyles.titleMedium.copyWith(
-                  color: colors.textPrimary,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Semantics(
+                  header: true,
+                  child: Text(
+                    title,
+                    style: AppTextStyles.titleMedium.copyWith(
+                      color: colors.textPrimary,
+                    ),
+                  ),
                 ),
-              ),
+                ?subtitle,
+              ],
             ),
           ),
           IconButton(

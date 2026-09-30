@@ -57,25 +57,4 @@ void main() {
     expect(groups.last.net, -25000);
     expect(groupByDay(const []), isEmpty);
   });
-
-  test('month totals only count the chosen local month', () {
-    final totals = totalsOfMonth(
-      [
-        _item('a', DateTime(2026, 9, 30, 23), 22000),
-        _item(
-          'b',
-          DateTime(2026, 9, 1, 9),
-          100000,
-          kind: TransactionKind.income,
-        ),
-        _item('c', DateTime(2026, 8, 31, 23), 9000),
-      ],
-      2026,
-      9,
-    );
-
-    expect(totals.income, 100000);
-    expect(totals.expense, 22000);
-    expect(totals.net, 78000);
-  });
 }

@@ -584,21 +584,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get homeSeeAll => 'Lihat semua';
 
   @override
-  String summaryIncome(String amount) {
-    return 'Masuk $amount';
-  }
-
-  @override
-  String summaryExpense(String amount) {
-    return 'Keluar $amount';
-  }
-
-  @override
-  String summaryNet(String amount) {
-    return 'Selisih $amount';
-  }
-
-  @override
   String summaryMonthPicker(String month) {
     return 'Ringkasan $month, ganti bulan';
   }
@@ -729,4 +714,27 @@ class AppLocalizationsId extends AppLocalizations {
   String txFilterCategoryWithKind(String name, String kind) {
     return '$name ($kind)';
   }
+
+  @override
+  String get summaryTitle => 'Ringkasan';
+
+  @override
+  String get txSearchResults => 'Hasil pencarian';
+
+  @override
+  String get txAllMonths => 'Semua bulan';
+
+  @override
+  String txShowMonth(String month) {
+    return 'Lihat $month';
+  }
+
+  @override
+  String txMonthEmptyTitle(String month) {
+    return 'Belum ada transaksi di $month';
+  }
+
+  @override
+  String get txMonthEmptyBody =>
+      'Transaksi bulan itu muncul di sini setelah dicatat.';
 }

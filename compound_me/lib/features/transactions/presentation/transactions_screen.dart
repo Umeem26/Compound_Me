@@ -7,7 +7,6 @@ import 'package:compound_me/core/l10n/design_labels.dart';
 import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/core/utils/dates.dart';
-import 'package:compound_me/core/utils/money.dart';
 import 'package:compound_me/features/categories/domain/category.dart';
 import 'package:compound_me/features/categories/presentation/category_providers.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
@@ -27,9 +26,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// dismissed.
 const _all = '';
 
-/// Transaction history (S-13): search, month / category / wallet filters,
-/// the month's summary and the list per day. Scrolling to the end loads
-/// the month before, until the oldest transaction.
+/// Search results load in pages of this size.
+const searchPageSize = 50;
+
+/// Transaction history (S-13). Browsing, the month is a strict filter: the
+/// list and summary show that month only, and a "Lihat" button for the
+/// month before steps back until the oldest transaction. Searching covers
+/// every month, loads results in pages, and the summary counts them all.
 class TransactionsScreen extends ConsumerStatefulWidget {
   const TransactionsScreen({
     this.month,
@@ -47,80 +50,61 @@ class TransactionsScreen extends ConsumerStatefulWidget {
 }
 
 class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
-  late YearMonth _month =
-      widget.month ?? YearMonth.of(ref.read(clockProvider)());
+  /// Null follows the current month, also across midnight.
+  late YearMonth? _pickedMonth = widget.month;
   late String? _categoryId = widget.categoryId;
   late String? _walletId = widget.walletId;
   final _search = TextEditingController();
+  final _scroll = ScrollController();
   String _query = '';
+  int _limit = searchPageSize;
 
-  /// Months loaded before [_month] so far.
-  int _monthsBack = 0;
-
-  /// Whether the oldest transaction's month is loaded.
-  bool _reachedStart = false;
-  bool _loadingMore = false;
-
-  /// Shown while a changed filter or one more month loads, so the list
-  /// doesn't blink.
+  /// Shown while a changed filter loads, so the list doesn't blink.
   List<TransactionListItem>? _lastItems;
 
   @override
   void dispose() {
     _search.dispose();
+    _scroll.dispose();
     super.dispose();
   }
 
-  bool get _filtered =>
-      _categoryId != null || _walletId != null || _query.trim().isNotEmpty;
+  bool get _searching => _query.trim().isNotEmpty;
 
-  /// Any change starts again from the chosen month only.
+  YearMonth get _month => _pickedMonth ?? YearMonth.of(ref.read(nowProvider));
+
   void _refilter(VoidCallback change) => setState(() {
     change();
-    _monthsBack = 0;
-    _reachedStart = false;
+    _limit = searchPageSize;
   });
 
-  TransactionFilter _filter(List<Category> categories) {
-    final text = _query.trim().toLowerCase();
-    final l10n = context.l10n;
-    return TransactionFilter(
-      year: _month.year,
-      month: _month.month,
-      monthsBack: _monthsBack,
-      categoryId: _categoryId,
-      walletId: _walletId,
-      query: text.isEmpty ? null : text,
-      // Default names are translated, not stored, so SQL can't match them.
-      extraCategoryIds: text.isEmpty
-          ? const {}
-          : {
-              for (final c in categories)
-                if (c.isDefault &&
-                    categoryName(l10n, c).toLowerCase().contains(text))
-                  c.id,
-            },
-    );
+  void _showMonth(YearMonth month) {
+    _refilter(() => _pickedMonth = month);
+    if (_scroll.hasClients) _scroll.jumpTo(0);
   }
 
-  /// Called when the end of the list shows: loads one more month, unless
-  /// the oldest transaction is already in.
-  Future<void> _loadMore() async {
-    if (_loadingMore || _reachedStart) return;
-    _loadingMore = true;
-    final first = await ref
-        .read(transactionRepositoryProvider)
-        .firstOccurredAt();
-    _loadingMore = false;
-    if (!mounted) return;
-    final start = _month.addMonths(-_monthsBack);
-    setState(() {
-      if (first == null || start.compareTo(YearMonth.of(first)) <= 0) {
-        _reachedStart = true;
-      } else {
-        _monthsBack++;
-      }
-    });
+  TransactionFilter _filter(List<Category> categories, YearMonth month) {
+    final text = _query.trim().toLowerCase();
+    final l10n = context.l10n;
+    if (text.isEmpty) {
+      return TransactionFilter(
+        year: month.year,
+        month: month.month,
+        categoryId: _categoryId,
+        walletId: _walletId,
+      );
+    }
+    return TransactionFilter(
+      categoryId: _categoryId,
+      walletId: _walletId,
+      query: text,
+      // Default names are translated, not stored, so SQL can't match them.
+      extraCategoryIds: {
+        for (final c in categories)
+          if (c.isDefault && categoryName(l10n, c).toLowerCase().contains(text))
+            c.id,
+      },
+    );
   }
 
   Future<void> _pickMonth() async {
@@ -131,10 +115,10 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     final picked = await showMonthPicker(
       context,
       selected: _month,
-      now: ref.read(clockProvider)(),
+      now: ref.read(nowProvider),
       firstOccurredAt: first,
     );
-    if (picked != null && picked != _month) _refilter(() => _month = picked);
+    if (picked != null && picked != _month) _showMonth(picked);
   }
 
   /// Category name for the filter; a name both kinds use ("Lainnya") gets
@@ -210,7 +194,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final now = ref.watch(clockProvider)();
+    final now = ref.watch(nowProvider);
+    final month = _pickedMonth ?? YearMonth.of(now);
     final categories = [
       ...?ref.watch(categoriesOfKindProvider(CategoryKind.expense)).value,
       ...?ref.watch(categoriesOfKindProvider(CategoryKind.income)).value,
@@ -221,7 +206,12 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         w.wallet,
       ...?ref.watch(archivedWalletsProvider).value,
     ];
-    final history = ref.watch(transactionHistoryProvider(_filter(categories)));
+    final filter = _filter(categories, month);
+    final history = ref.watch(
+      transactionHistoryProvider(filter, _searching ? _limit : null),
+    );
+    final totals = ref.watch(transactionTotalsProvider(filter)).value;
+    final oldest = ref.watch(oldestTransactionMonthProvider).value;
     const pad = EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal);
 
     String? nameOf<T>(
@@ -248,9 +238,11 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
       (w) => w.name,
       (w) => w.id,
     );
+    final monthLabel = l10n.monthLabel(month.year, month.month);
 
     return Scaffold(
       body: CustomScrollView(
+        controller: _scroll,
         slivers: [
           AppLargeTitle(
             title: l10n.transactionsTitle,
@@ -274,9 +266,10 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
               child: Row(
                 children: [
                   AppChip(
-                    label: l10n.monthLabel(_month.year, _month.month),
-                    trailingIcon: AppIcons.caretDown,
-                    onTap: () => unawaited(_pickMonth()),
+                    // A search looks through every month.
+                    label: _searching ? l10n.txAllMonths : monthLabel,
+                    trailingIcon: _searching ? null : AppIcons.caretDown,
+                    onTap: _searching ? null : () => unawaited(_pickMonth()),
                   ),
                   const SizedBox(width: AppSpacing.space2),
                   AppChip(
@@ -296,10 +289,26 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
               ),
             ),
           ),
+          SliverPadding(
+            padding: pad.copyWith(
+              top: AppSpacing.space2,
+              bottom: AppSpacing.space4,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: PeriodSummaryCard(
+                title: _searching ? l10n.txSearchResults : monthLabel,
+                income: totals?.income,
+                expense: totals?.expense,
+                labels: l10n.periodSummaryLabels,
+              ),
+            ),
+          ),
           ...switch (history.value ?? _lastItems) {
             final items? => _content(
               _lastItems = items,
-              now,
+              today: LocalDate.fromDateTime(now),
+              month: month,
+              oldest: oldest,
               settled: history is AsyncData,
             ),
             null => [
@@ -319,67 +328,104 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     );
   }
 
-  /// [settled] is false while a new filter is still loading; the end of
-  /// the list only asks for more once the current query has answered.
+  /// [settled] is false while a changed filter is still loading.
   List<Widget> _content(
-    List<TransactionListItem> items,
-    DateTime now, {
+    List<TransactionListItem> items, {
+    required LocalDate today,
+    required YearMonth month,
+    required YearMonth? oldest,
     required bool settled,
   }) {
     final l10n = context.l10n;
     const pad = EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal);
-    final groups = groupByDay(items);
-    final summary = SliverPadding(
-      padding: pad.copyWith(top: AppSpacing.space2, bottom: AppSpacing.space4),
-      sliver: SliverToBoxAdapter(
-        child: _PeriodSummary(
-          totals: totalsOfMonth(items, _month.year, _month.month),
-        ),
-      ),
+    final previous = month.addMonths(-1);
+    final hasPrevious =
+        !_searching && oldest != null && previous.compareTo(oldest) >= 0;
+    final previousLabel = l10n.txShowMonth(
+      l10n.monthLabel(previous.year, previous.month),
     );
-    if (items.isEmpty && _reachedStart && settled) {
+
+    if (items.isEmpty && settled) {
+      final Widget empty;
+      if (oldest == null && !_searching) {
+        empty = EmptyState(
+          icon: AppIcons.receipt,
+          title: l10n.homeEmptyTitle,
+          message: l10n.homeEmptyBody,
+          actionLabel: l10n.homeEmptyAction,
+          onAction: () => unawaited(openTransactionForm(context)),
+        );
+      } else if (_searching || _categoryId != null || _walletId != null) {
+        empty = EmptyState(
+          icon: AppIcons.magnifyingGlass,
+          title: l10n.txNoMatchTitle,
+          message: l10n.txNoMatchBody,
+          actionLabel: l10n.txClearFilters,
+          onAction: _clearFilters,
+        );
+      } else {
+        empty = EmptyState(
+          icon: AppIcons.calendarBlank,
+          title: l10n.txMonthEmptyTitle(
+            l10n.monthLabel(month.year, month.month),
+          ),
+          message: l10n.txMonthEmptyBody,
+          actionLabel: hasPrevious ? previousLabel : null,
+          onAction: hasPrevious ? () => _showMonth(previous) : null,
+        );
+      }
+      final filtered = _categoryId != null || _walletId != null;
       return [
-        summary,
         SliverFillRemaining(
           hasScrollBody: false,
           child: Center(
-            child: _filtered
-                ? EmptyState(
-                    icon: AppIcons.magnifyingGlass,
-                    title: l10n.txNoMatchTitle,
-                    message: l10n.txNoMatchBody,
-                    actionLabel: l10n.txClearFilters,
-                    onAction: _clearFilters,
-                  )
-                : EmptyState(
-                    icon: AppIcons.receipt,
-                    title: l10n.homeEmptyTitle,
-                    message: l10n.homeEmptyBody,
-                    actionLabel: l10n.homeEmptyAction,
-                    onAction: () => unawaited(openTransactionForm(context)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                empty,
+                // With a filter, stepping back a month is the second way on.
+                if (filtered && hasPrevious)
+                  GhostButton(
+                    label: previousLabel,
+                    onPressed: () => _showMonth(previous),
                   ),
+              ],
+            ),
           ),
         ),
       ];
     }
+
+    final groups = groupByDay(items);
     return [
-      summary,
       SliverPadding(
         padding: pad,
         sliver: SliverList.builder(
           itemCount: groups.length,
           itemBuilder: (context, index) => TransactionDaySection(
             group: groups[index],
-            today: LocalDate.fromDateTime(now),
+            today: today,
             onTap: (item) => unawaited(openTransactionDetail(context, item)),
             onDelete: (item) => deleteTransaction(context, item),
           ),
         ),
       ),
-      if (!_reachedStart)
+      if (_searching && items.length >= _limit)
         SliverToBoxAdapter(
           child: _LoadMoreTrigger(
-            onVisible: settled ? () => unawaited(_loadMore()) : null,
+            onVisible: settled
+                ? () => setState(() => _limit += searchPageSize)
+                : null,
+          ),
+        ),
+      if (hasPrevious)
+        SliverPadding(
+          padding: pad,
+          sliver: SliverToBoxAdapter(
+            child: SecondaryButton(
+              label: previousLabel,
+              onPressed: () => _showMonth(previous),
+            ),
           ),
         ),
       const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.space8)),
@@ -387,82 +433,19 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   }
 }
 
-/// Masuk · Keluar · Selisih of the chosen month under the current filters.
-class _PeriodSummary extends StatelessWidget {
-  const _PeriodSummary({required this.totals});
-
-  final PeriodTotals totals;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final colors = context.tokens.colors;
-    Widget cell(String label, String amount, Color color) => Expanded(
-      child: Semantics(
-        // One node per figure, read as "Keluar, Rp 52.000".
-        container: true,
-        label: '$label, $amount',
-        excludeSemantics: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: AppTextStyles.caption.copyWith(
-                color: colors.textSecondary,
-              ),
-            ),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(
-                amount,
-                style: AppTextStyles.bodyStrong.tabular.copyWith(color: color),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-    return AppCard(
-      child: Row(
-        children: [
-          cell(l10n.txIncome, formatRupiah(totals.income), colors.income),
-          cell(
-            l10n.txExpense,
-            formatRupiah(totals.expense),
-            colors.textPrimary,
-          ),
-          cell(
-            l10n.txNet,
-            formatRupiah(totals.net, signed: true),
-            colors.textPrimary,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Shown after the last loaded month; asks for the month before as soon
-/// as it is built, which happens when it scrolls into view (or right away
-/// when the list is short).
-class _LoadMoreTrigger extends StatefulWidget {
+/// Shown after the last loaded page of search results; asks for the next
+/// page as soon as it is built, which happens when it scrolls into view.
+class _LoadMoreTrigger extends StatelessWidget {
   const _LoadMoreTrigger({required this.onVisible});
 
   final VoidCallback? onVisible;
 
   @override
-  State<_LoadMoreTrigger> createState() => _LoadMoreTriggerState();
-}
-
-class _LoadMoreTriggerState extends State<_LoadMoreTrigger> {
-  @override
   Widget build(BuildContext context) {
-    final onVisible = widget.onVisible;
-    if (onVisible != null) {
+    final callback = onVisible;
+    if (callback != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) onVisible();
+        if (context.mounted) callback();
       });
     }
     return const Padding(

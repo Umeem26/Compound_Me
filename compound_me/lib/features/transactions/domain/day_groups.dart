@@ -28,24 +28,3 @@ List<DayGroup> groupByDay(Iterable<TransactionListItem> items) {
   }
   return groups;
 }
-
-/// Income and expense of [items] that fall in one local month; history
-/// sums what its filters show (S-13).
-PeriodTotals totalsOfMonth(
-  Iterable<TransactionListItem> items,
-  int year,
-  int month,
-) {
-  var income = 0;
-  var expense = 0;
-  for (final item in items) {
-    final local = item.entry.occurredAt.toLocal();
-    if (local.year != year || local.month != month) continue;
-    if (item.entry.kind == TransactionKind.income) {
-      income += item.entry.amount;
-    } else {
-      expense += item.entry.amount;
-    }
-  }
-  return PeriodTotals(income: income, expense: expense);
-}

@@ -783,33 +783,6 @@
   "@homeSeeAll": {
     "description": "Opens the transaction history."
   },
-  "summaryIncome": "Masuk {amount}",
-  "@summaryIncome": {
-    "description": "Home pill with the month's income.",
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "summaryExpense": "Keluar {amount}",
-  "@summaryExpense": {
-    "description": "Home pill with the month's expenses.",
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "summaryNet": "Selisih {amount}",
-  "@summaryNet": {
-    "description": "Home pill with income minus expenses.",
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
   "summaryMonthPicker": "Ringkasan {month}, ganti bulan",
   "@summaryMonthPicker": {
     "description": "Screen reader label of the month pill on Home.",
@@ -996,5 +969,39 @@
         "type": "String"
       }
     }
+  },
+  "summaryTitle": "Ringkasan",
+  "@summaryTitle": {
+    "description": "Header of the month summary card on Home."
+  },
+  "txSearchResults": "Hasil pencarian",
+  "@txSearchResults": {
+    "description": "Header of the summary card while searching."
+  },
+  "txAllMonths": "Semua bulan",
+  "@txAllMonths": {
+    "description": "Month chip while searching, which covers every month."
+  },
+  "txShowMonth": "Lihat {month}",
+  "@txShowMonth": {
+    "description": "Switches history to the month before.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "txMonthEmptyTitle": "Belum ada transaksi di {month}",
+  "@txMonthEmptyTitle": {
+    "description": "History empty state for a month without transactions.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "txMonthEmptyBody": "Transaksi bulan itu muncul di sini setelah dicatat.",
+  "@txMonthEmptyBody": {
+    "description": "History empty state for a month without transactions."
   }
 }

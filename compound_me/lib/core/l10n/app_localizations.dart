@@ -1160,24 +1160,6 @@ abstract class AppLocalizations {
   /// **'Lihat semua'**
   String get homeSeeAll;
 
-  /// Home pill with the month's income.
-  ///
-  /// In id, this message translates to:
-  /// **'Masuk {amount}'**
-  String summaryIncome(String amount);
-
-  /// Home pill with the month's expenses.
-  ///
-  /// In id, this message translates to:
-  /// **'Keluar {amount}'**
-  String summaryExpense(String amount);
-
-  /// Home pill with income minus expenses.
-  ///
-  /// In id, this message translates to:
-  /// **'Selisih {amount}'**
-  String summaryNet(String amount);
-
   /// Screen reader label of the month pill on Home.
   ///
   /// In id, this message translates to:
@@ -1423,6 +1405,42 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{name} ({kind})'**
   String txFilterCategoryWithKind(String name, String kind);
+
+  /// Header of the month summary card on Home.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan'**
+  String get summaryTitle;
+
+  /// Header of the summary card while searching.
+  ///
+  /// In id, this message translates to:
+  /// **'Hasil pencarian'**
+  String get txSearchResults;
+
+  /// Month chip while searching, which covers every month.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua bulan'**
+  String get txAllMonths;
+
+  /// Switches history to the month before.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat {month}'**
+  String txShowMonth(String month);
+
+  /// History empty state for a month without transactions.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada transaksi di {month}'**
+  String txMonthEmptyTitle(String month);
+
+  /// History empty state for a month without transactions.
+  ///
+  /// In id, this message translates to:
+  /// **'Transaksi bulan itu muncul di sini setelah dicatat.'**
+  String get txMonthEmptyBody;
 }
 
 class _AppLocalizationsDelegate

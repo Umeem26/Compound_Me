@@ -17,11 +17,15 @@ abstract interface class TransactionRepository {
     int? limit,
   });
 
-  /// Income and expense of one local calendar month (S-10 summary).
-  Stream<PeriodTotals> watchMonthTotals(int year, int month);
+  /// Income and expense of everything [filter] matches, e.g. one month
+  /// (S-10) or a search across all months (S-13).
+  Stream<PeriodTotals> watchTotals(TransactionFilter filter);
 
   /// When the oldest non-deleted transaction happened, for month pickers.
   Future<DateTime?> firstOccurredAt();
+
+  /// [firstOccurredAt] as it changes, for the "see the month before" button.
+  Stream<DateTime?> watchFirstOccurredAt();
 
   /// Active categories of [kind], most recently used first (S-11 chips).
   Future<List<String>> recentCategoryIds(TransactionKind kind, {int limit = 6});

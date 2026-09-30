@@ -8,7 +8,6 @@ import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/router/routes.dart';
 import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/core/utils/dates.dart';
-import 'package:compound_me/core/utils/money.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
 import 'package:compound_me/features/transactions/domain/day_groups.dart';
 import 'package:compound_me/features/transactions/domain/transaction_entry.dart';
@@ -22,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Home (S-10): greeting, total balance with the month summary, and the
+/// Home (S-10): greeting, total balance, the month summary card and the
 /// latest transactions per day. The habit strip and the insight card come
 /// in phases 4 and 5. Everything follows Drift streams.
 class HomeScreen extends ConsumerStatefulWidget {
@@ -33,7 +32,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  /// Month of the summary pills; null follows the current month.
+  /// Month of the summary; null follows the current month, also across
+  /// midnight at the end of a month.
   YearMonth? _month;
 
   Future<void> _pickMonth(YearMonth current) async {
@@ -44,7 +44,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final picked = await showMonthPicker(
       context,
       selected: current,
-      now: ref.read(clockProvider)(),
+      now: ref.read(nowProvider),
       firstOccurredAt: first,
     );
     if (picked != null && mounted) setState(() => _month = picked);
@@ -53,12 +53,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final now = ref.watch(clockProvider)();
+    final now = ref.watch(nowProvider);
     final today = LocalDate.fromDateTime(now);
     final month = _month ?? YearMonth.of(now);
     final hidden = ref.watch(balanceHiddenProvider);
     final balance = ref.watch(totalBalanceProvider);
-    final totals = ref.watch(monthTotalsProvider(month.year, month.month));
+    final totals = ref
+        .watch(
+          transactionTotalsProvider(
+            TransactionFilter(year: month.year, month: month.month),
+          ),
+        )
+        .value;
+    final monthLabel = month.year == now.year
+        ? l10n.monthLabel(month.year, month.month, withYear: false)
+        : l10n.monthLabel(month.year, month.month);
     final recent = ref.watch(recentTransactionsProvider);
     const pad = EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal);
 
@@ -86,12 +95,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               hidden: hidden,
               onToggleHidden: ref.read(balanceHiddenProvider.notifier).toggle,
               labels: l10n.balanceVisibilityLabels,
-              footer: _MonthSummary(
-                totals: totals.value,
-                monthLabel: month.year == now.year
-                    ? l10n.monthLabel(month.year, month.month, withYear: false)
-                    : l10n.monthLabel(month.year, month.month),
-                onPickMonth: () => unawaited(_pickMonth(month)),
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: pad.copyWith(top: AppSpacing.space4),
+          sliver: SliverToBoxAdapter(
+            child: PeriodSummaryCard(
+              title: l10n.summaryTitle,
+              income: totals?.income,
+              expense: totals?.expense,
+              labels: l10n.periodSummaryLabels,
+              trailing: PickerPill(
+                label: monthLabel,
+                semanticLabel: l10n.summaryMonthPicker(monthLabel),
+                onTap: () => unawaited(_pickMonth(month)),
               ),
             ),
           ),
@@ -210,53 +228,6 @@ class _Greeting extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Masuk, Keluar and Selisih of the chosen month, and the month picker.
-class _MonthSummary extends StatelessWidget {
-  const _MonthSummary({
-    required this.totals,
-    required this.monthLabel,
-    required this.onPickMonth,
-  });
-
-  final PeriodTotals? totals;
-  final String monthLabel;
-  final VoidCallback onPickMonth;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final colors = context.tokens.colors;
-    final value = totals;
-    return Wrap(
-      spacing: AppSpacing.space2,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        if (value != null) ...[
-          SummaryPill(
-            icon: AppIcons.arrowDownLeft,
-            color: colors.income,
-            label: l10n.summaryIncome(formatRupiah(value.income)),
-          ),
-          SummaryPill(
-            icon: AppIcons.arrowUpRight,
-            color: colors.textPrimary,
-            label: l10n.summaryExpense(formatRupiah(value.expense)),
-          ),
-          SummaryPill(
-            icon: AppIcons.plusMinus,
-            label: l10n.summaryNet(formatRupiah(value.net, signed: true)),
-          ),
-        ],
-        SummaryPill(
-          label: monthLabel,
-          semanticLabel: l10n.summaryMonthPicker(monthLabel),
-          onTap: onPickMonth,
         ),
       ],
     );

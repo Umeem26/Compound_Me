@@ -79,20 +79,17 @@ class DriftTransactionRepository implements TransactionRepository {
     );
   }
 
-  /// Filter conditions shared by [watch] and [watchItems]; both join
-  /// categories so the text search can match custom names.
+  /// Filter conditions shared by [watch], [watchItems] and [watchTotals];
+  /// all join categories so the text search can match custom names.
   Expression<bool> _matches(TransactionFilter filter) {
     final t = _db.transactions;
     final c = _db.categories;
     var where = t.deletedAt.isNull();
     if (filter.year != null) {
-      final start = toStoredUtc(
-        DateTime(filter.year!, filter.month! - filter.monthsBack),
-      );
-      final end = localMonthRangeUtc(filter.year!, filter.month!).end;
+      final range = localMonthRangeUtc(filter.year!, filter.month!);
       where &=
-          t.occurredAt.isBiggerOrEqualValue(start) &
-          t.occurredAt.isSmallerThanValue(end);
+          t.occurredAt.isBiggerOrEqualValue(range.start) &
+          t.occurredAt.isSmallerThanValue(range.end);
     }
     if (filter.categoryId != null) {
       where &= t.categoryId.equals(filter.categoryId!);
@@ -113,22 +110,21 @@ class DriftTransactionRepository implements TransactionRepository {
   }
 
   @override
-  Stream<PeriodTotals> watchMonthTotals(int year, int month) {
+  Stream<PeriodTotals> watchTotals(TransactionFilter filter) {
     final t = _db.transactions;
-    final range = localMonthRangeUtc(year, month);
+    final c = _db.categories;
     final income = t.amount.sum(
       filter: t.kind.equalsValue(TransactionKind.income),
     );
     final expense = t.amount.sum(
       filter: t.kind.equalsValue(TransactionKind.expense),
     );
-    final query = _db.selectOnly(t)
-      ..addColumns([income, expense])
-      ..where(
-        t.deletedAt.isNull() &
-            t.occurredAt.isBiggerOrEqualValue(range.start) &
-            t.occurredAt.isSmallerThanValue(range.end),
-      );
+    final query =
+        _db.selectOnly(t).join([
+            innerJoin(c, c.id.equalsExp(t.categoryId), useColumns: false),
+          ])
+          ..addColumns([income, expense])
+          ..where(_matches(filter));
     return query.watchSingle().map(
       (row) => PeriodTotals(
         income: row.read(income) ?? 0,
@@ -138,13 +134,18 @@ class DriftTransactionRepository implements TransactionRepository {
   }
 
   @override
-  Future<DateTime?> firstOccurredAt() {
+  Future<DateTime?> firstOccurredAt() => _firstOccurredAt().getSingle();
+
+  @override
+  Stream<DateTime?> watchFirstOccurredAt() => _firstOccurredAt().watchSingle();
+
+  Selectable<DateTime?> _firstOccurredAt() {
     final t = _db.transactions;
-    final first = t.occurredAt.min();
+    final oldest = t.occurredAt.min();
     final query = _db.selectOnly(t)
-      ..addColumns([first])
+      ..addColumns([oldest])
       ..where(t.deletedAt.isNull());
-    return query.map((row) => row.read(first)).getSingle();
+    return query.map((row) => row.read(oldest));
   }
 
   @override

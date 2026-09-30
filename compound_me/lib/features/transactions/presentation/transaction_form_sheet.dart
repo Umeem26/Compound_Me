@@ -8,6 +8,7 @@ import 'package:compound_me/core/l10n/design_labels.dart';
 import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/core/utils/dates.dart';
+import 'package:compound_me/core/utils/money.dart';
 import 'package:compound_me/features/categories/data/drift_category_repository.dart';
 import 'package:compound_me/features/categories/domain/category.dart';
 import 'package:compound_me/features/transactions/application/transaction_form.dart';
@@ -38,7 +39,8 @@ Future<void> openTransactionForm(
     transactions: transactions,
     categories: container.read(categoryRepositoryProvider),
     wallets: container.read(walletRepositoryProvider),
-    now: container.read(clockProvider)(),
+    // A fresh read, so the time is now and "today" moves on if needed.
+    now: container.read(nowProvider.notifier).refresh(),
     editing: editing,
   );
   if (!context.mounted) return;
@@ -168,7 +170,7 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
   }
 
   Future<void> _pickDate() async {
-    final now = ref.read(clockProvider)();
+    final now = ref.read(nowProvider);
     final current = _form.occurredAt;
     final day = await showDateSheet(
       context,
@@ -268,6 +270,19 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
           SheetHeader(
             title: _isEdit ? l10n.txEditTitle : l10n.txAddTitle,
             closeLabel: l10n.actionClose,
+            // While the note takes the keyboard, the amount moves up here
+            // whole instead of scrolling half out of view.
+            subtitle: _editingNote
+                ? GestureDetector(
+                    onTap: _closeNote,
+                    child: Text(
+                      formatRupiah(_form.amount),
+                      style: AppTextStyles.titleSmall.tabular.copyWith(
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                  )
+                : null,
           ),
           Flexible(
             child: SingleChildScrollView(
@@ -275,7 +290,7 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (!_fromHabit)
+                  if (!_fromHabit && !_editingNote)
                     SegmentedToggle<TransactionKind>(
                       options: [
                         SegmentedToggleOption(
@@ -290,11 +305,10 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
                       selected: _form.kind,
                       onChanged: _setKind,
                     ),
-                  const SizedBox(height: AppSpacing.space2),
-                  GestureDetector(
-                    onTap: _closeNote,
-                    child: AmountDisplay(amount: _form.amount),
-                  ),
+                  if (!_editingNote) ...[
+                    const SizedBox(height: AppSpacing.space2),
+                    AmountDisplay(amount: _form.amount),
+                  ],
                   const SizedBox(height: AppSpacing.space2),
                   _CategoryChips(
                     chips: widget.source.chipsFor(_form.kind, _form.categoryId),
@@ -318,7 +332,7 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
                     label: l10n.txDate,
                     value: l10n.dayAndTime(
                       _form.occurredAt,
-                      LocalDate.fromDateTime(ref.read(clockProvider)()),
+                      LocalDate.fromDateTime(ref.watch(nowProvider)),
                     ),
                     onTap: _fromHabit ? null : _pickDate,
                   ),

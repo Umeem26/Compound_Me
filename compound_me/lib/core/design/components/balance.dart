@@ -70,8 +70,8 @@ class BalanceEyeButton extends StatelessWidget {
   }
 }
 
-/// Home balance (§7.3): overline title, the total in the hero style with
-/// the eye next to it, and [footer] (the month summary pills) below.
+/// Home balance (§7.3): overline title and the total in the hero style
+/// with the eye next to it.
 class BalanceHeader extends StatelessWidget {
   const BalanceHeader({
     required this.title,
@@ -79,7 +79,6 @@ class BalanceHeader extends StatelessWidget {
     required this.hidden,
     required this.onToggleHidden,
     required this.labels,
-    this.footer,
     super.key,
   });
 
@@ -90,7 +89,6 @@ class BalanceHeader extends StatelessWidget {
   final bool hidden;
   final VoidCallback onToggleHidden;
   final BalanceVisibilityLabels labels;
-  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -141,92 +139,74 @@ class BalanceHeader extends StatelessWidget {
             ),
           ],
         ),
-        if (footer != null) ...[
-          const SizedBox(height: AppSpacing.space2),
-          footer!,
-        ],
       ],
     );
   }
 }
 
-/// Small rounded pill on `surfaceMuted` (§7.3 month summary): an optional
-/// icon, a label, and a caret when it opens a picker. Tappable pills keep
-/// a 48 dp target around the smaller visual pill.
-class SummaryPill extends StatelessWidget {
-  const SummaryPill({
+/// Small pill on `surfaceMuted` with a caret that opens a picker, e.g. the
+/// month in the summary card header (S-10). The visual pill is smaller
+/// than the 48 dp target around it.
+class PickerPill extends StatelessWidget {
+  const PickerPill({
     required this.label,
-    this.icon,
-    this.color,
+    required this.onTap,
     this.semanticLabel,
-    this.onTap,
     super.key,
   });
 
   final String label;
-  final IconData? icon;
-
-  /// Icon and text color; secondary text by default.
-  final Color? color;
+  final VoidCallback onTap;
   final String? semanticLabel;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.tokens.colors;
-    final foreground = color ?? colors.textSecondary;
-    final pill = DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.surfaceMuted,
-        borderRadius: const BorderRadius.all(Radius.circular(AppRadius.full)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.space3,
-          vertical: AppSpacing.space1,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, size: AppSizes.iconXs, color: foreground),
-              const SizedBox(width: AppSpacing.space1),
-            ],
-            Flexible(
-              child: Text(
-                label,
-                style: AppTextStyles.caption.tabular.copyWith(
-                  color: foreground,
-                ),
-              ),
-            ),
-            if (onTap != null) ...[
-              const SizedBox(width: AppSpacing.space1),
-              Icon(
-                AppIcons.caretDown,
-                size: AppSizes.iconXs,
-                color: foreground,
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-    final spoken = semanticLabel ?? label;
-    if (onTap == null) {
-      return Semantics(label: spoken, excludeSemantics: true, child: pill);
-    }
+    const radius = BorderRadius.all(Radius.circular(AppRadius.full));
     return Semantics(
+      // Its own node, or it merges into a header next to it.
+      container: true,
       button: true,
-      label: spoken,
+      label: semanticLabel ?? label,
       excludeSemantics: true,
       onTap: onTap,
       child: InkWell(
         onTap: onTap,
-        borderRadius: const BorderRadius.all(Radius.circular(AppRadius.full)),
+        borderRadius: radius,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: AppSizes.minTouchTarget),
-          child: Center(widthFactor: 1, child: pill),
+          child: Center(
+            widthFactor: 1,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.surfaceMuted,
+                borderRadius: radius,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.space3,
+                  vertical: AppSpacing.space1,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      label,
+                      style: AppTextStyles.caption.copyWith(
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.space1),
+                    Icon(
+                      AppIcons.caretDown,
+                      size: AppSizes.iconXs,
+                      color: colors.textSecondary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

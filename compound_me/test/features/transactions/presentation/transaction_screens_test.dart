@@ -6,6 +6,7 @@ import 'package:compound_me/features/habits/data/drift_habit_repository.dart';
 import 'package:compound_me/features/habits/domain/habit.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
 import 'package:compound_me/features/transactions/domain/transaction_entry.dart';
+import 'package:compound_me/features/transactions/presentation/transactions_screen.dart';
 import 'package:compound_me/features/wallets/data/drift_wallet_repository.dart';
 import 'package:compound_me/features/wallets/domain/wallet.dart';
 import 'package:flutter/material.dart';
@@ -273,10 +274,21 @@ void main() {
 
       await _tap(tester, find.bySemanticsLabel(RegExp('^Catatan')));
       expect(find.byType(AmountKeypad), findsNothing);
+      // The amount moves up under the title, whole, instead of half
+      // scrolled out of view.
+      expect(find.byType(AmountDisplay), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(SheetHeader),
+          matching: find.text('Rp 9'),
+        ),
+        findsOneWidget,
+      );
       await tester.enterText(find.byType(TextField), 'nasi padang');
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       expect(find.byType(AmountKeypad), findsOneWidget);
+      expect(find.byType(AmountDisplay), findsOneWidget);
       await _tap(tester, find.text('Simpan'));
 
       final saved = await (database.select(
@@ -307,19 +319,107 @@ void main() {
       );
     }
 
-    testApp('shows the month, then loads the months before', (tester) async {
+    testApp('the month is a strict filter; "Lihat" steps back a month', (
+      tester,
+    ) async {
       await pumpApp(tester, now: _now, seed: seedHistory);
       await goTo(tester, AppRoutes.transactions);
 
-      expect(find.text('September 2026'), findsOneWidget);
-      expect(find.text('−Rp 22.000'), findsWidgets);
-      // Short lists pull in the previous month right away.
-      expect(find.text('−Rp 45.000'), findsWidgets);
-      expect(find.text('Keluar'), findsOneWidget);
+      expect(find.widgetWithText(AppChip, 'September 2026'), findsOneWidget);
+      expect(find.byType(TransactionTile), findsNWidgets(2));
+      expect(find.text('−Rp 45.000'), findsNothing, reason: 'August waits');
+      expect(find.bySemanticsLabel('Keluar, Rp 52.000'), findsOneWidget);
+
+      await _tap(tester, find.text('Lihat Agustus 2026'));
+      expect(find.widgetWithText(AppChip, 'Agustus 2026'), findsOneWidget);
+      expect(find.byType(TransactionTile), findsOneWidget);
+      expect(find.bySemanticsLabel('Keluar, Rp 45.000'), findsOneWidget);
       expect(
-        find.bySemanticsLabel('Keluar, Rp 52.000'),
+        find.textContaining('Lihat Juli'),
+        findsNothing,
+        reason: 'August holds the oldest transaction',
+      );
+    });
+
+    testApp('an empty month offers the month before', (tester) async {
+      await pumpApp(tester, now: DateTime(2026, 10, 2, 9), seed: seedHistory);
+      await goTo(tester, AppRoutes.transactions);
+
+      expect(find.text('Belum ada transaksi di Oktober 2026'), findsOneWidget);
+      expect(find.bySemanticsLabel('Keluar, Rp 0'), findsOneWidget);
+      await _tap(tester, find.text('Lihat September 2026'));
+      expect(find.byType(TransactionTile), findsNWidgets(2));
+    });
+
+    testApp('a search covers every month and sums its results', (tester) async {
+      await pumpApp(
+        tester,
+        now: _now,
+        seed: (db) async {
+          await seedHistory(db);
+          final cash = (await db.select(db.wallets).get()).first.id;
+          await _add(
+            db,
+            cash,
+            12000,
+            DateTime(2025, 12, 15, 8),
+            note: 'kopi hitam',
+          );
+        },
+      );
+      await goTo(tester, AppRoutes.transactions);
+
+      await tester.enterText(find.byType(TextField), 'kopi');
+      await tester.pumpAndSettle();
+      final month = tester.widget<AppChip>(
+        find.widgetWithText(AppChip, 'Semua bulan'),
+      );
+      expect(month.onTap, isNull, reason: 'disabled while searching');
+      expect(find.text('Hasil pencarian'), findsOneWidget);
+      expect(find.byType(TransactionTile), findsNWidgets(2));
+      expect(find.bySemanticsLabel('Keluar, Rp 34.000'), findsOneWidget);
+      expect(
+        find.text('Senin, 15 Des 2025'),
         findsOneWidget,
-        reason: 'the summary counts September only',
+        reason: 'another year shows its year',
+      );
+      expect(find.textContaining('Lihat '), findsNothing);
+
+      await tester.enterText(find.byType(TextField), 'Transportasi');
+      await tester.pumpAndSettle();
+      expect(find.text('−Rp 45.000'), findsWidgets, reason: 'from August');
+    });
+
+    testApp('search results load in pages', (tester) async {
+      await pumpApp(
+        tester,
+        now: _now,
+        seed: (db) async {
+          final cash = await _wallet(db, 'Tunai', 0);
+          for (var i = 0; i < searchPageSize + 10; i++) {
+            await _add(
+              db,
+              cash,
+              1000 + i,
+              DateTime(2026, 9, 1, 6).add(Duration(hours: i)),
+              note: 'parkir',
+            );
+          }
+        },
+      );
+      await goTo(tester, AppRoutes.transactions);
+      await tester.enterText(find.byType(TextField), 'parkir');
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(
+        find.text('−Rp 1.000'),
+        600,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(
+        find.text('−Rp 1.000'),
+        findsWidgets,
+        reason: 'the oldest one sits on the second page',
       );
     });
 
@@ -352,8 +452,13 @@ void main() {
       await _tap(tester, find.text('Transportasi').last);
       expect(find.text('Tidak ada transaksi yang cocok'), findsOneWidget);
 
+      expect(
+        find.widgetWithText(GhostButton, 'Lihat Agustus 2026'),
+        findsOneWidget,
+      );
+
       await _tap(tester, find.text('Hapus filter'));
-      expect(find.byType(TransactionTile), findsNWidgets(3));
+      expect(find.byType(TransactionTile), findsNWidgets(2));
     });
 
     testApp('the category filter tells same-named categories apart', (
@@ -392,19 +497,19 @@ void main() {
         },
       );
       await goTo(tester, AppRoutes.transactions);
-      expect(find.byType(TransactionTile), findsNWidgets(3));
+      expect(find.byType(TransactionTile), findsNWidgets(2));
 
       await tester.drag(
         find.byType(TransactionTile).first,
         const Offset(-500, 0),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(TransactionTile), findsNWidgets(2));
+      expect(find.byType(TransactionTile), findsOneWidget);
       expect(find.text('Transaksi dihapus'), findsOneWidget);
 
       await tester.tap(find.text('Urungkan'));
       await tester.pumpAndSettle();
-      expect(find.byType(TransactionTile), findsNWidgets(3));
+      expect(find.byType(TransactionTile), findsNWidgets(2));
       final live = await (database.select(
         database.transactions,
       )..where((t) => t.deletedAt.isNull())).get();

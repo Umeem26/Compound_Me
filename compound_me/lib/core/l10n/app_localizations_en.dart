@@ -577,21 +577,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSeeAll => 'See all';
 
   @override
-  String summaryIncome(String amount) {
-    return 'In $amount';
-  }
-
-  @override
-  String summaryExpense(String amount) {
-    return 'Out $amount';
-  }
-
-  @override
-  String summaryNet(String amount) {
-    return 'Net $amount';
-  }
-
-  @override
   String summaryMonthPicker(String month) {
     return 'Summary for $month, change month';
   }
@@ -722,4 +707,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String txFilterCategoryWithKind(String name, String kind) {
     return '$name ($kind)';
   }
+
+  @override
+  String get summaryTitle => 'Summary';
+
+  @override
+  String get txSearchResults => 'Search results';
+
+  @override
+  String get txAllMonths => 'All months';
+
+  @override
+  String txShowMonth(String month) {
+    return 'See $month';
+  }
+
+  @override
+  String txMonthEmptyTitle(String month) {
+    return 'No transactions in $month';
+  }
+
+  @override
+  String get txMonthEmptyBody =>
+      'Transactions of that month show up here once logged.';
 }

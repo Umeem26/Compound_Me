@@ -66,8 +66,9 @@ class TransactionDraft {
   final String? note;
 }
 
-/// History filters (S-13). [month] is a local calendar month; [query]
-/// searches notes and custom category names. Default categories have
+/// History filters (S-13). [month] is a local calendar month, or every
+/// month when [year] and [month] are null; [query] searches notes and
+/// custom category names. Default categories have
 /// translated names that are not stored, so the UI resolves matching ones
 /// and passes them as [extraCategoryIds].
 @immutable
@@ -75,7 +76,6 @@ class TransactionFilter {
   const TransactionFilter({
     this.year,
     this.month,
-    this.monthsBack = 0,
     this.categoryId,
     this.walletId,
     this.query,
@@ -88,16 +88,12 @@ class TransactionFilter {
   final int? year;
   final int? month;
 
-  /// Earlier months included before [month], for history that loads one
-  /// more month as it scrolls (S-13). 0 = only [month].
-  final int monthsBack;
   final String? categoryId;
   final String? walletId;
   final String? query;
   final Set<String> extraCategoryIds;
 
   TransactionFilter copyWith({
-    int? monthsBack,
     String? Function()? categoryId,
     String? Function()? walletId,
     String? query,
@@ -105,7 +101,6 @@ class TransactionFilter {
   }) => TransactionFilter(
     year: year,
     month: month,
-    monthsBack: monthsBack ?? this.monthsBack,
     categoryId: categoryId == null ? this.categoryId : categoryId(),
     walletId: walletId == null ? this.walletId : walletId(),
     query: query ?? this.query,
@@ -119,7 +114,6 @@ class TransactionFilter {
       other is TransactionFilter &&
       other.year == year &&
       other.month == month &&
-      other.monthsBack == monthsBack &&
       other.categoryId == categoryId &&
       other.walletId == walletId &&
       other.query == query &&
@@ -130,7 +124,6 @@ class TransactionFilter {
   int get hashCode => Object.hash(
     year,
     month,
-    monthsBack,
     categoryId,
     walletId,
     query,

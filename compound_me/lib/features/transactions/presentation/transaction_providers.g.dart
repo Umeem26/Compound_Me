@@ -51,10 +51,14 @@ final class RecentTransactionsProvider
 String _$recentTransactionsHash() =>
     r'f999b801aab8c2fec6a1953f30c188ec7d8cf755';
 
-@ProviderFor(monthTotals)
-final monthTotalsProvider = MonthTotalsFamily._();
+/// Income and expense of what [filter] matches (S-10, S-13 summary).
 
-final class MonthTotalsProvider
+@ProviderFor(transactionTotals)
+final transactionTotalsProvider = TransactionTotalsFamily._();
+
+/// Income and expense of what [filter] matches (S-10, S-13 summary).
+
+final class TransactionTotalsProvider
     extends
         $FunctionalProvider<
           AsyncValue<PeriodTotals>,
@@ -62,25 +66,26 @@ final class MonthTotalsProvider
           Stream<PeriodTotals>
         >
     with $FutureModifier<PeriodTotals>, $StreamProvider<PeriodTotals> {
-  MonthTotalsProvider._({
-    required MonthTotalsFamily super.from,
-    required (int, int) super.argument,
+  /// Income and expense of what [filter] matches (S-10, S-13 summary).
+  TransactionTotalsProvider._({
+    required TransactionTotalsFamily super.from,
+    required TransactionFilter super.argument,
   }) : super(
          retry: null,
-         name: r'monthTotalsProvider',
+         name: r'transactionTotalsProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$monthTotalsHash();
+  String debugGetCreateSourceHash() => _$transactionTotalsHash();
 
   @override
   String toString() {
-    return r'monthTotalsProvider'
+    return r'transactionTotalsProvider'
         ''
-        '$argument';
+        '($argument)';
   }
 
   @$internal
@@ -91,13 +96,13 @@ final class MonthTotalsProvider
 
   @override
   Stream<PeriodTotals> create(Ref ref) {
-    final argument = this.argument as (int, int);
-    return monthTotals(ref, argument.$1, argument.$2);
+    final argument = this.argument as TransactionFilter;
+    return transactionTotals(ref, argument);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is MonthTotalsProvider && other.argument == argument;
+    return other is TransactionTotalsProvider && other.argument == argument;
   }
 
   @override
@@ -106,25 +111,73 @@ final class MonthTotalsProvider
   }
 }
 
-String _$monthTotalsHash() => r'15e55a4be59dfaa941e25b17c7920c0eb06f1760';
+String _$transactionTotalsHash() => r'b562a690cac496224e3b9d3a41b0652de57c2383';
 
-final class MonthTotalsFamily extends $Family
-    with $FunctionalFamilyOverride<Stream<PeriodTotals>, (int, int)> {
-  MonthTotalsFamily._()
+/// Income and expense of what [filter] matches (S-10, S-13 summary).
+
+final class TransactionTotalsFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<PeriodTotals>, TransactionFilter> {
+  TransactionTotalsFamily._()
     : super(
         retry: null,
-        name: r'monthTotalsProvider',
+        name: r'transactionTotalsProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  MonthTotalsProvider call(int year, int month) =>
-      MonthTotalsProvider._(argument: (year, month), from: this);
+  /// Income and expense of what [filter] matches (S-10, S-13 summary).
+
+  TransactionTotalsProvider call(TransactionFilter filter) =>
+      TransactionTotalsProvider._(argument: filter, from: this);
 
   @override
-  String toString() => r'monthTotalsProvider';
+  String toString() => r'transactionTotalsProvider';
 }
+
+/// The month of the oldest transaction, or null without any.
+
+@ProviderFor(oldestTransactionMonth)
+final oldestTransactionMonthProvider = OldestTransactionMonthProvider._();
+
+/// The month of the oldest transaction, or null without any.
+
+final class OldestTransactionMonthProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<YearMonth?>,
+          YearMonth?,
+          Stream<YearMonth?>
+        >
+    with $FutureModifier<YearMonth?>, $StreamProvider<YearMonth?> {
+  /// The month of the oldest transaction, or null without any.
+  OldestTransactionMonthProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'oldestTransactionMonthProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$oldestTransactionMonthHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<YearMonth?> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<YearMonth?> create(Ref ref) {
+    return oldestTransactionMonth(ref);
+  }
+}
+
+String _$oldestTransactionMonthHash() =>
+    r'b71b9db59123ce3d5bc33ac2e48ca4559d8a2c4a';
 
 /// Current balance of all active wallets.
 
@@ -164,8 +217,12 @@ final class TotalBalanceProvider
 
 String _$totalBalanceHash() => r'2834e945e0c2375b6f011a80448e4443f8d15242';
 
+/// History rows; [limit] pages search results across all months.
+
 @ProviderFor(transactionHistory)
 final transactionHistoryProvider = TransactionHistoryFamily._();
+
+/// History rows; [limit] pages search results across all months.
 
 final class TransactionHistoryProvider
     extends
@@ -177,9 +234,10 @@ final class TransactionHistoryProvider
     with
         $FutureModifier<List<TransactionListItem>>,
         $StreamProvider<List<TransactionListItem>> {
+  /// History rows; [limit] pages search results across all months.
   TransactionHistoryProvider._({
     required TransactionHistoryFamily super.from,
-    required TransactionFilter super.argument,
+    required (TransactionFilter, int?) super.argument,
   }) : super(
          retry: null,
          name: r'transactionHistoryProvider',
@@ -195,7 +253,7 @@ final class TransactionHistoryProvider
   String toString() {
     return r'transactionHistoryProvider'
         ''
-        '($argument)';
+        '$argument';
   }
 
   @$internal
@@ -206,8 +264,8 @@ final class TransactionHistoryProvider
 
   @override
   Stream<List<TransactionListItem>> create(Ref ref) {
-    final argument = this.argument as TransactionFilter;
-    return transactionHistory(ref, argument);
+    final argument = this.argument as (TransactionFilter, int?);
+    return transactionHistory(ref, argument.$1, argument.$2);
   }
 
   @override
@@ -222,13 +280,15 @@ final class TransactionHistoryProvider
 }
 
 String _$transactionHistoryHash() =>
-    r'd848e0c70924b9a136c7efad0fd57cd551bbf2bc';
+    r'c2de345ecbd5a03bea8abdc6d7ffa4a9c483f78c';
+
+/// History rows; [limit] pages search results across all months.
 
 final class TransactionHistoryFamily extends $Family
     with
         $FunctionalFamilyOverride<
           Stream<List<TransactionListItem>>,
-          TransactionFilter
+          (TransactionFilter, int?)
         > {
   TransactionHistoryFamily._()
     : super(
@@ -239,8 +299,10 @@ final class TransactionHistoryFamily extends $Family
         isAutoDispose: true,
       );
 
-  TransactionHistoryProvider call(TransactionFilter filter) =>
-      TransactionHistoryProvider._(argument: filter, from: this);
+  /// History rows; [limit] pages search results across all months.
+
+  TransactionHistoryProvider call(TransactionFilter filter, int? limit) =>
+      TransactionHistoryProvider._(argument: (filter, limit), from: this);
 
   @override
   String toString() => r'transactionHistoryProvider';

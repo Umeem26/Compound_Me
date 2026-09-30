@@ -10,7 +10,8 @@ import 'package:flutter/services.dart';
 /// 40 dp chip (§7.5 CategoryChips, S-13 filters) inside a 48 dp target.
 /// Selected = `teal50` fill with a `teal700` border; [muted] is the quieter
 /// "Semua ›" style on `surfaceMuted` without a border. A caret shows when
-/// [trailingIcon] is set, e.g. for chips that open a picker.
+/// [trailingIcon] is set, e.g. for chips that open a picker. Without
+/// [onTap] the chip is disabled (40% opacity, §7.2).
 class AppChip extends StatelessWidget {
   const AppChip({
     required this.label,
@@ -51,8 +52,9 @@ class AppChip extends StatelessWidget {
       background = colors.surface;
       side = BorderSide(color: colors.border);
     }
-    return Semantics(
+    final chip = Semantics(
       button: true,
+      enabled: onTap != null,
       selected: selected,
       label: label,
       excludeSemantics: true,
@@ -108,6 +110,8 @@ class AppChip extends StatelessWidget {
         ),
       ),
     );
+    if (onTap != null) return chip;
+    return Opacity(opacity: AppOpacity.disabled, child: chip);
   }
 }
 

@@ -79,23 +79,35 @@ class TransactionTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.space3),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      money,
-                      style: AppTextStyles.bodyStrong.tabular.copyWith(
-                        color: amount > 0 ? colors.income : colors.textPrimary,
+                // At most half the row: a very large amount shrinks rather
+                // than pushing the row past the screen (text scale 1.3).
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.sizeOf(context).width / 2,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          money,
+                          style: AppTextStyles.bodyStrong.tabular.copyWith(
+                            color: amount > 0
+                                ? colors.income
+                                : colors.textPrimary,
+                          ),
+                        ),
                       ),
-                    ),
-                    Text(
-                      time,
-                      style: AppTextStyles.caption.tabular.copyWith(
-                        color: colors.textSecondary,
+                      Text(
+                        time,
+                        style: AppTextStyles.caption.tabular.copyWith(
+                          color: colors.textSecondary,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

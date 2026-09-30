@@ -275,59 +275,81 @@ void main() {
       expect(limited, hasLength(1));
     });
 
-    test('monthsBack reaches into earlier months', () async {
-      final august = await transactions.add(draft(at: DateTime(2026, 8, 20)));
+    test('a filter without a month covers every month', () async {
+      final august = await transactions.add(
+        draft(at: DateTime(2026, 8, 20), note: 'kopi susu'),
+      );
       final september = await transactions.add(draft(at: DateTime(2026, 9, 2)));
-      await transactions.add(draft(at: DateTime(2026, 7, 31)));
+      final july = await transactions.add(
+        draft(at: DateTime(2025, 7, 31), note: 'kopi hitam'),
+      );
 
-      Future<List<String>> ids(int back) async => [
-        for (final i
-            in await transactions
-                .watchItems(
-                  TransactionFilter(year: 2026, month: 9, monthsBack: back),
-                )
-                .first)
-          i.entry.id,
-      ];
-      expect(await ids(0), [september]);
-      expect(await ids(1), [september, august]);
+      Future<List<String>> ids(TransactionFilter filter, {int? limit}) async =>
+          [
+            for (final i
+                in await transactions.watchItems(filter, limit: limit).first)
+              i.entry.id,
+          ];
+      expect(await ids(const TransactionFilter(year: 2026, month: 9)), [
+        september,
+      ]);
+      expect(await ids(const TransactionFilter()), [september, august, july]);
+      expect(await ids(const TransactionFilter(query: 'kopi')), [august, july]);
+      expect(await ids(const TransactionFilter(query: 'kopi'), limit: 1), [
+        august,
+      ]);
     });
 
-    test(
-      'month totals split income and expense within the local month',
-      () async {
-        await transactions.add(draft());
-        await transactions.add(
-          draft(
-            amount: 500000,
-            kind: TransactionKind.income,
-            categoryId: salary,
-          ),
-        );
-        await transactions.add(
-          draft(amount: 9000, at: DateTime(2026, 10, 1, 7)),
-        );
-        final gone = await transactions.add(draft(amount: 1000));
-        await transactions.softDelete(gone);
+    test('totals follow the filter: a month, a wallet or a search', () async {
+      await transactions.add(draft(note: 'kopi'));
+      await transactions.add(
+        draft(amount: 500000, kind: TransactionKind.income, categoryId: salary),
+      );
+      await transactions.add(
+        draft(amount: 9000, at: DateTime(2026, 10, 1, 7), note: 'kopi'),
+      );
+      await transactions.add(draft(amount: 7000, walletId: bank));
+      final gone = await transactions.add(draft(amount: 1000));
+      await transactions.softDelete(gone);
 
-        final totals = await transactions.watchMonthTotals(2026, 9).first;
-        expect(totals.income, 500000);
-        expect(totals.expense, 22000);
-        expect(totals.net, 478000);
-        final empty = await transactions.watchMonthTotals(2026, 1).first;
-        expect(empty.income, 0);
-        expect(empty.expense, 0);
-      },
-    );
+      Future<PeriodTotals> totals(TransactionFilter filter) =>
+          transactions.watchTotals(filter).first;
+
+      final september = await totals(
+        const TransactionFilter(year: 2026, month: 9),
+      );
+      expect(september.income, 500000);
+      expect(september.expense, 29000);
+      expect(september.net, 471000);
+      final empty = await totals(const TransactionFilter(year: 2026, month: 1));
+      expect(empty.income, 0);
+      expect(empty.expense, 0);
+      final inBank = await totals(
+        TransactionFilter(year: 2026, month: 9, walletId: bank),
+      );
+      expect(inBank.expense, 7000);
+      final search = await totals(const TransactionFilter(query: 'kopi'));
+      expect(search.expense, 31000, reason: 'both months');
+      expect(search.income, 0);
+    });
 
     test('the oldest transaction bounds the month picker', () async {
       expect(await transactions.firstOccurredAt(), isNull);
+      expect(await transactions.watchFirstOccurredAt().first, isNull);
       await transactions.add(draft(at: DateTime(2026, 9, 2)));
-      await transactions.add(draft(at: DateTime(2026, 6, 15, 10)));
+      final oldest = await transactions.add(
+        draft(at: DateTime(2026, 6, 15, 10)),
+      );
 
       expect(
         await transactions.firstOccurredAt(),
         DateTime(2026, 6, 15, 10).toUtc(),
+      );
+      await transactions.softDelete(oldest);
+      expect(
+        await transactions.watchFirstOccurredAt().first,
+        DateTime(2026, 9, 2).toUtc(),
+        reason: 'deleted ones do not count',
       );
     });
 

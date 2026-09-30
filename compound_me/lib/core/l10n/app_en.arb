@@ -177,9 +177,6 @@
   "balanceHidden": "Balance hidden",
   "homeRecentTitle": "Recent transactions",
   "homeSeeAll": "See all",
-  "summaryIncome": "In {amount}",
-  "summaryExpense": "Out {amount}",
-  "summaryNet": "Net {amount}",
   "summaryMonthPicker": "Summary for {month}, change month",
   "monthPickerTitle": "Choose month",
   "txAddTitle": "Add transaction",
@@ -220,5 +217,11 @@
   "txIncome": "In",
   "txExpense": "Out",
   "txNet": "Net",
-  "txFilterCategoryWithKind": "{name} ({kind})"
+  "txFilterCategoryWithKind": "{name} ({kind})",
+  "summaryTitle": "Summary",
+  "txSearchResults": "Search results",
+  "txAllMonths": "All months",
+  "txShowMonth": "See {month}",
+  "txMonthEmptyTitle": "No transactions in {month}",
+  "txMonthEmptyBody": "Transactions of that month show up here once logged."
 }
