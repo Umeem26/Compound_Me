@@ -26,13 +26,19 @@
 ## 1. Pola kerja per fase
 
 ```
-Prompt fase (plan mode) → review rencana → setujui
+Prompt fase (plan mode, atau rencana ditulis di deskripsi PR) → setujui
 → Claude Code eksekusi di branch v2/phase-N-...
 → flutter analyze (0 issue) + flutter test (hijau) + jalan di emulator
+→ Checklist fase dijalankan OTOMATIS di emulator sebelum PR:
+    integration test  compound_me/integration_test/phaseN_checklist_test.dart
+    skrip adb         compound_me/tool/qa/qa_phaseN.py (force stop, font 1,3, mode gelap, intent)
+  hasilnya ditulis sebagai tabel lulus/gagal di PR (cara pakai: compound_me/tool/qa/README.md)
 → Claude Code ambil screenshot layar baru (adb) dan buat PR (JANGAN merge)
-→ Kamu: tes manual pakai checklist fase → kirim catatan ke Cowork untuk review
+→ Kamu: review PR + tabel QA → kirim catatan ke Cowork untuk review
 → Revisi kalau perlu → merge
 ```
+
+Checklist tiap fase di §2 adalah daftar yang dijalankan otomatis itu. Yang hanya bisa dinilai manusia (waktu, rasa, TalkBack, HP sungguhan) dikumpulkan di Fase 6, "QA manual sebelum rilis", dan setiap fase menambahkan itemnya ke sana.
 
 Perintah screenshot yang bisa dipakai Claude Code:
 ```
@@ -113,8 +119,8 @@ Widget test: onboarding sampai selesai, validasi nama kosong, dompet dengan tran
 DoD seperti biasa + screenshot semua layar baru (terang & gelap, bahasa id & en untuk onboarding). PR tanpa merge.
 ```
 
-**Checklist kamu:**
-- [ ] Onboarding selesai ≤ 60 detik tanpa bingung.
+**Checklist fase (otomatis, §1):**
+- [ ] Onboarding selesai: jumlah tap dan layar dilaporkan (waktu ≤ 60 detik tanpa bingung dinilai di QA manual Fase 6).
 - [ ] Tutup app di tengah onboarding → buka lagi, lanjut dari langkah terakhir.
 - [ ] Ganti ke English → semua teks berganti, tanggal berbahasa Inggris, uang tetap `Rp 25.000`.
 - [ ] Tidak ada teks yang kepotong dengan ukuran font HP diperbesar.
@@ -138,8 +144,8 @@ Ukur dan laporkan: berapa tap dari tombol Tambah sampai tersimpan untuk pengelua
 DoD + screenshot. PR tanpa merge.
 ```
 
-**Checklist kamu:**
-- [ ] Catat "kopi Rp 22.000" ≤ 5 detik (pakai stopwatch HP).
+**Checklist fase (otomatis, §1):**
+- [ ] Catat "kopi Rp 22.000": jumlah tap dari tombol Tambah sampai tersimpan dilaporkan (≤ 5 detik dinilai di QA manual Fase 6).
 - [ ] Hapus transaksi → Urungkan → kembali utuh, saldo benar.
 - [ ] Edit transaksi pindah dompet → saldo kedua dompet benar.
 - [ ] Toggle "Sembunyikan saldo" di Pengaturan: saat app dibuka, saldo di BalanceHeader tertutup; ikon mata membukanya. Matikan toggle → saldo terlihat saat app dibuka.
@@ -157,7 +163,7 @@ Widget test: tap cepat 5x tetap konsisten, check-in reduce mengurangi saldo dan 
 DoD + screenshot. PR tanpa merge.
 ```
 
-**Checklist kamu:**
+**Checklist fase (otomatis, §1):**
 - [ ] Buat "Kopi Rp 25.000, pakai GoPay, kategori Makanan" → check-in → transaksi masuk ke GoPay, bukan dompet pertama.
 - [ ] Long-press → set 2 kopi → 2 transaksi. Turunkan ke 1 → tinggal 1.
 - [ ] Bolong satu hari (ubah tanggal HP atau pakai data uji) → streak tidak putus, ditandai hari longgar.
@@ -176,7 +182,7 @@ Test: InsightsCalculator dengan data contoh, widget test empty state.
 DoD + screenshot (dengan data contoh). PR tanpa merge.
 ```
 
-**Checklist kamu:**
+**Checklist fase (otomatis, §1):**
 - [ ] Angka di Wawasan cocok dengan hitungan manual kamu untuk satu kebiasaan.
 - [ ] Simulator: 50% dari kopi 3x/minggu × Rp 25.000 ≈ Rp 1,95 jt/tahun.
 - [ ] Disclaimer selalu terlihat.
@@ -201,6 +207,16 @@ Termasuk:
 
 DoD + laporan audit sebelum/sesudah. PR tanpa merge.
 ```
+
+### QA manual sebelum rilis
+Hal yang hanya bisa dinilai manusia di HP sungguhan. Semua checklist fase lain sudah dijalankan otomatis (§1); fase berikutnya menambahkan itemnya di sini.
+- [ ] Onboarding selesai ≤ 60 detik tanpa bingung (Fase 2, Flow A).
+- [ ] Catat transaksi ≤ 5 detik dengan stopwatch, misalnya "kopi Rp 22.000" (Fase 3, Flow B).
+- [ ] Rasa tampilan mode gelap di semua layar: kontras, tidak ada yang terlalu terang atau hilang.
+- [ ] TalkBack langsung, minimal S-10, S-11, S-20 (03 §5): urutan fokus, label tombol ikon, nominal dibaca lengkap, "Saldo disembunyikan".
+- [ ] App dimatikan di tengah proses (tepat setelah "Mulai" di onboarding, dan saat "Hapus semua data") di HP sungguhan → dibuka lagi tanpa data dobel atau Beranda kosong.
+- [ ] Link "Kode sumber di GitHub" membuka halaman repo yang benar di browser HP sungguhan.
+- [ ] Haptic terasa pas (keypad, check-in, hapus) di HP sungguhan, karena emulator tidak bergetar.
 
 **Checklist kamu (uji pengguna kecil):**
 - [ ] Minta 3–5 teman (persona target) mencoba tanpa penjelasan: onboarding, catat kopi, cari kebiasaan termahal. Catat di mana mereka ragu.
