@@ -4,9 +4,30 @@ import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/router/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:url_launcher_platform_interface/link.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
 import '../../../helpers/pump_app.dart';
 import '../../../helpers/test_database.dart';
+
+/// Records what the app asks the platform to open.
+class _FakeLauncher extends UrlLauncherPlatform {
+  String? url;
+  PreferredLaunchMode? mode;
+
+  @override
+  LinkDelegate? get linkDelegate => null;
+
+  @override
+  Future<bool> canLaunch(String url) async => true;
+
+  @override
+  Future<bool> launchUrl(String url, LaunchOptions options) async {
+    this.url = url;
+    mode = options.mode;
+    return true;
+  }
+}
 
 Future<void> _tap(WidgetTester tester, Finder finder) async {
   await tester.ensureVisible(finder);
@@ -138,5 +159,22 @@ void main() {
 
     expect(find.text('Plus Jakarta Sans'), findsOneWidget);
     expect(find.text('Phosphor Icons'), findsOneWidget);
+  });
+
+  testApp('the source code row opens the repository in the browser', (
+    tester,
+  ) async {
+    final launcher = _FakeLauncher();
+    final previous = UrlLauncherPlatform.instance;
+    UrlLauncherPlatform.instance = launcher;
+    addTearDown(() => UrlLauncherPlatform.instance = previous);
+    await pumpApp(tester);
+    await goTo(tester, AppRoutes.about);
+
+    await _tap(tester, find.text('Kode sumber di GitHub'));
+
+    // Android redacts URI paths in logcat, so the exact URL is checked here.
+    expect(launcher.url, 'https://github.com/Umeem26/Compound_Me');
+    expect(launcher.mode, PreferredLaunchMode.externalApplication);
   });
 }

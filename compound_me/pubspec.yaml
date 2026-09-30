@@ -32,8 +32,12 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
+  # Phase checklists run on the emulator (06 §1).
+  integration_test:
+    sdk: flutter
   riverpod_generator: ^4.0.9
   shared_preferences_platform_interface: ^2.4.2
+  url_launcher_platform_interface: ^2.3.2
   very_good_analysis: ^11.0.0
 
 flutter:
