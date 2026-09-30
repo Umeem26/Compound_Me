@@ -26,6 +26,9 @@ abstract interface class WalletRepository {
 
   Stream<List<Wallet>> watchArchived();
 
+  /// Active wallets in display order, read once (forms).
+  Future<List<Wallet>> listActive();
+
   Future<Wallet?> findById(String id);
 
   /// Whether any wallet exists, active or archived. Onboarding always

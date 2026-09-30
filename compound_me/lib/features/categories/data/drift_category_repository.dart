@@ -23,19 +23,30 @@ class DriftCategoryRepository implements CategoryRepository {
   Stream<List<Category>> watch(
     CategoryKind kind, {
     bool includeArchived = false,
-  }) {
-    final query = _db.select(_db.categories)
-      ..where(
-        (c) =>
-            c.kind.equalsValue(kind) &
-            (includeArchived ? const Constant(true) : c.archivedAt.isNull()),
-      )
-      ..orderBy([
-        (c) => OrderingTerm.asc(c.sortOrder),
-        (c) => OrderingTerm.asc(c.createdAt),
-      ]);
-    return query.watch().map((rows) => [for (final r in rows) r.toDomain()]);
-  }
+  }) => _ofKind(
+    kind,
+    includeArchived: includeArchived,
+  ).watch().map((rows) => [for (final r in rows) r.toDomain()]);
+
+  @override
+  Future<List<Category>> listActive(CategoryKind kind) async => [
+    for (final r in await _ofKind(kind, includeArchived: false).get())
+      r.toDomain(),
+  ];
+
+  SimpleSelectStatement<$CategoriesTable, CategoryRow> _ofKind(
+    CategoryKind kind, {
+    required bool includeArchived,
+  }) => _db.select(_db.categories)
+    ..where(
+      (c) =>
+          c.kind.equalsValue(kind) &
+          (includeArchived ? const Constant(true) : c.archivedAt.isNull()),
+    )
+    ..orderBy([
+      (c) => OrderingTerm.asc(c.sortOrder),
+      (c) => OrderingTerm.asc(c.createdAt),
+    ]);
 
   @override
   Future<Category?> findById(String id) async => (await (_db.select(

@@ -15,6 +15,9 @@ abstract interface class CategoryRepository {
     bool includeArchived = false,
   });
 
+  /// Active categories of one kind in display order, read once (forms).
+  Future<List<Category>> listActive(CategoryKind kind);
+
   Future<Category?> findById(String id);
 
   /// Whether any transaction (deleted ones included) or habit uses it.
