@@ -123,7 +123,10 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 │                              │
 │ TOTAL SALDO                  │
 │ Rp 1.250.000        (mata)   │  ← ikon Eye Phosphor
-│ ( ↙ Masuk Rp 2,5 jt ) ( ↗ Keluar Rp 1,25 jt )   September ▾ │
+│ ┌ Ringkasan      (September ▾) ┐ │  ← PeriodSummaryCard
+│ │ ↙ Masuk   ↗ Keluar  ± Selisih │ │
+│ │ Rp 2,5 jt Rp 1,25 jt +Rp 1,25 jt│ │  (nominal penuh di app)
+│ └──────────────────────────────┘ │
 │                              │
 │ Kebiasaan hari ini     Semua │
 │  (○)   (●)   (○)   (○)       │  ← HabitChip, scroll horizontal
@@ -145,9 +148,9 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 └──────────────────────────────┘
 ```
 
-- **Sapaan** berdasarkan jam: pagi (04–10), siang (10–15), sore (15–18), malam (18–04), dengan nama dari onboarding. Tanpa nama tetap wajar: "Selamat pagi" saja. Di atasnya tanggal hari ini ("Jumat, 25 September").
+- **Sapaan** berdasarkan jam: pagi (04–10), siang (10–15), sore (15–18), malam (18–04), dengan nama dari onboarding. Tanpa nama tetap wajar: "Selamat pagi" saja. Di atasnya tanggal hari ini ("Jumat, 25 September"). Sapaan, tanggal, label "Hari ini"/"Kemarin", dan bulan default ikut berganti sendiri saat lewat tengah malam atau saat app kembali ke depan (satu sumber "hari ini", review PR #7).
 - **Sembunyikan saldo:** kalau toggle di S-43 aktif, saldo tertutup (`Rp ••••••`, pembaca layar "Saldo disembunyikan") setiap app dibuka. Ikon mata membukanya untuk sesi itu saja, tanpa mengubah pengaturan. S-41 (total dan saldo per dompet) mengikuti keadaan yang sama. Nominal transaksi dan ringkasan bulan tidak disembunyikan.
-- **Periode** ringkasan masuk/keluar/selisih mengikuti pemilih bulan kecil di kanan pill (default bulan ini; pilihan dari bulan transaksi tertua sampai bulan ini). Total saldo selalu saldo saat ini (tidak terpengaruh bulan).
+- **Ringkasan bulan:** kartu 3 kolom Masuk · Keluar · Selisih (`PeriodSummaryCard`, komponen yang sama dengan S-13) di bawah total saldo. Pemilih bulan berupa chip kecil di header kartu (default bulan ini; pilihan dari bulan transaksi tertua sampai bulan ini). Tetap satu baris di lebar 360 dp dan ukuran teks 1,3: nominal mengecil, tidak terpotong. Total saldo selalu saldo saat ini (tidak terpengaruh bulan).
 - **Strip kebiasaan:** hanya kebiasaan yang terjadwal hari ini, urutan: belum selesai dulu. Tap "Semua" → tab Kebiasaan. Kalau tidak ada kebiasaan: kartu kecil "Tambah kebiasaan pertamamu" → S-21.
 - **Kartu insight:** satu saja, dipilih dari aturan sederhana (prioritas): (1) kebiasaan Kurangi dengan biaya bulan ini terbesar, (2) streak kebiasaan Bangun tertinggi ≥ 7, (3) pengeluaran naik > 20% vs periode yang sama bulan lalu. Tidak muncul kalau data < 7 hari.
 - **Transaksi terbaru:** maksimal 10, dikelompokkan per hari. Tap → S-12.
@@ -191,11 +194,12 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 
 ### S-13 Riwayat transaksi
 - Large title "Transaksi". Di bawahnya search bar + baris filter chip: Bulan (September 2026 ▾), Kategori ▾, Dompet ▾.
-- Ringkasan kecil periode: Masuk · Keluar · Selisih untuk bulan yang dipilih, mengikuti filter yang aktif.
-- List per hari (DayHeader + TransactionTile), infinite scroll per bulan: mulai dari bulan yang dipilih, lalu bulan sebelumnya dimuat saat ujung list terlihat, sampai bulan transaksi tertua.
+- **Menjelajah (tanpa teks pencarian):** bulan adalah filter tegas. List dan ringkasan (`PeriodSummaryCard`: Masuk · Keluar · Selisih, mengikuti filter kategori/dompet) hanya bulan terpilih. Di akhir list, dan di empty state bulan kosong, ada tombol "Lihat <bulan sebelumnya>" yang mengganti filter bulan, sampai bulan transaksi tertua. Bulan default = bulan ini, dan ikut berganti saat lewat pergantian bulan selama pengguna belum memilih bulan lain.
+- **Mencari (ada teks):** pencarian meliputi semua bulan. Chip bulan nonaktif dengan label "Semua bulan", ringkasan menghitung semua hasil pencarian, hasil dimuat bertahap per 50. Header hari menampilkan tahun kalau bukan tahun ini.
 - Pencarian mencocokkan catatan, nama kategori kustom, dan nama kategori default dalam bahasa aktif.
+- List per hari (DayHeader + TransactionTile).
 - Swipe kiri pada tile = hapus (dengan undo). Tap = S-12.
-- Empty (setelah filter): "Tidak ada transaksi yang cocok" + "Hapus filter".
+- Empty: bulan kosong → "Belum ada transaksi di <bulan>" + "Lihat <bulan sebelumnya>"; setelah filter/pencarian → "Tidak ada transaksi yang cocok" + "Hapus filter"; belum ada transaksi sama sekali → "Catat transaksi pertama".
 
 ### S-20 Kebiasaan
 
