@@ -714,5 +714,275 @@
   "keepEditingAction": "Lanjut edit",
   "@keepEditingAction": {
     "description": "Closes the confirmation and stays in the form."
+  },
+  "greetingMorning": "Selamat pagi",
+  "@greetingMorning": {
+    "description": "Home greeting, 04.00-10.00."
+  },
+  "greetingMidday": "Selamat siang",
+  "@greetingMidday": {
+    "description": "Home greeting, 10.00-15.00."
+  },
+  "greetingAfternoon": "Selamat sore",
+  "@greetingAfternoon": {
+    "description": "Home greeting, 15.00-18.00."
+  },
+  "greetingNight": "Selamat malam",
+  "@greetingNight": {
+    "description": "Home greeting, 18.00-04.00."
+  },
+  "greetingWithName": "{greeting}, {name}",
+  "@greetingWithName": {
+    "description": "Greeting followed by the user's name.",
+    "placeholders": {
+      "greeting": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dayToday": "Hari ini",
+  "@dayToday": {
+    "description": "Day label for today."
+  },
+  "dayYesterday": "Kemarin",
+  "@dayYesterday": {
+    "description": "Day label for yesterday."
+  },
+  "dateTimeJoin": "{date}, {time}",
+  "@dateTimeJoin": {
+    "description": "A day label followed by a time, e.g. 'Hari ini, 08.12'.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceShow": "Tampilkan saldo",
+  "@balanceShow": {
+    "description": "Tooltip of the eye button while balances are hidden."
+  },
+  "balanceHide": "Sembunyikan saldo",
+  "@balanceHide": {
+    "description": "Tooltip of the eye button while balances show."
+  },
+  "balanceHidden": "Saldo disembunyikan",
+  "@balanceHidden": {
+    "description": "What screen readers say instead of a hidden balance."
+  },
+  "homeRecentTitle": "Transaksi terbaru",
+  "@homeRecentTitle": {
+    "description": "Home section with the latest transactions."
+  },
+  "homeSeeAll": "Lihat semua",
+  "@homeSeeAll": {
+    "description": "Opens the transaction history."
+  },
+  "summaryIncome": "Masuk {amount}",
+  "@summaryIncome": {
+    "description": "Home pill with the month's income.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryExpense": "Keluar {amount}",
+  "@summaryExpense": {
+    "description": "Home pill with the month's expenses.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryNet": "Selisih {amount}",
+  "@summaryNet": {
+    "description": "Home pill with income minus expenses.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryMonthPicker": "Ringkasan {month}, ganti bulan",
+  "@summaryMonthPicker": {
+    "description": "Screen reader label of the month pill on Home.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "monthPickerTitle": "Pilih bulan",
+  "@monthPickerTitle": {
+    "description": "Title of the month picker sheet."
+  },
+  "txAddTitle": "Tambah transaksi",
+  "@txAddTitle": {
+    "description": "Title of the transaction form when adding."
+  },
+  "txEditTitle": "Edit transaksi",
+  "@txEditTitle": {
+    "description": "Title of the transaction form when editing."
+  },
+  "actionClose": "Tutup",
+  "@actionClose": {
+    "description": "Closes a sheet."
+  },
+  "txKindExpense": "Pengeluaran",
+  "@txKindExpense": {
+    "description": "Transaction type toggle."
+  },
+  "txKindIncome": "Pemasukan",
+  "@txKindIncome": {
+    "description": "Transaction type toggle."
+  },
+  "txWallet": "Dompet",
+  "@txWallet": {
+    "description": "Wallet row of a transaction."
+  },
+  "txDate": "Tanggal",
+  "@txDate": {
+    "description": "Date row of a transaction."
+  },
+  "txNote": "Catatan",
+  "@txNote": {
+    "description": "Note row of a transaction."
+  },
+  "txNoteHint": "Misalnya: makan siang kantor",
+  "@txNoteHint": {
+    "description": "Placeholder of the note field."
+  },
+  "txNoteAdd": "Tambah catatan (opsional)",
+  "@txNoteAdd": {
+    "description": "Note row before a note is written."
+  },
+  "txSaveChanges": "Simpan perubahan",
+  "@txSaveChanges": {
+    "description": "Save button when editing a transaction."
+  },
+  "txCategoryAll": "Semua",
+  "@txCategoryAll": {
+    "description": "Chip that opens every category."
+  },
+  "txCategoryPickerTitle": "Pilih kategori",
+  "@txCategoryPickerTitle": {
+    "description": "Title of the category picker sheet."
+  },
+  "txWalletPickerTitle": "Pilih dompet",
+  "@txWalletPickerTitle": {
+    "description": "Title of the wallet picker sheet."
+  },
+  "txDatePickerTitle": "Pilih tanggal",
+  "@txDatePickerTitle": {
+    "description": "Title of the date picker sheet."
+  },
+  "txSaved": "Tersimpan",
+  "@txSaved": {
+    "description": "Snackbar after saving a transaction."
+  },
+  "txDeleted": "Transaksi dihapus",
+  "@txDeleted": {
+    "description": "Snackbar after deleting a transaction."
+  },
+  "txHabitTag": "Kebiasaan",
+  "@txHabitTag": {
+    "description": "Tag on a row created by a habit check-in."
+  },
+  "txFromHabit": "Dari kebiasaan: {name}",
+  "@txFromHabit": {
+    "description": "Detail row of a check-in expense.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "txFromHabitUnknown": "Dari check-in kebiasaan",
+  "@txFromHabitUnknown": {
+    "description": "Detail row of a check-in expense whose habit is gone."
+  },
+  "actionEdit": "Edit",
+  "@actionEdit": {
+    "description": "Opens the form to change an item."
+  },
+  "actionDelete": "Hapus",
+  "@actionDelete": {
+    "description": "Deletes an item."
+  },
+  "txDeleteHabitTitle": "Hapus transaksi ini?",
+  "@txDeleteHabitTitle": {
+    "description": "Title of the confirmation for a check-in expense."
+  },
+  "txDeleteHabitBody": "Ini juga membatalkan check-in {name} hari itu.",
+  "@txDeleteHabitBody": {
+    "description": "Explains that the check-in goes too.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "txDeleteHabitBodyUnknown": "Ini juga membatalkan check-in kebiasaan hari itu.",
+  "@txDeleteHabitBodyUnknown": {
+    "description": "Same, when the habit name is unknown."
+  },
+  "transactionsTitle": "Transaksi",
+  "@transactionsTitle": {
+    "description": "Title of the transaction history."
+  },
+  "txSearchHint": "Cari catatan atau kategori",
+  "@txSearchHint": {
+    "description": "Placeholder of the history search."
+  },
+  "txSearchClear": "Hapus pencarian",
+  "@txSearchClear": {
+    "description": "Clears the history search."
+  },
+  "txFilterCategory": "Kategori",
+  "@txFilterCategory": {
+    "description": "History filter chip."
+  },
+  "txFilterAllCategories": "Semua kategori",
+  "@txFilterAllCategories": {
+    "description": "Removes the category filter."
+  },
+  "txFilterWallet": "Dompet",
+  "@txFilterWallet": {
+    "description": "History filter chip."
+  },
+  "txFilterAllWallets": "Semua dompet",
+  "@txFilterAllWallets": {
+    "description": "Removes the wallet filter."
+  },
+  "txNoMatchTitle": "Tidak ada transaksi yang cocok",
+  "@txNoMatchTitle": {
+    "description": "History empty state with filters."
+  },
+  "txNoMatchBody": "Coba kata lain atau hapus filter.",
+  "@txNoMatchBody": {
+    "description": "History empty state with filters."
+  },
+  "txClearFilters": "Hapus filter",
+  "@txClearFilters": {
+    "description": "Removes every history filter."
+  },
+  "txIncome": "Masuk",
+  "@txIncome": {
+    "description": "Summary label: income of the period."
+  },
+  "txExpense": "Keluar",
+  "@txExpense": {
+    "description": "Summary label: expenses of the period."
+  },
+  "txNet": "Selisih",
+  "@txNet": {
+    "description": "Summary label: income minus expenses."
   }
 }

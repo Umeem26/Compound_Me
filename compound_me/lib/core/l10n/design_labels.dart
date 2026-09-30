@@ -17,6 +17,9 @@ extension DesignLabels on AppLocalizations {
   AsyncErrorLabels get loadErrorLabels =>
       (title: errorLoadTitle, message: errorLoadBody, retry: actionRetry);
 
+  BalanceVisibilityLabels get balanceVisibilityLabels =>
+      (show: balanceShow, hide: balanceHide, hidden: balanceHidden);
+
   DiscardLabels get discardLabels => (
     title: discardTitle,
     message: discardBody,

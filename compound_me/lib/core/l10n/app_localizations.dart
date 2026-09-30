@@ -1081,6 +1081,342 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lanjut edit'**
   String get keepEditingAction;
+
+  /// Home greeting, 04.00-10.00.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat pagi'**
+  String get greetingMorning;
+
+  /// Home greeting, 10.00-15.00.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat siang'**
+  String get greetingMidday;
+
+  /// Home greeting, 15.00-18.00.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat sore'**
+  String get greetingAfternoon;
+
+  /// Home greeting, 18.00-04.00.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat malam'**
+  String get greetingNight;
+
+  /// Greeting followed by the user's name.
+  ///
+  /// In id, this message translates to:
+  /// **'{greeting}, {name}'**
+  String greetingWithName(String greeting, String name);
+
+  /// Day label for today.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari ini'**
+  String get dayToday;
+
+  /// Day label for yesterday.
+  ///
+  /// In id, this message translates to:
+  /// **'Kemarin'**
+  String get dayYesterday;
+
+  /// A day label followed by a time, e.g. 'Hari ini, 08.12'.
+  ///
+  /// In id, this message translates to:
+  /// **'{date}, {time}'**
+  String dateTimeJoin(String date, String time);
+
+  /// Tooltip of the eye button while balances are hidden.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan saldo'**
+  String get balanceShow;
+
+  /// Tooltip of the eye button while balances show.
+  ///
+  /// In id, this message translates to:
+  /// **'Sembunyikan saldo'**
+  String get balanceHide;
+
+  /// What screen readers say instead of a hidden balance.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo disembunyikan'**
+  String get balanceHidden;
+
+  /// Home section with the latest transactions.
+  ///
+  /// In id, this message translates to:
+  /// **'Transaksi terbaru'**
+  String get homeRecentTitle;
+
+  /// Opens the transaction history.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat semua'**
+  String get homeSeeAll;
+
+  /// Home pill with the month's income.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk {amount}'**
+  String summaryIncome(String amount);
+
+  /// Home pill with the month's expenses.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar {amount}'**
+  String summaryExpense(String amount);
+
+  /// Home pill with income minus expenses.
+  ///
+  /// In id, this message translates to:
+  /// **'Selisih {amount}'**
+  String summaryNet(String amount);
+
+  /// Screen reader label of the month pill on Home.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan {month}, ganti bulan'**
+  String summaryMonthPicker(String month);
+
+  /// Title of the month picker sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih bulan'**
+  String get monthPickerTitle;
+
+  /// Title of the transaction form when adding.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah transaksi'**
+  String get txAddTitle;
+
+  /// Title of the transaction form when editing.
+  ///
+  /// In id, this message translates to:
+  /// **'Edit transaksi'**
+  String get txEditTitle;
+
+  /// Closes a sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get actionClose;
+
+  /// Transaction type toggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengeluaran'**
+  String get txKindExpense;
+
+  /// Transaction type toggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pemasukan'**
+  String get txKindIncome;
+
+  /// Wallet row of a transaction.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet'**
+  String get txWallet;
+
+  /// Date row of a transaction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal'**
+  String get txDate;
+
+  /// Note row of a transaction.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan'**
+  String get txNote;
+
+  /// Placeholder of the note field.
+  ///
+  /// In id, this message translates to:
+  /// **'Misalnya: makan siang kantor'**
+  String get txNoteHint;
+
+  /// Note row before a note is written.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah catatan (opsional)'**
+  String get txNoteAdd;
+
+  /// Save button when editing a transaction.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan perubahan'**
+  String get txSaveChanges;
+
+  /// Chip that opens every category.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get txCategoryAll;
+
+  /// Title of the category picker sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori'**
+  String get txCategoryPickerTitle;
+
+  /// Title of the wallet picker sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dompet'**
+  String get txWalletPickerTitle;
+
+  /// Title of the date picker sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih tanggal'**
+  String get txDatePickerTitle;
+
+  /// Snackbar after saving a transaction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tersimpan'**
+  String get txSaved;
+
+  /// Snackbar after deleting a transaction.
+  ///
+  /// In id, this message translates to:
+  /// **'Transaksi dihapus'**
+  String get txDeleted;
+
+  /// Tag on a row created by a habit check-in.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan'**
+  String get txHabitTag;
+
+  /// Detail row of a check-in expense.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari kebiasaan: {name}'**
+  String txFromHabit(String name);
+
+  /// Detail row of a check-in expense whose habit is gone.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari check-in kebiasaan'**
+  String get txFromHabitUnknown;
+
+  /// Opens the form to change an item.
+  ///
+  /// In id, this message translates to:
+  /// **'Edit'**
+  String get actionEdit;
+
+  /// Deletes an item.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get actionDelete;
+
+  /// Title of the confirmation for a check-in expense.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus transaksi ini?'**
+  String get txDeleteHabitTitle;
+
+  /// Explains that the check-in goes too.
+  ///
+  /// In id, this message translates to:
+  /// **'Ini juga membatalkan check-in {name} hari itu.'**
+  String txDeleteHabitBody(String name);
+
+  /// Same, when the habit name is unknown.
+  ///
+  /// In id, this message translates to:
+  /// **'Ini juga membatalkan check-in kebiasaan hari itu.'**
+  String get txDeleteHabitBodyUnknown;
+
+  /// Title of the transaction history.
+  ///
+  /// In id, this message translates to:
+  /// **'Transaksi'**
+  String get transactionsTitle;
+
+  /// Placeholder of the history search.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari catatan atau kategori'**
+  String get txSearchHint;
+
+  /// Clears the history search.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus pencarian'**
+  String get txSearchClear;
+
+  /// History filter chip.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get txFilterCategory;
+
+  /// Removes the category filter.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua kategori'**
+  String get txFilterAllCategories;
+
+  /// History filter chip.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet'**
+  String get txFilterWallet;
+
+  /// Removes the wallet filter.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua dompet'**
+  String get txFilterAllWallets;
+
+  /// History empty state with filters.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada transaksi yang cocok'**
+  String get txNoMatchTitle;
+
+  /// History empty state with filters.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba kata lain atau hapus filter.'**
+  String get txNoMatchBody;
+
+  /// Removes every history filter.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus filter'**
+  String get txClearFilters;
+
+  /// Summary label: income of the period.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk'**
+  String get txIncome;
+
+  /// Summary label: expenses of the period.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar'**
+  String get txExpense;
+
+  /// Summary label: income minus expenses.
+  ///
+  /// In id, this message translates to:
+  /// **'Selisih'**
+  String get txNet;
 }
 
 class _AppLocalizationsDelegate

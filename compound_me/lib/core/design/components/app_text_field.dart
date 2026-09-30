@@ -1,3 +1,4 @@
+import 'package:compound_me/core/design/icons.dart';
 import 'package:compound_me/core/design/theme.dart';
 import 'package:compound_me/core/design/tokens.dart';
 import 'package:compound_me/core/design/typography.dart';
@@ -113,6 +114,74 @@ class AppTextField extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// Search box (S-13): magnifying glass, hint, and a clear button while it
+/// has text. Same fill and radius as [AppTextField], without a label.
+class AppSearchField extends StatelessWidget {
+  const AppSearchField({
+    required this.controller,
+    required this.hintText,
+    required this.clearLabel,
+    required this.onChanged,
+    super.key,
+  });
+
+  final TextEditingController controller;
+  final String hintText;
+  final String clearLabel;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.tokens.colors;
+    const radius = BorderRadius.all(Radius.circular(AppRadius.sm));
+    OutlineInputBorder border(Color color, double width) => OutlineInputBorder(
+      borderRadius: radius,
+      borderSide: BorderSide(color: color, width: width),
+    );
+    return ValueListenableBuilder(
+      valueListenable: controller,
+      builder: (context, value, _) => TextField(
+        controller: controller,
+        onChanged: onChanged,
+        textInputAction: TextInputAction.search,
+        style: AppTextStyles.body.copyWith(color: colors.textPrimary),
+        cursorColor: colors.primary,
+        textAlignVertical: TextAlignVertical.center,
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: AppTextStyles.body.copyWith(color: colors.textTertiary),
+          filled: true,
+          fillColor: colors.surfaceMuted,
+          isDense: true,
+          constraints: const BoxConstraints(minHeight: AppSizes.minTouchTarget),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.space3,
+          ),
+          prefixIcon: Icon(
+            AppIcons.magnifyingGlass,
+            size: AppSizes.iconSm,
+            color: colors.textSecondary,
+          ),
+          suffixIcon: value.text.isEmpty
+              ? null
+              : IconButton(
+                  tooltip: clearLabel,
+                  icon: const Icon(AppIcons.x, size: AppSizes.iconSm),
+                  color: colors.textSecondary,
+                  onPressed: () {
+                    controller.clear();
+                    onChanged('');
+                  },
+                ),
+          border: border(colors.border, 0),
+          enabledBorder: border(colors.surfaceMuted, AppSizes.border),
+          focusedBorder: border(colors.primary, AppSizes.borderSelected),
+        ),
+      ),
     );
   }
 }

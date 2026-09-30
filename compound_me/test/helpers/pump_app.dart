@@ -2,6 +2,7 @@ import 'package:compound_me/app.dart';
 import 'package:compound_me/core/database/app_database.dart';
 import 'package:compound_me/core/preferences/app_preferences.dart';
 import 'package:compound_me/core/router/app_router.dart';
+import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/features/onboarding/application/onboarding_status.dart';
 import 'package:compound_me/features/wallets/data/drift_wallet_repository.dart';
 import 'package:compound_me/features/wallets/domain/wallet.dart';
@@ -24,7 +25,8 @@ const pixel9Ratio = 2.625;
 ///
 /// [seed] fills the database before the onboarding flag is synced with it,
 /// as bootstrap does. Without it, an onboarded app gets the one wallet
-/// onboarding always creates. Returns the in-memory database.
+/// onboarding always creates. [now] fixes the screens' clock (greeting,
+/// "Hari ini"). Returns the in-memory database.
 Future<AppDatabase> pumpApp(
   WidgetTester tester, {
   ThemeMode themeMode = ThemeMode.light,
@@ -33,6 +35,7 @@ Future<AppDatabase> pumpApp(
   Map<String, Object> prefs = const {},
   Future<void> Function(AppDatabase db)? seed,
   double textScale = 1,
+  DateTime? now,
   Size physicalSize = pixel9,
   double devicePixelRatio = pixel9Ratio,
 }) async {
@@ -83,6 +86,7 @@ Future<AppDatabase> pumpApp(
       overrides: [
         appDatabaseProvider.overrideWithValue(database),
         appPreferencesProvider.overrideWithValue(preferences),
+        if (now != null) clockProvider.overrideWithValue(() => now),
       ],
       child: const CompoundMeApp(),
     ),

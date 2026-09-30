@@ -80,6 +80,59 @@ class LocalDate implements Comparable<LocalDate> {
   String toString() => toIso();
 }
 
+/// A local calendar month, like the history filter "September 2026".
+@immutable
+class YearMonth implements Comparable<YearMonth> {
+  /// Out-of-range months roll over into the next or previous year.
+  factory YearMonth(int year, int month) {
+    final normalized = DateTime.utc(year, month);
+    return YearMonth._(normalized.year, normalized.month);
+  }
+
+  const YearMonth._(this.year, this.month);
+
+  /// The local month of [value]; UTC values are converted first.
+  factory YearMonth.of(DateTime value) {
+    final local = value.isUtc ? value.toLocal() : value;
+    return YearMonth._(local.year, local.month);
+  }
+
+  /// Parses the `YYYY-MM` form used in links (03 §1 `?month=2026-09`);
+  /// null when it isn't one.
+  static YearMonth? tryParse(String? text) {
+    final match = RegExp(r'^(\d{4})-(\d{2})$').firstMatch(text ?? '');
+    if (match == null) return null;
+    final month = int.parse(match[2]!);
+    if (month < 1 || month > 12) return null;
+    return YearMonth(int.parse(match[1]!), month);
+  }
+
+  final int year;
+  final int month;
+
+  YearMonth addMonths(int months) => YearMonth(year, month + months);
+
+  /// Whole months from this one to [other]; negative when it is earlier.
+  int monthsUntil(YearMonth other) =>
+      (other.year - year) * 12 + other.month - month;
+
+  String toIso() =>
+      '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}';
+
+  @override
+  int compareTo(YearMonth other) => other.monthsUntil(this);
+
+  @override
+  bool operator ==(Object other) =>
+      other is YearMonth && other.year == year && other.month == month;
+
+  @override
+  int get hashCode => Object.hash(year, month);
+
+  @override
+  String toString() => toIso();
+}
+
 /// Normalizes an instant for storage: UTC with millisecond precision.
 /// Drift stores date times as ISO text and compares them as text, so every
 /// stored value must have the same shape (no microseconds, trailing `Z`).

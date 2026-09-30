@@ -200,13 +200,16 @@ class AppSwitchTile extends StatelessWidget {
 }
 
 /// Form row that opens a picker sheet: "Tipe · Bank ›" (§7.5). Styled like
-/// the text field so forms read as one column of inputs.
+/// the text field so forms read as one column of inputs; [flat] rows have
+/// no fill, for a list of rows between dividers (S-11).
 class RowPicker extends StatelessWidget {
   const RowPicker({
     required this.label,
     required this.value,
     required this.onTap,
     this.leading,
+    this.flat = false,
+    this.valueMuted = false,
     super.key,
   });
 
@@ -214,6 +217,10 @@ class RowPicker extends StatelessWidget {
   final String value;
   final VoidCallback? onTap;
   final Widget? leading;
+  final bool flat;
+
+  /// Shows [value] as a placeholder, e.g. "Tambah catatan".
+  final bool valueMuted;
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +233,7 @@ class RowPicker extends StatelessWidget {
       excludeSemantics: true,
       onTap: onTap,
       child: Material(
-        color: colors.surfaceMuted,
+        color: flat ? colors.surface.withValues(alpha: 0) : colors.surfaceMuted,
         borderRadius: radius,
         child: InkWell(
           onTap: onTap,
@@ -234,8 +241,8 @@ class RowPicker extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: AppSizes.row),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.space4,
+              padding: EdgeInsets.symmetric(
+                horizontal: flat ? AppSpacing.space1 : AppSpacing.space4,
                 vertical: AppSpacing.space2,
               ),
               child: Row(
@@ -254,9 +261,13 @@ class RowPicker extends StatelessWidget {
                   Expanded(
                     child: Text(
                       value,
-                      style: AppTextStyles.bodyStrong.copyWith(
-                        color: colors.textPrimary,
-                      ),
+                      style: valueMuted
+                          ? AppTextStyles.body.copyWith(
+                              color: colors.textTertiary,
+                            )
+                          : AppTextStyles.bodyStrong.copyWith(
+                              color: colors.textPrimary,
+                            ),
                       textAlign: TextAlign.end,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

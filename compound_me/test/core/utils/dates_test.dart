@@ -66,4 +66,28 @@ void main() {
     expect(range.end, DateTime(2027).toUtc());
     expect(range.start.isUtc, isTrue);
   });
+
+  group('YearMonth', () {
+    test('rolls over years and counts months between', () {
+      expect(YearMonth(2026, 13), YearMonth(2027, 1));
+      expect(YearMonth(2026, 1).addMonths(-1), YearMonth(2025, 12));
+      expect(YearMonth(2025, 11).monthsUntil(YearMonth(2026, 2)), 3);
+      expect(YearMonth(2026, 2).monthsUntil(YearMonth(2025, 11)), -3);
+    });
+
+    test('orders months and reads local time', () {
+      expect(YearMonth(2026, 8).compareTo(YearMonth(2026, 9)), lessThan(0));
+      expect(YearMonth(2026, 9).compareTo(YearMonth(2026, 9)), 0);
+      expect(YearMonth(2027, 1).compareTo(YearMonth(2026, 12)), greaterThan(0));
+      expect(YearMonth.of(DateTime(2026, 9, 30, 23)), YearMonth(2026, 9));
+    });
+
+    test('parses the ?month= link form only', () {
+      expect(YearMonth.tryParse('2026-09'), YearMonth(2026, 9));
+      expect(YearMonth(2026, 9).toIso(), '2026-09');
+      expect(YearMonth.tryParse('2026-13'), isNull);
+      expect(YearMonth.tryParse('2026-9'), isNull);
+      expect(YearMonth.tryParse(null), isNull);
+    });
+  });
 }
