@@ -2,8 +2,9 @@
 
   python tool/qa/qa_phase3.py flow-b        # tap count, Tambah to saved
   python tool/qa/qa_phase3.py hide-balance  # hidden at a real relaunch
+  python tool/qa/qa_phase3.py history       # strict month, "Lihat", search
   python tool/qa/qa_phase3.py screens       # light + dark, every new screen
-  python tool/qa/qa_phase3.py layout        # font 1.3 + dark, no overflow
+  python tool/qa/qa_phase3.py layout        # 360 dp + font 1.3 + dark
   python tool/qa/qa_phase3.py all
 
 Needs a running emulator with the debug build installed (see README.md).
@@ -15,12 +16,13 @@ import datetime
 import os
 import re
 import sys
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from adb_driver import (  # noqa: E402
     back, font_scale, force_stop, fresh_start, hide_keyboard, labels,
-    launch, logcat, night, nodes, screenshot, shell, tap, tap_scroll,
+    launch, logcat, night, nodes, screen_width_dp, screenshot, shell, tap, tap_scroll,
     tap_where, type_text)
 
 results = []
@@ -53,27 +55,38 @@ def device_today():
     return datetime.date.fromisoformat(shell('date +%Y-%m-%d').strip())
 
 
-def pick_yesterday():
-    """Opens the date row and picks yesterday in the calendar sheet."""
+MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+
+
+def month_label(date):
+    return f'{MONTHS[date.month - 1]} {date.year}'
+
+
+def previous_month(date):
+    first = date.replace(day=1)
+    return (first - datetime.timedelta(days=1)).replace(day=10)
+
+
+def pick_date(date):
+    """Opens the date row and picks [date] (this month or the one before)."""
     today = device_today()
-    yesterday = today - datetime.timedelta(days=1)
     tap('Tanggal', contains=True)
-    if yesterday.month != today.month:
+    if (date.year, date.month) != (today.year, today.month):
         tap('Bulan sebelumnya')
     # Material day cells read "30, Rabu, 30 September 2026".
-    tap_where(lambda l: l.startswith(f'{yesterday.day}, '), f'day {yesterday.day}')
+    tap_where(lambda l: l.startswith(f'{date.day}, '), f'day {date.day}')
 
 
-def add(keys, category, note=None, income=False, yesterday=False):
-    """One transaction through the form (S-11)."""
+def add(keys, category, note=None, income=False, on=None):
+    """One transaction through the form (S-11), dated [on] if given."""
     tap('Tambah transaksi', wait=1.5)
     if income:
         tap('Pemasukan')
     for key in keys:
         tap(key, wait=0.3)
     tap(category, wait=0.5)
-    if yesterday:
-        pick_yesterday()
+    if on:
+        pick_date(on)
     if note:
         tap('Catatan', contains=True)
         type_text(note)
@@ -82,14 +95,19 @@ def add(keys, category, note=None, income=False, yesterday=False):
 
 
 def seed():
-    """Clean install with Tunai Rp 1.000.000 and four transactions."""
+    """Clean install with Tunai Rp 1.000.000, four transactions of today
+    and yesterday and one of last month."""
+    today = device_today()
+    yesterday = today - datetime.timedelta(days=1)
     fresh_start()
     onboard(['1', '000', '000'])
+    add(['4', '5', '000'], 'Transportasi', note='parkir bulan lalu',
+        on=previous_month(today))
     add(['2', '2', '000'], 'Makanan & minuman', note='kopi susu')
     add(['2', '5', '000'], 'Transportasi')
-    add(['4', '8', '000'], 'Belanja', yesterday=True)
+    add(['4', '8', '000'], 'Belanja', on=yesterday)
     add(['2', '5', '0', '0', '000'], 'Uang saku / gaji', income=True,
-        yesterday=True)
+        on=yesterday)
 
 
 def flow_b():
@@ -184,10 +202,10 @@ def walk(shot):
     tap('Buang')
 
     tap('Tambah transaksi', wait=1.5)
-    tap('Catatan', contains=True, wait=1.5)
+    tap_in_sheet('Catatan', contains=True, wait=1.5)
     shot('add-note')
     hide_keyboard()
-    tap('Tanggal', contains=True)
+    tap_in_sheet('Tanggal', contains=True)
     shot('add-date')
     back()
     tap('Tutup')
@@ -203,12 +221,89 @@ def walk(shot):
     tap('Kategori')
     shot('history-category')
     back()
+    tap_scroll(f'Lihat {month_label(previous_month(device_today()))}', wait=1.5)
+    shot('history-previous')
+    search('parkir')
+    shot('history-search')
+    search('zzz')
+    shot('history-no-match')
+    back()
+
+
+def tap_in_sheet(label, contains=False, wait=1.0):
+    """Taps [label] in a sheet's scrolling middle, scrolling it up first
+    when a narrow screen or large text pushes it below the fold."""
+    for _ in range(4):
+        hits = [n for n in nodes() if (label in n['label'] if contains else n['label'] == label)]
+        if hits:
+            x, y = hits[0]['center']
+            shell(f'input tap {x} {y}')
+            time.sleep(wait)
+            return
+        shell('input swipe 400 1000 400 600 400')
+        time.sleep(0.8)
+    tap(label, contains=contains, wait=wait)
+
+
+def search(text):
     field = [n for n in nodes() if n['cls'].endswith('EditText')][0]
     x, y = field['center']
     shell(f'input tap {x} {y}')
-    type_text('zzz')
+    shell('input keyevent KEYCODE_MOVE_END')
+    for _ in range(12):
+        shell('input keyevent KEYCODE_DEL')
+    type_text(text)
     hide_keyboard()
-    shot('history-no-match')
+    time.sleep(1)
+
+
+def summary_one_row():
+    """Whether Masuk, Keluar and Selisih on screen share one row."""
+    cells = [n for n in nodes()
+             if n['label'].startswith(('Masuk, ', 'Keluar, ', 'Selisih, '))]
+    if len(cells) != 3:
+        return False, f'{len(cells)} kolom'
+    top = max(n['bounds'][1] for n in cells)
+    bottom = min(n['bounds'][3] for n in cells)
+    return top < bottom, ' | '.join(n['label'] for n in cells)
+
+
+def history():
+    """e. History: the month is a strict filter; "Lihat" steps back a month;
+    a search covers every month."""
+    seed()
+    today = device_today()
+    last = previous_month(today)
+    # Belanja Rp 48.000 is dated yesterday, which may be last month.
+    yesterday_here = (today - datetime.timedelta(days=1)).month == today.month
+    this_out = 47000 + (48000 if yesterday_here else 0)
+    last_out = 45000 + (0 if yesterday_here else 48000)
+
+    def rp(value):
+        return 'Rp ' + f'{value:,}'.replace(',', '.')
+
+    tap('Lihat semua', wait=1.5)
+    now = labels()
+    check('e. chip bulan = bulan ini', month_label(today) in now)
+    check('e. transaksi bulan lalu tidak ikut', not any('parkir' in l for l in now))
+    check('e. ringkasan = bulan ini saja', f'Keluar, {rp(this_out)}' in now,
+          next((l for l in now if l.startswith('Keluar, ')), ''))
+    tap_scroll(f'Lihat {month_label(last)}', wait=1.5)
+    now = labels()
+    check('e. "Lihat" mengganti filter ke bulan lalu', month_label(last) in now)
+    check('e. bulan lalu tampil sendiri',
+          any('parkir' in l for l in now) and not any('kopi susu' in l for l in now))
+    check('e. ringkasan bulan lalu', f'Keluar, {rp(last_out)}' in now,
+          next((l for l in now if l.startswith('Keluar, ')), ''))
+    check('e. tidak ada "Lihat" sebelum bulan tertua',
+          not any(l.startswith('Lihat ') and l != 'Lihat semua' for l in now))
+    search('kopi')
+    now = labels()
+    check('e. pencarian: chip "Semua bulan"', 'Semua bulan' in now)
+    check('e. pencarian menemukan bulan ini dari bulan lalu',
+          any('kopi susu' in l for l in now))
+    search('parkir')
+    check('e. pencarian lintas bulan', any('parkir' in l for l in labels()))
     back()
 
 
@@ -230,11 +325,11 @@ def screens(out_dir, docs_names):
             walk(shot)
     finally:
         night(False)
-    check('c. screenshot terang & gelap', len(shots) == 26, f'{len(shots)} file di {out_dir}')
+    check('c. screenshot terang & gelap', len(shots) == 30, f'{len(shots)} file di {out_dir}')
 
 
 def layout(out_dir):
-    """d. Font 1.3 in dark mode: no overflow, no Flutter errors."""
+    """d. 360 dp, font 1.3, dark mode: no overflow, no Flutter errors."""
     os.makedirs(out_dir, exist_ok=True)
     shots = []
 
@@ -243,28 +338,36 @@ def layout(out_dir):
         screenshot(path)
         shots.append(path)
 
+    seed()
     try:
         font_scale(1.3)
         night(True)
-        seed()
+        screen_width_dp(360)
         shell('logcat -c')
+        force_stop()
+        launch()
+        one_row, detail = summary_one_row()
+        check('d. kartu ringkasan satu baris (360 dp, font 1,3)', one_row, detail)
         walk(shot)
         log = logcat()
     finally:
+        screen_width_dp(None)
         font_scale(1.0)
         night(False)
     overflows = len(re.findall('overflowed', log))
     errors = [l for l in log.splitlines() if ' E flutter' in l or 'EXCEPTION CAUGHT' in l]
-    check('d. tanpa overflow (font 1,3, gelap)', overflows == 0, f'{overflows} overflow')
+    check('d. tanpa overflow (360 dp, font 1,3, gelap)', overflows == 0, f'{overflows} overflow')
     check('d. tanpa error Flutter di logcat', not errors, '; '.join(errors[:2]))
-    check('d. screenshot font 1,3', len(shots) == 13, f'{len(shots)} file di {out_dir}')
+    check('d. screenshot font 1,3', len(shots) == 15, f'{len(shots)} file di {out_dir}')
     restored = shell('settings get system font_scale').strip()
     check('d. pengaturan emulator dikembalikan', restored in ('1.0', '1'), f'font_scale {restored}')
 
 
 def main():
+    # Amounts carry U+2212 (−), which a Windows console can't print.
+    sys.stdout.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument('check', choices=['flow-b', 'hide-balance', 'screens', 'layout', 'all'])
+    parser.add_argument('check', choices=['flow-b', 'hide-balance', 'history', 'screens', 'layout', 'all'])
     parser.add_argument('--out', default=os.path.join('build', 'qa', 'phase3'))
     parser.add_argument('--docs', action='store_true',
                         help='name screenshots phase-3-<screen>-<theme>.png for docs/v2/screens')
@@ -273,6 +376,8 @@ def main():
         flow_b()
     if args.check in ('hide-balance', 'all'):
         hide_balance()
+    if args.check in ('history', 'all'):
+        history()
     if args.check in ('screens', 'all'):
         screens(args.out, args.docs)
     if args.check in ('layout', 'all'):

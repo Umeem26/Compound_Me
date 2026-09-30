@@ -59,6 +59,7 @@ def nodes():
         label = attrs.get('content-desc') or attrs.get('text') or ''
         found.append({'label': html.unescape(label), 'cls': attrs.get('class', ''),
                       'center': ((x1 + x2) // 2, (y1 + y2) // 2),
+                      'bounds': (x1, y1, x2, y2),
                       'checked': attrs.get('checked') == 'true',
                       'selected': attrs.get('selected') == 'true'})
     return found
@@ -156,6 +157,17 @@ def fresh_start():
 
 def night(on):
     shell('cmd uimode night ' + ('yes' if on else 'no'))
+    time.sleep(1.5)
+
+
+def screen_width_dp(dp):
+    """Narrows the screen to [dp] logical pixels (None resets it)."""
+    if dp is None:
+        shell('wm size reset')
+    else:
+        density = int(re.search(r'(\d+)', shell('wm density')).group(1))
+        height = int(re.findall(r'(\d+)x(\d+)', shell('wm size'))[0][1])
+        shell(f'wm size {round(dp * density / 160)}x{height}')
     time.sleep(1.5)
 
 

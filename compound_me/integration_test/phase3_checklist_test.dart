@@ -8,6 +8,7 @@ import 'package:compound_me/app.dart';
 import 'package:compound_me/bootstrap/app_bootstrap.dart';
 import 'package:compound_me/core/database/app_database.dart';
 import 'package:compound_me/core/design/design.dart';
+import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
 import 'package:compound_me/features/transactions/domain/transaction_entry.dart';
 import 'package:compound_me/features/wallets/data/drift_wallet_repository.dart';
@@ -45,14 +46,54 @@ Future<void> _tapIfShown(WidgetTester tester, String text) async {
   }
 }
 
-Future<AppBootstrap> _start(WidgetTester tester) async {
+/// [clock] replaces the app's clock, e.g. one that runs from 23:59:57 so
+/// the real midnight timer fires within seconds.
+Future<AppBootstrap> _start(
+  WidgetTester tester, {
+  DateTime Function()? clock,
+}) async {
   final bootstrap = await AppBootstrap.load();
   await tester.pumpWidget(
-    ProviderScope(overrides: bootstrap.overrides, child: const CompoundMeApp()),
+    ProviderScope(
+      overrides: [
+        ...bootstrap.overrides,
+        if (clock != null) clockProvider.overrideWithValue(clock),
+      ],
+      child: const CompoundMeApp(),
+    ),
   );
   await tester.pumpAndSettle();
   return bootstrap;
 }
+
+/// A clock that starts at [start] and then runs with real time.
+DateTime Function() _runningFrom(DateTime start) {
+  final elapsed = Stopwatch()..start();
+  return () => start.add(elapsed.elapsed);
+}
+
+/// Pumps real time on the device, so real timers get to fire.
+Future<void> _wait(WidgetTester tester, Duration duration) async {
+  final end = DateTime.now().add(duration);
+  while (DateTime.now().isBefore(end)) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}
+
+String _monthName(int month) => const [
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember',
+][month - 1];
 
 /// Unmounts the app so its streams close, then closes its database. The
 /// next [_start] reads everything again, like opening the app anew.
@@ -255,6 +296,113 @@ void main() {
 
     app = await _start(tester);
     expect(_balance('Rp 263.000'), findsOneWidget, reason: 'setting off');
+    await _stop(tester, app);
+  });
+
+  testWidgets('f. Riwayat: bulan filter tegas, "Lihat" bulan sebelumnya, '
+      'pencarian semua bulan', (tester) async {
+    var app = await _start(tester);
+    final db = app.database;
+    final now = DateTime.now();
+    final previous = DateTime(now.year, now.month - 1, 10, 12);
+    final cash = (await (db.select(
+      db.wallets,
+    )..where((w) => w.name.equals('Tunai'))).getSingle()).id;
+    final transport = await (db.select(
+      db.categories,
+    )..where((c) => c.nameKey.equals('catTransport'))).getSingle();
+    await DriftTransactionRepository(db).add(
+      TransactionDraft(
+        kind: TransactionKind.expense,
+        amount: 45000,
+        walletId: cash,
+        categoryId: transport.id,
+        occurredAt: previous,
+        note: 'parkir bulan lalu',
+      ),
+    );
+    await _stop(tester, app);
+
+    app = await _start(tester);
+    await _tap(tester, find.text('Lihat semua'));
+    final thisMonth = '${_monthName(now.month)} ${now.year}';
+    final lastMonth = '${_monthName(previous.month)} ${previous.year}';
+    expect(find.widgetWithText(AppChip, thisMonth), findsOneWidget);
+    expect(find.text('−Rp 45.000'), findsNothing, reason: 'strict month');
+    expect(find.text('−Rp 22.000'), findsWidgets);
+
+    await _tap(tester, find.text('Lihat $lastMonth'));
+    expect(find.widgetWithText(AppChip, lastMonth), findsOneWidget);
+    await _waitFor(tester, find.text('−Rp 45.000'));
+    expect(find.text('−Rp 22.000'), findsNothing);
+
+    await tester.enterText(find.byType(TextField), 'parkir');
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(AppChip, 'Semua bulan'), findsOneWidget);
+    expect(find.text('Hasil pencarian'), findsOneWidget);
+    await _waitFor(tester, find.bySemanticsLabel('Keluar, Rp 45.000'));
+    await _stop(tester, app);
+  });
+
+  testWidgets('g. Lewat tengah malam akhir bulan: label dan bulan default '
+      'ikut berganti (timer nyata, jam dipercepat)', (tester) async {
+    final now = DateTime.now();
+    // The last day of this month, three seconds before midnight.
+    final lastDay = DateTime(now.year, now.month + 1, 0);
+    final start = DateTime(
+      lastDay.year,
+      lastDay.month,
+      lastDay.day,
+      23,
+      59,
+      57,
+    );
+    var app = await _start(tester);
+    final db = app.database;
+    final cash = (await (db.select(
+      db.wallets,
+    )..where((w) => w.name.equals('Tunai'))).getSingle()).id;
+    final food = await (db.select(
+      db.categories,
+    )..where((c) => c.nameKey.equals('catFood'))).getSingle();
+    await DriftTransactionRepository(db).add(
+      TransactionDraft(
+        kind: TransactionKind.expense,
+        amount: 11000,
+        walletId: cash,
+        categoryId: food.id,
+        occurredAt: DateTime(start.year, start.month, start.day, 12),
+        note: 'uji tengah malam',
+      ),
+    );
+    await _stop(tester, app);
+
+    app = await _start(tester, clock: _runningFrom(start));
+    expect(find.text('Hari ini'), findsOneWidget);
+    expect(find.text(_monthName(start.month)), findsOneWidget);
+
+    await _wait(tester, const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    final next = DateTime(start.year, start.month + 1);
+    expect(find.text('Kemarin'), findsOneWidget);
+    expect(find.text('Hari ini'), findsNothing);
+    expect(find.text(_monthName(next.month)), findsOneWidget);
+    expect(find.bySemanticsLabel('Keluar, Rp 0'), findsOneWidget);
+    await _stop(tester, app);
+  });
+
+  testWidgets('h. App kembali ke depan setelah semalam: sapaan dan label '
+      'mengejar jam', (tester) async {
+    final now = DateTime.now();
+    var fake = DateTime(now.year, now.month, now.day, 21);
+    final app = await _start(tester, clock: () => fake);
+    expect(find.text('Selamat malam, Raka'), findsOneWidget);
+
+    fake = fake.add(const Duration(hours: 11));
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    expect(find.text('Selamat pagi, Raka'), findsOneWidget);
     await _stop(tester, app);
   });
 }

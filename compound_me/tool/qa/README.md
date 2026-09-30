@@ -40,16 +40,19 @@ repository URL is asserted in
 ## Phase 3
 
 ```sh
-# a-e: clean data, Flow B tap count ("kopi Rp 22.000" with the last
+# a-h: clean data, Flow B tap count ("kopi Rp 22.000" with the last
 # category chosen), delete + undo, edit moving wallets, hide balance at
-# launch. Prints "QA Flow B: ..." with the tap count.
+# launch, strict month + "Lihat" + search in history, midnight at the end
+# of a month (a clock started at 23:59:57, so the real timer fires) and
+# returning to the app. Prints "QA Flow B: ..." with the tap count.
 flutter test integration_test/phase3_checklist_test.dart -d emulator-5554
 
 flutter build apk --debug
 adb install -r build/app/outputs/flutter-apk/app-debug.apk
 
 # Flow B again on the installed app, hide balance across real relaunches
-# (force stop), light + dark screenshots, font 1.3 overflow check.
+# (force stop), history month/search, light + dark screenshots, and the
+# layout at 360 dp + font 1.3 (summary card in one row, no overflow).
 python tool/qa/qa_phase3.py all
 
 # The screenshots for docs/v2/screens (font 1.0, light and dark):
