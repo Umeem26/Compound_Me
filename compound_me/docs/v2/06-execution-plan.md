@@ -220,6 +220,9 @@ Hal yang hanya bisa dinilai manusia di HP sungguhan. Semua checklist fase lain s
 - [ ] Rasa haptic check-in kebiasaan (getar ringan saat ring terisi, tidak ada getar saat dibatalkan) di HP sungguhan (Fase 4).
 - [ ] Tap cepat berkali-kali pada HabitChip dan tombol check di HP sungguhan: jumlah transaksi sama dengan jumlah check-in, saldo benar (Fase 4).
 - [ ] Tombol back saat keyboard terbuka otomatis di form baru (kebiasaan, dompet) di HP sungguhan: back pertama menutup keyboard, bukan form. Di emulator lewat adb, back langsung menutup form (Fase 4, juga form dompet Fase 2).
+- [ ] Wawasan dengan data sungguhan (Fase 5): setelah ≥ 7 hari memakai app, hitung satu kebiasaan Kurangi sendiri (kali per minggu × biaya × 52) dan cocokkan dengan baris di Wawasan dan simulator. Data contoh hanya membuktikan rumusnya.
+- [ ] Slider simulator dan donut Wawasan di HP sungguhan (Fase 5): geser 10% per langkah terasa pas dengan haptic ringan, segmen donut yang kecil mudah di-tap dengan jari.
+- [ ] TalkBack di Wawasan dan sheet simulator (Fase 5): slider terbaca "50 persen", tren terbaca "naik 12 poin dibanding bulan lalu", disclaimer terbaca.
 
 **Checklist kamu (uji pengguna kecil):**
 - [ ] Minta 3–5 teman (persona target) mencoba tanpa penjelasan: onboarding, catat kopi, cari kebiasaan termahal. Catat di mana mereka ragu.
@@ -309,3 +312,10 @@ Layar <S-xx> belum sesuai docs/v2/02-design-system.md: <sebutkan: ukuran judul t
 | 4 | S-22 dibuka dari S-12 lewat `go` ke tab Kebiasaan (back kembali ke daftar kebiasaan), bukan `push` lintas tab | Detail kebiasaan tinggal di cabang Kebiasaan; perilaku back konsisten | Disetujui (PR #8) |
 | 4 | Proyeksi setahun S-22 memakai format ringkas ("±Rp 325 rb") karena angkanya perkiraan; biaya bulan ini tetap nominal penuh | 03 S-22 memakai "±Rp 4,0 jt" | Disetujui (PR #8) |
 | 4 | Hapus kebiasaan (tanpa check-in) punya urungkan (`undoDelete`), sama seperti dompet & kategori | 03 §4 | Disetujui (PR #8) |
+| 5 | "Hari data" untuk Wawasan = hari sejak transaksi atau check-in pertama sampai hari ini (hari ini ikut dihitung), bukan jumlah hari yang punya catatan | PRD hanya menyebut "data < 7 hari"; menghitung hari berbeda yang dicatat akan menghukum hari yang terlewat | Perlu review |
+| 5 | Hasil simulator S-31 dan 1/3/5 tahun memakai nominal penuh (±Rp 1.950.000), 1/3/5 tahun sebagai tiga baris, bukan tiga kolom | Angka harus bisa dicocokkan dengan hitungan manual; tiga nominal penuh tidak muat di 360 dp / ukuran teks 1,3. Format ringkas tetap dipakai untuk proyeksi setahun di daftar (S-22, S-30) | Perlu review |
+| 5 | Disclaimer simulator dan tombol "Atur batas mingguan" ada di luar area gulir sheet; tombol mengisi batas = rata-rata per minggu × (1 − persen) dibulatkan, dengan snackbar Urungkan, dan tersembunyi tanpa check-in 4 minggu terakhir | "Disclaimer selalu terlihat" (checklist); batas tanpa pola tidak bermakna | Perlu review |
+| 5 | Kartu insight Beranda: streak mingguan dihitung 7 hari per minggu (1 minggu memenuhi "≥ 7"); perbandingan pengeluaran memakai tanggal 1 sampai hari ini di kedua bulan | 03 S-10 tidak menyebut satuan streak mingguan atau batas periode | Perlu review |
+| 5 | Tap kategori di Wawasan membuka S-13 lewat rute `/insights/transactions` di cabang Wawasan | `push` lintas tab bermasalah (keputusan Fase 4); dengan rute sendiri, back kembali ke Wawasan | Perlu review |
+| 5 | Kebiasaan Kurangi yang diarsipkan hanya tampil di Wawasan kalau bulan itu masih punya biaya; kebiasaan Bangun diarsipkan tidak tampil | Daftar harus cocok dengan angka kartu utama | Perlu review |
+| 5 | Data contoh 60 hari: baris di Pengaturan hanya di bawah `kDebugMode`, dibuat lewat repository dengan jam per hari (bukan SQL langsung), deterministik (kopi Sen/Rab/Jum, Rp 25.000), menolak diisi dua kali kalau kebiasaan "Kopi" sudah ada | Tidak boleh ada di rilis; angka checklist (Rp 1,95 jt) harus bisa diulang | Perlu review |

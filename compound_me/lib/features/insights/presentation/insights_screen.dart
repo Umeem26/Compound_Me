@@ -62,17 +62,23 @@ class _InsightsScreenState extends ConsumerState<InsightsScreen> {
 
     return CustomScrollView(
       slivers: [
-        AppLargeTitle(
-          title: l10n.navInsights,
-          actions: [
-            if (enough)
-              PickerPill(
-                label: monthLabel,
-                semanticLabel: l10n.summaryMonthPicker(monthLabel),
-                onTap: () => unawaited(_pickMonth(month)),
+        AppLargeTitle(title: l10n.navInsights),
+        // Under the title, not in the app bar: next to the small centered
+        // title it would overlap at large text sizes.
+        if (enough)
+          SliverPadding(
+            padding: _MonthSlivers._pad,
+            sliver: SliverToBoxAdapter(
+              child: Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: PickerPill(
+                  label: monthLabel,
+                  semanticLabel: l10n.insightsMonthPicker(monthLabel),
+                  onTap: () => unawaited(_pickMonth(month)),
+                ),
               ),
-          ],
-        ),
+            ),
+          ),
         ...switch (days) {
           AsyncData(:final value) when value < InsightsCalculator.minDays => [
             SliverFillRemaining(
@@ -207,6 +213,21 @@ abstract final class _MonthSlivers {
   ];
 }
 
+/// The quiet line under a habit's name in S-30.
+class _Detail extends StatelessWidget {
+  const _Detail(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Text(
+    text,
+    style: AppTextStyles.bodySmall.tabular.copyWith(
+      color: context.tokens.colors.textSecondary,
+    ),
+  );
+}
+
 class _Muted extends StatelessWidget {
   const _Muted(this.text);
 
@@ -318,21 +339,21 @@ class _ReduceList extends StatelessWidget {
     return AppListGroup(
       children: [
         for (final item in items)
-          AppListTile(
-            leading: IconBadge(
-              iconKey: item.habit.iconKey,
-              colorKey: item.habit.colorKey,
-            ),
+          InsightHabitTile(
+            iconKey: item.habit.iconKey,
+            colorKey: item.habit.colorKey,
             title: item.habit.name,
-            subtitle: l10n.insightsReduceSubtitle(
-              perWeekText(l10n, item.perWeek),
-              formatRupiah(
-                item.annualProjection,
-                compact: true,
-                localeCode: l10n.localeName,
+            value: formatRupiah(item.spent),
+            detail: _Detail(
+              l10n.insightsReduceSubtitle(
+                perWeekText(l10n, item.perWeek),
+                formatRupiah(
+                  item.annualProjection,
+                  compact: true,
+                  localeCode: l10n.localeName,
+                ),
               ),
             ),
-            value: formatRupiah(item.spent),
             onTap: () => unawaited(showSimulatorSheet(context, item.habit.id)),
           ),
       ],
@@ -353,15 +374,17 @@ class _BuildList extends StatelessWidget {
     return AppListGroup(
       children: [
         for (final item in items)
-          AppListTile(
-            leading: IconBadge(
-              iconKey: item.habit.iconKey,
-              colorKey: item.habit.colorKey,
-            ),
+          InsightHabitTile(
+            iconKey: item.habit.iconKey,
+            colorKey: item.habit.colorKey,
             title: item.habit.name,
-            subtitle: l10n.insightsConsistency,
             value: l10n.percentValue((item.consistency * 100).round()),
-            trailing: _trend(l10n, item.trendPoints),
+            detail: Row(
+              children: [
+                Expanded(child: _Detail(l10n.insightsConsistency)),
+                ?_trend(l10n, item.trendPoints),
+              ],
+            ),
             onTap: () => context.go(AppRoutes.habit(item.habit.id)),
           ),
       ],

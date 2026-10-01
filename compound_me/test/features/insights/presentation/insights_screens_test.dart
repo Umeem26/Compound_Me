@@ -73,7 +73,7 @@ void main() {
     // 11 coffees in September (Mon, Wed, Fri up to the 25th) at Rp 25.000.
     expect(find.text('Kebiasaan yang dikurangi'), findsOne);
     expect(find.text('Rp 275.000'), findsOneWidget);
-    expect(find.text('±3,0x/minggu · Rp 3,9 jt/th'), findsOneWidget);
+    expect(find.text('±3,0x/minggu\nProyeksi Rp 3,9 jt/th'), findsOneWidget);
     expect(find.text('Kebiasaan yang dibangun'), findsOne);
     await _scrollTo(tester, find.text('Pengeluaran per kategori'));
     expect(find.byType(CategoryDonut), findsOne);
@@ -219,9 +219,8 @@ void main() {
 
     // At this size the sheet covers the screen; close it, then check the
     // rest of the screen.
-    Navigator.of(
-      tester.element(find.text('Simulasi, bukan saran keuangan.')),
-    ).pop();
+    Navigator.of(tester.element(find.text('Simulasi, bukan saran keuangan.')))
+        .pop();
     await tester.pumpAndSettle();
     await _scrollTo(tester, find.text('Pengeluaran per kategori'));
     await _scrollTo(tester, find.byType(CategoryDonut));

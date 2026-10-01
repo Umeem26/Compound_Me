@@ -8,7 +8,6 @@ import 'package:compound_me/features/habits/domain/habit.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
 import 'package:compound_me/features/transactions/domain/transaction_entry.dart';
 import 'package:compound_me/features/wallets/data/drift_wallet_repository.dart';
-import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'debug_sample_data.g.dart';

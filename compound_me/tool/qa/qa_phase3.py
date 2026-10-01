@@ -39,7 +39,7 @@ def onboard(balance_keys):
     tap('Lanjut')
     tap('Lewati')
     type_text('Raka')
-    hide_keyboard()
+    # Back would leave this page instead of closing the keyboard.
     tap('Lanjut')
     tap_scroll('Saldo awal, Rp 0')
     for key in balance_keys:

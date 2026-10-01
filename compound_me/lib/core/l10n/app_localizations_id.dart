@@ -1059,7 +1059,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String insightsReduceSubtitle(String perWeek, String yearly) {
-    return '±${perWeek}x/minggu · Rp $yearly/th';
+    return '±${perWeek}x/minggu\nProyeksi Rp $yearly/th';
   }
 
   @override
@@ -1224,4 +1224,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get debugSampleExists => 'Data contoh sudah ada.';
+
+  @override
+  String insightsMonthPicker(String month) {
+    return 'Wawasan $month, ganti bulan';
+  }
 }

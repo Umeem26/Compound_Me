@@ -1088,7 +1088,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String insightsReduceSubtitle(String perWeek, String yearly) {
-    return '±${perWeek}x/week · Rp $yearly/yr';
+    return '±${perWeek}x/week\nProjected Rp $yearly/yr';
   }
 
   @override
@@ -1254,4 +1254,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get debugSampleExists => 'Sample data is already there.';
+
+  @override
+  String insightsMonthPicker(String month) {
+    return 'Insights for $month, change month';
+  }
 }

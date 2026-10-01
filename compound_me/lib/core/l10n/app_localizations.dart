@@ -1991,7 +1991,7 @@ abstract class AppLocalizations {
   /// Pace and yearly projection of a reduce habit.
   ///
   /// In id, this message translates to:
-  /// **'±{perWeek}x/minggu · Rp {yearly}/th'**
+  /// **'±{perWeek}x/minggu\nProyeksi Rp {yearly}/th'**
   String insightsReduceSubtitle(String perWeek, String yearly);
 
   /// Section title of build habits.
@@ -2239,6 +2239,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Data contoh sudah ada.'**
   String get debugSampleExists;
+
+  /// Spoken label of the month picker in Insights.
+  ///
+  /// In id, this message translates to:
+  /// **'Wawasan {month}, ganti bulan'**
+  String insightsMonthPicker(String month);
 }
 
 class _AppLocalizationsDelegate

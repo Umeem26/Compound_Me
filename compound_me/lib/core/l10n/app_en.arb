@@ -315,7 +315,7 @@
   "insightsNoReduceBody": "Add one to see what it costs in a year.",
   "insightsNoReduceAction": "Add a habit",
   "insightsReduceSection": "Habits you cut back",
-  "insightsReduceSubtitle": "±{perWeek}x/week · Rp {yearly}/yr",
+  "insightsReduceSubtitle": "±{perWeek}x/week\nProjected Rp {yearly}/yr",
   "insightsBuildSection": "Habits you build",
   "insightsConsistency": "Consistency",
   "percentValue": "{percent}%",
@@ -356,5 +356,6 @@
   "debugSampleTitle": "Fill 60 days of sample data",
   "debugSampleHint": "Debug builds only. Adds sample habits, check-ins and transactions.",
   "debugSampleDone": "Sample data added.",
-  "debugSampleExists": "Sample data is already there."
+  "debugSampleExists": "Sample data is already there.",
+  "insightsMonthPicker": "Insights for {month}, change month"
 }

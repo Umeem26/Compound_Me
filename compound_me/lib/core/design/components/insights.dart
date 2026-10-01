@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:compound_me/core/design/components/app_card.dart';
+import 'package:compound_me/core/design/components/pickers.dart';
 import 'package:compound_me/core/design/icons.dart';
 import 'package:compound_me/core/design/theme.dart';
 import 'package:compound_me/core/design/tokens.dart';
@@ -165,6 +166,8 @@ class CategoryDonut extends StatelessWidget {
             SizedBox.square(
               dimension: centerRadius * 2 - AppSpacing.space4,
               child: FittedBox(
+                // Shrinks long totals, never blows short ones up.
+                fit: BoxFit.scaleDown,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -359,12 +362,16 @@ class PercentSlider extends StatelessWidget {
     required this.value,
     required this.onChanged,
     required this.valueLabel,
+    required this.semanticLabel,
     super.key,
   });
 
   /// 0–100, a multiple of 10.
   final int value;
   final ValueChanged<int> onChanged;
+
+  /// What the slider is for, e.g. "Kurangi".
+  final String semanticLabel;
 
   /// Spoken form of a value, e.g. "50 persen".
   final String Function(int value) valueLabel;
@@ -390,13 +397,105 @@ class PercentSlider extends StatelessWidget {
           ),
           showValueIndicator: ShowValueIndicator.never,
         ),
-        child: Slider(
-          value: value.toDouble(),
-          max: 100,
-          divisions: 10,
-          label: valueLabel(value),
-          semanticFormatterCallback: (v) => valueLabel(v.round()),
-          onChanged: (v) => onChanged(v.round()),
+        child: Semantics(
+          label: semanticLabel,
+          child: Slider(
+            value: value.toDouble(),
+            max: 100,
+            divisions: 10,
+            semanticFormatterCallback: (v) => valueLabel(v.round()),
+            onChanged: (v) => onChanged(v.round()),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A habit row of S-30: icon, name and a figure on one line, a detail line
+/// under them across the whole width. Unlike a plain list tile, a big
+/// figure and large text never squeeze the name into broken words (text
+/// scale 1,3 on 360 dp).
+class InsightHabitTile extends StatelessWidget {
+  const InsightHabitTile({
+    required this.iconKey,
+    required this.colorKey,
+    required this.title,
+    required this.value,
+    required this.detail,
+    required this.onTap,
+    super.key,
+  });
+
+  final String iconKey;
+  final String colorKey;
+  final String title;
+
+  /// The figure on the right of the name, e.g. "Rp 310.000" or "83%".
+  final String value;
+
+  /// Under the name and figure, e.g. a pace line or a [TrendLabel].
+  final Widget detail;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.tokens.colors;
+    return Semantics(
+      container: true,
+      child: InkWell(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: AppSizes.row),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.space4,
+              vertical: AppSpacing.space2,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconBadge(iconKey: iconKey, colorKey: colorKey),
+                const SizedBox(width: AppSpacing.space3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              title,
+                              style: AppTextStyles.body.copyWith(
+                                color: colors.textPrimary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.space2),
+                          Text(
+                            value,
+                            style: AppTextStyles.bodyStrong.tabular.copyWith(
+                              color: colors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      detail,
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.space1),
+                ExcludeSemantics(
+                  child: Icon(
+                    AppIcons.caretRight,
+                    size: AppSizes.iconSm,
+                    color: colors.textTertiary,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

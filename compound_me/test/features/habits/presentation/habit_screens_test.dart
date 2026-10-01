@@ -493,7 +493,7 @@ void main() {
       await _tap(tester, find.text('Dari kebiasaan: Kopi'));
       await _scrollTo(tester, find.text('Check-in terakhir'));
       expect(find.text('Biaya bulan ini'), findsOneWidget);
-      expect(find.text('Simulasikan'), findsNothing, reason: 'phase 5');
+      expect(find.text('Simulasikan'), findsOneWidget);
     });
   });
 

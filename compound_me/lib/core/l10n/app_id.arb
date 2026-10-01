@@ -1494,7 +1494,7 @@
   "@insightsReduceSection": {
     "description": "Section title of reduce habits."
   },
-  "insightsReduceSubtitle": "±{perWeek}x/minggu · Rp {yearly}/th",
+  "insightsReduceSubtitle": "±{perWeek}x/minggu\nProyeksi Rp {yearly}/th",
   "@insightsReduceSubtitle": {
     "description": "Pace and yearly projection of a reduce habit.",
     "placeholders": {
@@ -1761,5 +1761,14 @@
   "debugSampleExists": "Data contoh sudah ada.",
   "@debugSampleExists": {
     "description": "Debug-only snackbar."
+  },
+  "insightsMonthPicker": "Wawasan {month}, ganti bulan",
+  "@insightsMonthPicker": {
+    "description": "Spoken label of the month picker in Insights.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
   }
 }

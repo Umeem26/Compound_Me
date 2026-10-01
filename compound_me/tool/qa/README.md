@@ -90,3 +90,29 @@ python tool/qa/qa_phase4.py layout    # 360 dp + font 1.3 + dark
 On the emulator, pressing back while a form's autofocused keyboard is up
 closes the form (the Phase 2 wallet form does the same), so the scripts
 scroll above the keyboard instead. Fase 6 checks this on a real phone.
+
+## Phase 5
+
+```sh
+# Fresh app: Wawasan under a week of data, "0 dari 7 hari" (light).
+# Clears the app's data.
+python tool/qa/qa_phase5.py empty --docs --out ../docs/v2/screens
+
+# a-e: clean data and "3 dari 7 hari" after one expense two days back,
+# the debug sample data (60 days, only in debug builds) from Settings and
+# a second press refused, Wawasan numbers against the database for this
+# and last month, the simulator (50% of coffee 3x/week x Rp 25.000 is
+# Rp 1.950.000 a year, 1/3/5 years with 5% interest, disclaimer in view at
+# every step), the Home insight card. Leaves the sample data on the device.
+flutter drive --keep-app-running --driver=test_driver/integration_test.dart   --target=integration_test/phase5_checklist_test.dart -d emulator-5554
+
+flutter build apk --debug
+adb install -r build/app/outputs/flutter-apk/app-debug.apk
+
+# S-30, S-31, the Home card and S-22 in light mode, S-30 and S-31 in dark
+python tool/qa/qa_phase5.py screens --docs --out ../docs/v2/screens
+python tool/qa/qa_phase5.py layout    # 360 dp + font 1.3 + dark
+```
+
+S-30 is shot for last month: it is complete whatever day of the month the
+emulator is on.

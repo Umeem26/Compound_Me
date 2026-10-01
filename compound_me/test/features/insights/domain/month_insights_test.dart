@@ -82,8 +82,7 @@ List<HabitLog> _logs(String habit, Iterable<String> dates) => [
     HabitLog(habitId: habit, date: LocalDate.parse(d), count: 1),
 ];
 
-String _iso(int month, int day) =>
-    '2026-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
+String _iso(int month, int day) => LocalDate(2026, month, day).toIso();
 
 void main() {
   group('MonthInsightsBuilder', () {

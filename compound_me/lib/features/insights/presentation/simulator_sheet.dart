@@ -172,6 +172,7 @@ class _SimulatorSheetState extends ConsumerState<SimulatorSheet> {
                   PercentSlider(
                     value: _reduction,
                     valueLabel: l10n.simPercentSpoken,
+                    semanticLabel: l10n.simReduceLabel,
                     onChanged: (v) {
                       if (v != _reduction) {
                         unawaited(HapticFeedback.selectionClick());
