@@ -1039,7 +1039,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String habitCostYear(String amount) {
-    return 'About $amount a year at this pace';
+    return 'About Rp $amount a year at this pace';
   }
 
   @override

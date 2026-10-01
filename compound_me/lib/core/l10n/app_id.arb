@@ -1411,7 +1411,7 @@
   "@habitCostMonth": {
     "description": "Reduce habit cost card."
   },
-  "habitCostYear": "Proyeksi setahun ±{amount} dengan pola sekarang",
+  "habitCostYear": "Proyeksi setahun ±Rp {amount} dengan pola sekarang",
   "@habitCostYear": {
     "description": "Yearly projection of a reduce habit.",
     "placeholders": {

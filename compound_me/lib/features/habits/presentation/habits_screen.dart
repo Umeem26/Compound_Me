@@ -168,6 +168,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                   trailing: ReorderableDragStartListener(
                     index: index,
                     child: Semantics(
+                      container: true,
                       label: l10n.walletsReorder(habit.name),
                       child: SizedBox.square(
                         dimension: AppSizes.minTouchTarget,

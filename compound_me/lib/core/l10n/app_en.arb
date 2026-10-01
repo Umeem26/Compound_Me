@@ -302,7 +302,7 @@
   "monthPrevious": "Previous month",
   "monthNext": "Next month",
   "habitCostMonth": "Cost this month",
-  "habitCostYear": "About {amount} a year at this pace",
+  "habitCostYear": "About Rp {amount} a year at this pace",
   "habitRecentTitle": "Latest check-ins",
   "habitRecentEmpty": "No check-ins yet.",
   "habitArchivedBanner": "This habit is archived."

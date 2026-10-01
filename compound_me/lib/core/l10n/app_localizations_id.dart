@@ -1009,7 +1009,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String habitCostYear(String amount) {
-    return 'Proyeksi setahun ±$amount dengan pola sekarang';
+    return 'Proyeksi setahun ±Rp $amount dengan pola sekarang';
   }
 
   @override

@@ -1913,7 +1913,7 @@ abstract class AppLocalizations {
   /// Yearly projection of a reduce habit.
   ///
   /// In id, this message translates to:
-  /// **'Proyeksi setahun ±{amount} dengan pola sekarang'**
+  /// **'Proyeksi setahun ±Rp {amount} dengan pola sekarang'**
   String habitCostYear(String amount);
 
   /// Section of the habit detail.
