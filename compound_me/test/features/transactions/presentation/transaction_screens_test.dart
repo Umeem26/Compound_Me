@@ -328,12 +328,18 @@ void main() {
       expect(find.widgetWithText(AppChip, 'September 2026'), findsOneWidget);
       expect(find.byType(TransactionTile), findsNWidgets(2));
       expect(find.text('−Rp 45.000'), findsNothing, reason: 'August waits');
-      expect(find.bySemanticsLabel('Keluar, Rp 52.000'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Keluar, lima puluh dua ribu rupiah'),
+        findsOneWidget,
+      );
 
       await _tap(tester, find.text('Lihat Agustus 2026'));
       expect(find.widgetWithText(AppChip, 'Agustus 2026'), findsOneWidget);
       expect(find.byType(TransactionTile), findsOneWidget);
-      expect(find.bySemanticsLabel('Keluar, Rp 45.000'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Keluar, empat puluh lima ribu rupiah'),
+        findsOneWidget,
+      );
       expect(
         find.textContaining('Lihat Juli'),
         findsNothing,
@@ -346,7 +352,7 @@ void main() {
       await goTo(tester, AppRoutes.transactions);
 
       expect(find.text('Belum ada transaksi di Oktober 2026'), findsOneWidget);
-      expect(find.bySemanticsLabel('Keluar, Rp 0'), findsOneWidget);
+      expect(find.bySemanticsLabel('Keluar, nol rupiah'), findsOneWidget);
       await _tap(tester, find.text('Lihat September 2026'));
       expect(find.byType(TransactionTile), findsNWidgets(2));
     });
@@ -377,7 +383,10 @@ void main() {
       expect(month.onTap, isNull, reason: 'disabled while searching');
       expect(find.text('Hasil pencarian'), findsOneWidget);
       expect(find.byType(TransactionTile), findsNWidgets(2));
-      expect(find.bySemanticsLabel('Keluar, Rp 34.000'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Keluar, tiga puluh empat ribu rupiah'),
+        findsOneWidget,
+      );
       expect(
         find.text('Senin, 15 Des 2025'),
         findsOneWidget,

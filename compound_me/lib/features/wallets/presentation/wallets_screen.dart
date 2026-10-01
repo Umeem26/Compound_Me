@@ -305,6 +305,7 @@ class _WalletRow extends StatelessWidget {
                   amount: balance,
                   hidden: hidden,
                   hiddenLabel: l10n.balanceHidden,
+                  shrinkToFit: true,
                   style: AppTextStyles.bodyStrong.tabular.copyWith(
                     color: colors.textPrimary,
                   ),

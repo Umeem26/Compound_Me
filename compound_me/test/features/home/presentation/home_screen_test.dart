@@ -84,7 +84,10 @@ void main() {
     expect(_balance('Rp 78.000'), findsOneWidget);
     expect(find.text('Tersimpan'), findsOneWidget);
     expect(find.text('Hari ini'), findsOneWidget);
-    expect(find.bySemanticsLabel('Keluar, Rp 22.000'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Keluar, dua puluh dua ribu rupiah'),
+      findsOneWidget,
+    );
     expect(find.byType(TransactionTile), findsOneWidget);
 
     // Undo in the snackbar takes the new expense back out.
@@ -166,9 +169,20 @@ void main() {
     expect(find.text('+Rp 500.000'), findsWidgets);
     expect(find.text('Senin, 21 Sep'), findsOneWidget);
     expect(find.textContaining('kopi · Tunai'), findsOneWidget);
-    expect(find.bySemanticsLabel('Masuk, Rp 500.000'), findsOneWidget);
-    expect(find.bySemanticsLabel('Keluar, Rp 57.000'), findsOneWidget);
-    expect(find.bySemanticsLabel('Selisih, +Rp 443.000'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Masuk, lima ratus ribu rupiah'),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel('Keluar, lima puluh tujuh ribu rupiah'),
+      findsOneWidget,
+    );
+    expect(
+      find.bySemanticsLabel(
+        'Selisih, plus empat ratus empat puluh tiga ribu rupiah',
+      ),
+      findsOneWidget,
+    );
   });
 
   testApp('Home lists at most ten transactions', (tester) async {
@@ -204,14 +218,20 @@ void main() {
         await _add(db, cash, 80000, DateTime(2026, 8, 3, 7));
       },
     );
-    expect(find.bySemanticsLabel('Keluar, Rp 22.000'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Keluar, dua puluh dua ribu rupiah'),
+      findsOneWidget,
+    );
 
     await tester.tap(find.bySemanticsLabel(RegExp('Ringkasan September')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Agustus 2026'));
     await tester.pumpAndSettle();
 
-    expect(find.bySemanticsLabel('Keluar, Rp 80.000'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Keluar, delapan puluh ribu rupiah'),
+      findsOneWidget,
+    );
     expect(find.text('Agustus'), findsOneWidget);
     expect(_balance('−Rp 102.000'), findsOneWidget, reason: 'balance is now');
   });
@@ -301,14 +321,17 @@ void main() {
         },
       );
       expect(find.text('September'), findsOneWidget);
-      expect(find.bySemanticsLabel('Keluar, Rp 22.000'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Keluar, dua puluh dua ribu rupiah'),
+        findsOneWidget,
+      );
 
       clock.now = DateTime(2026, 10, 1, 0, 0, 5);
       await tester.pump(const Duration(seconds: 31));
       await tester.pumpAndSettle();
 
       expect(find.text('Oktober'), findsOneWidget);
-      expect(find.bySemanticsLabel('Keluar, Rp 0'), findsOneWidget);
+      expect(find.bySemanticsLabel('Keluar, nol rupiah'), findsOneWidget);
 
       // History follows too, until a month is picked there.
       await tester.tap(find.text('Lihat semua'));

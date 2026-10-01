@@ -6,6 +6,7 @@ import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/core/utils/dates.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/core/utils/spoken_money.dart';
 import 'package:compound_me/features/habits/data/drift_habit_repository.dart';
 import 'package:compound_me/features/habits/domain/habit.dart';
 import 'package:compound_me/features/habits/presentation/habit_providers.dart';
@@ -85,6 +86,25 @@ class _SimulatorSheetState extends ConsumerState<SimulatorSheet> {
           unawaited(repository.update(habit.id, _draft(habit, previous))),
     );
     Navigator.of(context).pop();
+  }
+
+  Widget _horizonTile(
+    AppLocalizations l10n,
+    Money savings,
+    double ratePercent,
+    int years,
+  ) {
+    final projected = CompoundProjection.projectedSavings(
+      annualSavings: savings,
+      annualRate: ratePercent / 100,
+      years: years,
+    );
+    return AppListTile(
+      title: l10n.simHorizon(years),
+      value: formatRupiah(projected),
+      valueSemantics: context.spokenMoney(projected),
+      showChevron: false,
+    );
   }
 
   HabitDraft _draft(Habit habit, int? weeklyLimit) => HabitDraft(
@@ -192,6 +212,9 @@ class _SimulatorSheetState extends ConsumerState<SimulatorSheet> {
                     alignment: AlignmentDirectional.centerStart,
                     child: Text(
                       l10n.approxAmount(formatRupiah(savings)),
+                      semanticsLabel: l10n.approxAmount(
+                        context.spokenMoney(savings),
+                      ),
                       style: AppTextStyles.amountHero.copyWith(
                         color: colors.accentText,
                       ),
@@ -221,17 +244,7 @@ class _SimulatorSheetState extends ConsumerState<SimulatorSheet> {
                     AppListGroup(
                       children: [
                         for (final years in CompoundProjection.horizons)
-                          AppListTile(
-                            title: l10n.simHorizon(years),
-                            value: formatRupiah(
-                              CompoundProjection.projectedSavings(
-                                annualSavings: savings,
-                                annualRate: (rate ?? 0) / 100,
-                                years: years,
-                              ),
-                            ),
-                            showChevron: false,
-                          ),
+                          _horizonTile(l10n, savings, rate ?? 0, years),
                       ],
                     ),
                   ],

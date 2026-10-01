@@ -7,6 +7,7 @@ import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/core/utils/dates.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/core/utils/spoken_money.dart';
 import 'package:compound_me/features/habits/data/drift_habit_repository.dart';
 import 'package:compound_me/features/habits/domain/habit.dart';
 import 'package:compound_me/features/habits/domain/habit_progress.dart';
@@ -515,6 +516,7 @@ class _RecentCheckIns extends ConsumerWidget {
             title: l10n.dayLabel(checkIn.date, today),
             subtitle: reduce ? l10n.habitCountValue(checkIn.count) : null,
             value: reduce ? formatRupiah(-checkIn.spent) : null,
+            valueSemantics: reduce ? context.spokenMoney(-checkIn.spent) : null,
             trailing: reduce
                 ? null
                 : Icon(

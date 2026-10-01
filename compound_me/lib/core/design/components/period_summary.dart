@@ -5,6 +5,7 @@ import 'package:compound_me/core/design/theme.dart';
 import 'package:compound_me/core/design/tokens.dart';
 import 'package:compound_me/core/design/typography.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/core/utils/spoken_money.dart';
 import 'package:flutter/material.dart';
 
 /// Column titles of [PeriodSummaryCard]: Masuk, Keluar, Selisih.
@@ -84,6 +85,7 @@ class PeriodSummaryCard extends StatelessWidget {
                 icon: AppIcons.arrowDownLeft,
                 label: labels.income,
                 amount: inAmount == null ? null : formatRupiah(inAmount),
+                spoken: inAmount == null ? null : context.spokenMoney(inAmount),
                 color: colors.income,
               ),
               const SizedBox(width: AppSpacing.space3),
@@ -91,6 +93,9 @@ class PeriodSummaryCard extends StatelessWidget {
                 icon: AppIcons.arrowUpRight,
                 label: labels.expense,
                 amount: outAmount == null ? null : formatRupiah(outAmount),
+                spoken: outAmount == null
+                    ? null
+                    : context.spokenMoney(outAmount),
                 color: colors.textPrimary,
               ),
               const SizedBox(width: AppSpacing.space3),
@@ -98,6 +103,9 @@ class PeriodSummaryCard extends StatelessWidget {
                 icon: AppIcons.plusMinus,
                 label: labels.net,
                 amount: net == null ? null : formatRupiah(net, signed: true),
+                spoken: net == null
+                    ? null
+                    : context.spokenMoney(net, signed: true),
                 color: colors.textPrimary,
               ),
             ],
@@ -113,12 +121,16 @@ class _Cell extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.amount,
+    required this.spoken,
     required this.color,
   });
 
   final IconData icon;
   final String label;
   final String? amount;
+
+  /// [amount] spelled out for screen readers.
+  final String? spoken;
   final Color color;
 
   @override
@@ -130,7 +142,7 @@ class _Cell extends StatelessWidget {
       child: Semantics(
         // One node per figure, read as "Keluar, Rp 52.000".
         container: true,
-        label: value == null ? label : '$label, $value',
+        label: value == null ? label : '$label, $spoken',
         excludeSemantics: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

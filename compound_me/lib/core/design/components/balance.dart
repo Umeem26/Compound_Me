@@ -4,6 +4,7 @@ import 'package:compound_me/core/design/theme.dart';
 import 'package:compound_me/core/design/tokens.dart';
 import 'package:compound_me/core/design/typography.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/core/utils/spoken_money.dart';
 import 'package:flutter/material.dart';
 
 /// What a hidden balance shows instead of the number (PRD US-03.1).
@@ -21,20 +22,41 @@ class BalanceText extends StatelessWidget {
     required this.hidden,
     required this.hiddenLabel,
     required this.style,
+    this.shrinkToFit = false,
     super.key,
   });
+
+  /// Widest a [shrinkToFit] amount gets, as a share of the screen width, so
+  /// the name beside it keeps room at large text sizes.
+  static const _listWidthFactor = 0.35;
 
   final Money amount;
   final bool hidden;
   final String hiddenLabel;
   final TextStyle style;
 
+  /// In a list row next to a name: shrinks instead of pushing the row wider.
+  final bool shrinkToFit;
+
   @override
-  Widget build(BuildContext context) => Semantics(
-    label: hidden ? hiddenLabel : formatRupiah(amount),
-    excludeSemantics: true,
-    child: Text(hidden ? maskedRupiah : formatRupiah(amount), style: style),
-  );
+  Widget build(BuildContext context) {
+    final text = Semantics(
+      label: hidden ? hiddenLabel : context.spokenMoney(amount),
+      excludeSemantics: true,
+      child: Text(hidden ? maskedRupiah : formatRupiah(amount), style: style),
+    );
+    if (!shrinkToFit) return text;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.sizeOf(context).width * _listWidthFactor,
+      ),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: AlignmentDirectional.centerEnd,
+        child: text,
+      ),
+    );
+  }
 }
 
 /// Round tonal eye button that shows or hides balances (§7.2

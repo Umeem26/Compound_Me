@@ -3,6 +3,7 @@ import 'package:compound_me/core/design/theme.dart';
 import 'package:compound_me/core/design/tokens.dart';
 import 'package:compound_me/core/design/typography.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/core/utils/spoken_money.dart';
 import 'package:flutter/material.dart';
 
 /// One transaction row (§7.3): category badge, category name over the
@@ -36,7 +37,9 @@ class TransactionTile extends StatelessWidget {
     final money = formatRupiah(amount, signed: true);
     return Semantics(
       button: onTap != null,
-      label: '$title, $money, $subtitle, $time',
+      label:
+          '$title, ${context.spokenMoney(amount, signed: true)}, '
+          '$subtitle, $time',
       excludeSemantics: true,
       onTap: onTap,
       child: InkWell(
@@ -133,7 +136,7 @@ class DayHeader extends StatelessWidget {
     final money = formatRupiah(subtotal, signed: true);
     return Semantics(
       header: true,
-      label: '$label, $money',
+      label: '$label, ${context.spokenMoney(subtotal, signed: true)}',
       excludeSemantics: true,
       child: Padding(
         padding: const EdgeInsetsDirectional.only(

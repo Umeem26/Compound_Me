@@ -9,6 +9,7 @@ import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/core/utils/dates.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/core/utils/spoken_money.dart';
 import 'package:compound_me/features/categories/data/drift_category_repository.dart';
 import 'package:compound_me/features/categories/domain/category.dart';
 import 'package:compound_me/features/transactions/application/transaction_form.dart';
@@ -279,6 +280,7 @@ class _TransactionFormSheetState extends ConsumerState<TransactionFormSheet> {
                     onTap: _closeNote,
                     child: Text(
                       formatRupiah(_form.amount),
+                      semanticsLabel: context.spokenMoney(_form.amount),
                       style: AppTextStyles.titleSmall.tabular.copyWith(
                         color: colors.textSecondary,
                       ),

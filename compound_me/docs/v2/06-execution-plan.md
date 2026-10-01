@@ -203,7 +203,7 @@ Termasuk:
 - Build release (R8) dan jalankan di emulator; pastikan tidak ada crash (keep rule, drift, sqlite3).
 - Cek kompatibilitas page size 16 KB (emulator image 16 KB).
 - README baru (bahasa Inggris): deskripsi jujur, fitur, screenshot, arsitektur, cara build. Hapus klaim Web.
-- Naikkan `version` di pubspec dari 1.0.0+1 ke 2.0.0+2. Build number harus lebih besar dari APK v1, yang selalu 1.0.0+1 (commit ca79cb0 sampai tag v1-legacy), supaya v2 bisa dipasang menimpa v1.
+- Naikkan `version` di pubspec dari 1.0.0+1 ke 2.0.0+2. v1 (sampai tag v1-legacy) ditandatangani kunci debug dan datanya tidak dimigrasikan, jadi v2 memakai upload keystore baru dan release notes meminta pengguna meng-uninstall versi lama dulu (tidak ada syarat "menimpa v1").
 
 DoD + laporan audit sebelum/sesudah. PR tanpa merge.
 ```
@@ -220,6 +220,10 @@ Hal yang hanya bisa dinilai manusia di HP sungguhan. Semua checklist fase lain s
 - [ ] Rasa haptic check-in kebiasaan (getar ringan saat ring terisi, tidak ada getar saat dibatalkan) di HP sungguhan (Fase 4).
 - [ ] Tap cepat berkali-kali pada HabitChip dan tombol check di HP sungguhan: jumlah transaksi sama dengan jumlah check-in, saldo benar (Fase 4).
 - [ ] Tombol back saat keyboard terbuka otomatis di form baru (kebiasaan, dompet) di HP sungguhan: back pertama menutup keyboard, bukan form. Di emulator lewat adb, back langsung menutup form (Fase 4, juga form dompet Fase 2).
+- [ ] TalkBack dengan suara Indonesia dan Inggris (Fase 6): nominal terdengar lengkap ("dua puluh dua ribu rupiah"), dan kalimat yang memuat nominal (kartu insight Beranda, keterangan simulator) terdengar wajar.
+- [ ] Scroll riwayat dengan ±1.000 transaksi di HP sungguhan terasa 60 fps (Fase 6). Emulator hanya membuktikan thread UI (build 0,35 ms rata-rata); waktu raster-nya dibatasi jembatan GPU emulator.
+- [ ] Pasang APK release v2.0.0 di HP sungguhan (uninstall v1 dulu), buka semua tab, lalu cek cold start terasa ≤ 2 detik (Fase 6).
+- [ ] Backup `%USERPROFILE%\keys\compound_me-upload.jks` dan `compound_me-key.properties` ke dua tempat di luar laptop. Tanpa kunci ini APK terpasang tidak bisa diperbarui (Fase 6).
 - [ ] Wawasan dengan data sungguhan (Fase 5): setelah ≥ 7 hari memakai app, hitung satu kebiasaan Kurangi sendiri (kali per minggu × biaya × 52) dan cocokkan dengan baris di Wawasan dan simulator. Data contoh hanya membuktikan rumusnya.
 - [ ] Slider simulator dan donut Wawasan di HP sungguhan (Fase 5): geser 10% per langkah terasa pas dengan haptic ringan, segmen donut yang kecil mudah di-tap dengan jari.
 - [ ] TalkBack di Wawasan dan sheet simulator (Fase 5): slider terbaca "50 persen", tren terbaca "naik 12 poin dibanding bulan lalu", disclaimer terbaca.
@@ -227,7 +231,7 @@ Hal yang hanya bisa dinilai manusia di HP sungguhan. Semua checklist fase lain s
 **Checklist kamu (uji pengguna kecil):**
 - [ ] Minta 3–5 teman (persona target) mencoba tanpa penjelasan: onboarding, catat kopi, cari kebiasaan termahal. Catat di mana mereka ragu.
 - [ ] Isi skor SUS (10 pertanyaan standar) dari mereka. Target ≥ 75.
-- [ ] `version` di pubspec = 2.0.0+2 (build number > 1 milik APK v1). APK v2 terpasang menimpa APK v1 tanpa uninstall.
+- [x] `version` di pubspec = 2.0.0+2. Release notes v2.0.0 meminta uninstall versi lama dulu (v1 memakai kunci debug dan datanya tidak dimigrasikan).
 
 ## 3. Setelah v2.0
 
@@ -319,3 +323,9 @@ Layar <S-xx> belum sesuai docs/v2/02-design-system.md: <sebutkan: ukuran judul t
 | 5 | Tap kategori di Wawasan membuka S-13 lewat rute `/insights/transactions` di cabang Wawasan | `push` lintas tab bermasalah (keputusan Fase 4); dengan rute sendiri, back kembali ke Wawasan | Perlu review |
 | 5 | Kebiasaan Kurangi yang diarsipkan hanya tampil di Wawasan kalau bulan itu masih punya biaya; kebiasaan Bangun diarsipkan tidak tampil | Daftar harus cocok dengan angka kartu utama | Perlu review |
 | 5 | Data contoh 60 hari: baris di Pengaturan hanya di bawah `kDebugMode`, dibuat lewat repository dengan jam per hari (bukan SQL langsung), deterministik (kopi Sen/Rab/Jum, Rp 25.000), menolak diisi dua kali kalau kebiasaan "Kopi" sudah ada | Tidak boleh ada di rilis; angka checklist (Rp 1,95 jt) harus bisa diulang | Perlu review |
+| 6 | v1 memakai kunci debug (tag `v1-legacy`), jadi tidak ada kunci yang perlu dilanjutkan: upload keystore baru di `%USERPROFILE%\keys\`, `android/key.properties` di `.gitignore`, build rilis tanpa `key.properties` jatuh ke kunci debug supaya CI dan clone baru tetap bisa build. Syarat "APK v2 menimpa v1" diganti catatan "uninstall versi lama dulu" di release notes | Kunci debug laptop tidak bisa dipertahankan untuk rilis publik; data v1 memang tidak dimigrasikan | Perlu review |
+| 6 | Nominal dibaca lewat `spokenRupiah` (angka dieja, id dan en) di komponen dan layar utama; kalimat yang memuat nominal tetap apa adanya | Suara Inggris membaca "22.000" sebagai desimal; mengubah semua kalimat butuh terjemahan per kalimat | Perlu review |
+| 6 | `RowPicker` menumpuk label di atas nilai saat textScaler > 1,15; `BalanceText.shrinkToFit` di baris dompet; `InsightHabitTile` di Wawasan | Overflow dan kata terpotong di 360 dp × 1,3 ditemukan audit; `LayoutBuilder` dicoba lalu dibuang karena tidak mendukung dimensi intrinsik (`SliverFillRemaining`) | Perlu review |
+| 6 | Audit dijaga test di CI (`test/audit/`): aturan desain, aksi tanpa nama, overflow 1,3×, error state; performa dan rilis lewat skrip (`integration_test/perf_history_test.dart`, `tool/qa/qa_phase6.py`) | Temuan yang sudah diperbaiki tidak boleh kembali | Perlu review |
+| 6 | 16 KB diperiksa pada APK release (`zipalign -c -P 16 -v 4` dan `p_align` tiap `.so`), tanpa mengunduh image emulator 16 KB | Arahan: hemat unduhan; keduanya adalah cara cek di dokumentasi Android | Perlu review |
+| 6 | Waktu raster scroll di emulator dibandingkan dengan `ListView` polos di emulator yang sama, bukan dengan target 16 ms | Jembatan GPU emulator membuat raster ≈ 30–50 ms untuk list apa pun | Perlu review |

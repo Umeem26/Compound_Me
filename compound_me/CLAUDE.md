@@ -34,6 +34,7 @@ flutter run            # emulator: Pixel 9, API 35
 8. Package Android `com.umem.compound_me` harus sama di `namespace`, `applicationId`, baris `package` di `MainActivity.kt`, dan proguard keep rule.
 9. Jangan commit `compound_me/.metadata` kecuali memang upgrade Flutter.
 10. Komentar kode dalam bahasa Inggris, singkat, menjelaskan "kenapa". Tidak ada komentar seperti "PERBAIKAN DISINI" atau "AJAIB".
+11. Jangan pernah commit keystore (`*.jks`, `*.keystore`) atau `android/key.properties`. Upload keystore ada di luar repo (`%USERPROFILE%\keys\`); tanpa `key.properties` build rilis jatuh ke kunci debug.
 
 ## Alur kerja git
 - Satu fase = satu branch `v2/phase-N-<nama>` dari `main`.
