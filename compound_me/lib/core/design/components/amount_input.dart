@@ -5,6 +5,7 @@ import 'package:compound_me/core/design/theme.dart';
 import 'package:compound_me/core/design/tokens.dart';
 import 'package:compound_me/core/design/typography.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/core/utils/spoken_money.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,7 +21,7 @@ class AmountDisplay extends StatelessWidget {
     final colors = context.tokens.colors;
     return Semantics(
       liveRegion: true,
-      label: formatRupiah(amount),
+      label: context.spokenMoney(amount),
       excludeSemantics: true,
       child: FittedBox(
         fit: BoxFit.scaleDown,

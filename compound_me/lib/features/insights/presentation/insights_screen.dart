@@ -9,6 +9,7 @@ import 'package:compound_me/core/router/routes.dart';
 import 'package:compound_me/core/utils/clock_provider.dart';
 import 'package:compound_me/core/utils/dates.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/core/utils/spoken_money.dart';
 import 'package:compound_me/features/insights/domain/insights_calculator.dart';
 import 'package:compound_me/features/insights/domain/month_insights.dart';
 import 'package:compound_me/features/insights/presentation/insights_labels.dart';
@@ -344,6 +345,7 @@ class _ReduceList extends StatelessWidget {
             colorKey: item.habit.colorKey,
             title: item.habit.name,
             value: formatRupiah(item.spent),
+            valueSemantics: context.spokenMoney(item.spent),
             detail: _Detail(
               l10n.insightsReduceSubtitle(
                 perWeekText(l10n, item.perWeek),
@@ -462,6 +464,7 @@ class _CategoryBreakdown extends StatelessWidget {
                 title: categoryName(l10n, slice.category),
                 subtitle: l10n.percentValue((slice.share * 100).round()),
                 value: formatRupiah(slice.amount),
+                valueSemantics: context.spokenMoney(slice.amount),
                 onTap: () => _open(context, slice),
               ),
           ],

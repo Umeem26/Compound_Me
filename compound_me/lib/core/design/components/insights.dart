@@ -424,6 +424,7 @@ class InsightHabitTile extends StatelessWidget {
     required this.value,
     required this.detail,
     required this.onTap,
+    this.valueSemantics,
     super.key,
   });
 
@@ -433,6 +434,9 @@ class InsightHabitTile extends StatelessWidget {
 
   /// The figure on the right of the name, e.g. "Rp 310.000" or "83%".
   final String value;
+
+  /// What a screen reader says instead of [value].
+  final String? valueSemantics;
 
   /// Under the name and figure, e.g. a pace line or a [TrendLabel].
   final Widget detail;
@@ -475,6 +479,7 @@ class InsightHabitTile extends StatelessWidget {
                           const SizedBox(width: AppSpacing.space2),
                           Text(
                             value,
+                            semanticsLabel: valueSemantics,
                             style: AppTextStyles.bodyStrong.tabular.copyWith(
                               color: colors.textPrimary,
                             ),

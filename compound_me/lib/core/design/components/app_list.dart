@@ -67,6 +67,7 @@ class AppListTile extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.value,
+    this.valueSemantics,
     this.leading,
     this.trailing,
     this.onTap,
@@ -78,6 +79,10 @@ class AppListTile extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? value;
+
+  /// What a screen reader says instead of [value], e.g. an amount spelled
+  /// out.
+  final String? valueSemantics;
   final Widget? leading;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -140,6 +145,7 @@ class AppListTile extends StatelessWidget {
                     ),
                     child: Text(
                       value!,
+                      semanticsLabel: valueSemantics,
                       style: AppTextStyles.body.copyWith(
                         color: colors.textSecondary,
                       ),
@@ -213,6 +219,9 @@ class RowPicker extends StatelessWidget {
     super.key,
   });
 
+  /// Widest a label gets, as a share of the row.
+  static const _labelMaxShare = 0.55;
+
   final String label;
   final String value;
   final VoidCallback? onTap;
@@ -245,41 +254,50 @@ class RowPicker extends StatelessWidget {
                 horizontal: flat ? AppSpacing.space1 : AppSpacing.space4,
                 vertical: AppSpacing.space2,
               ),
-              child: Row(
-                children: [
-                  if (leading != null) ...[
-                    leading!,
+              child: LayoutBuilder(
+                // The label wraps past this share of the row, so a long one
+                // (text scale 1,3) never pushes the value out.
+                builder: (context, box) => Row(
+                  children: [
+                    if (leading != null) ...[
+                      leading!,
+                      const SizedBox(width: AppSpacing.space3),
+                    ],
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: box.maxWidth * _labelMaxShare,
+                      ),
+                      child: Text(
+                        label,
+                        style: AppTextStyles.body.copyWith(
+                          color: colors.textSecondary,
+                        ),
+                      ),
+                    ),
                     const SizedBox(width: AppSpacing.space3),
+                    Expanded(
+                      child: Text(
+                        value,
+                        style: valueMuted
+                            ? AppTextStyles.body.copyWith(
+                                color: colors.textTertiary,
+                              )
+                            : AppTextStyles.bodyStrong.copyWith(
+                                color: colors.textPrimary,
+                              ),
+                        textAlign: TextAlign.end,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.space1),
+                    Icon(
+                      AppIcons.caretRight,
+                      size: AppSizes.iconSm,
+                      color: colors.textTertiary,
+                    ),
                   ],
-                  Text(
-                    label,
-                    style: AppTextStyles.body.copyWith(
-                      color: colors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.space3),
-                  Expanded(
-                    child: Text(
-                      value,
-                      style: valueMuted
-                          ? AppTextStyles.body.copyWith(
-                              color: colors.textTertiary,
-                            )
-                          : AppTextStyles.bodyStrong.copyWith(
-                              color: colors.textPrimary,
-                            ),
-                      textAlign: TextAlign.end,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.space1),
-                  Icon(
-                    AppIcons.caretRight,
-                    size: AppSizes.iconSm,
-                    color: colors.textTertiary,
-                  ),
-                ],
+                ),
               ),
             ),
           ),

@@ -6,6 +6,7 @@ import 'package:compound_me/core/l10n/date_labels.dart';
 import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/core/router/routes.dart';
 import 'package:compound_me/core/utils/money.dart';
+import 'package:compound_me/core/utils/spoken_money.dart';
 import 'package:compound_me/features/transactions/data/drift_transaction_repository.dart';
 import 'package:compound_me/features/transactions/domain/transaction_entry.dart';
 import 'package:compound_me/features/transactions/presentation/transaction_form_sheet.dart';
@@ -108,6 +109,10 @@ class TransactionDetailSheet extends StatelessWidget {
               header: true,
               child: Text(
                 amount,
+                semanticsLabel: context.spokenMoney(
+                  entry.signedAmount,
+                  signed: true,
+                ),
                 style: AppTextStyles.titleLarge.tabular.copyWith(
                   color: entry.kind == TransactionKind.income
                       ? colors.income
