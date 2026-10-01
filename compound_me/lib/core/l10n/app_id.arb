@@ -1741,5 +1741,25 @@
   "homeInsightSpendingAction": "Lihat rinciannya",
   "@homeInsightSpendingAction": {
     "description": "Opens Insights."
+  },
+  "settingsGroupDebug": "Alat debug",
+  "@settingsGroupDebug": {
+    "description": "Debug-only group in Settings."
+  },
+  "debugSampleTitle": "Isi data contoh 60 hari",
+  "@debugSampleTitle": {
+    "description": "Debug-only row."
+  },
+  "debugSampleHint": "Hanya di build debug. Menambah kebiasaan, check-in, dan transaksi contoh.",
+  "@debugSampleHint": {
+    "description": "Debug-only row."
+  },
+  "debugSampleDone": "Data contoh terisi.",
+  "@debugSampleDone": {
+    "description": "Debug-only snackbar."
+  },
+  "debugSampleExists": "Data contoh sudah ada.",
+  "@debugSampleExists": {
+    "description": "Debug-only snackbar."
   }
 }

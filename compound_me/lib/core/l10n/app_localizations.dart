@@ -1991,7 +1991,7 @@ abstract class AppLocalizations {
   /// Pace and yearly projection of a reduce habit.
   ///
   /// In id, this message translates to:
-  /// **'±{perWeek}x/minggu · {yearly}/th'**
+  /// **'±{perWeek}x/minggu · Rp {yearly}/th'**
   String insightsReduceSubtitle(String perWeek, String yearly);
 
   /// Section title of build habits.
@@ -2209,6 +2209,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat rinciannya'**
   String get homeInsightSpendingAction;
+
+  /// Debug-only group in Settings.
+  ///
+  /// In id, this message translates to:
+  /// **'Alat debug'**
+  String get settingsGroupDebug;
+
+  /// Debug-only row.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi data contoh 60 hari'**
+  String get debugSampleTitle;
+
+  /// Debug-only row.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya di build debug. Menambah kebiasaan, check-in, dan transaksi contoh.'**
+  String get debugSampleHint;
+
+  /// Debug-only snackbar.
+  ///
+  /// In id, this message translates to:
+  /// **'Data contoh terisi.'**
+  String get debugSampleDone;
+
+  /// Debug-only snackbar.
+  ///
+  /// In id, this message translates to:
+  /// **'Data contoh sudah ada.'**
+  String get debugSampleExists;
 }
 
 class _AppLocalizationsDelegate

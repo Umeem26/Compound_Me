@@ -1088,7 +1088,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String insightsReduceSubtitle(String perWeek, String yearly) {
-    return '±${perWeek}x/week · $yearly/yr';
+    return '±${perWeek}x/week · Rp $yearly/yr';
   }
 
   @override
@@ -1238,4 +1238,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeInsightSpendingAction => 'See the breakdown';
+
+  @override
+  String get settingsGroupDebug => 'Debug tools';
+
+  @override
+  String get debugSampleTitle => 'Fill 60 days of sample data';
+
+  @override
+  String get debugSampleHint =>
+      'Debug builds only. Adds sample habits, check-ins and transactions.';
+
+  @override
+  String get debugSampleDone => 'Sample data added.';
+
+  @override
+  String get debugSampleExists => 'Sample data is already there.';
 }

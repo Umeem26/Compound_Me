@@ -1059,7 +1059,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String insightsReduceSubtitle(String perWeek, String yearly) {
-    return '±${perWeek}x/minggu · $yearly/th';
+    return '±${perWeek}x/minggu · Rp $yearly/th';
   }
 
   @override
@@ -1208,4 +1208,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get homeInsightSpendingAction => 'Lihat rinciannya';
+
+  @override
+  String get settingsGroupDebug => 'Alat debug';
+
+  @override
+  String get debugSampleTitle => 'Isi data contoh 60 hari';
+
+  @override
+  String get debugSampleHint =>
+      'Hanya di build debug. Menambah kebiasaan, check-in, dan transaksi contoh.';
+
+  @override
+  String get debugSampleDone => 'Data contoh terisi.';
+
+  @override
+  String get debugSampleExists => 'Data contoh sudah ada.';
 }

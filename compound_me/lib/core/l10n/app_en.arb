@@ -351,5 +351,10 @@
   "homeInsightStreakWeeks": "{habit}: {count} weeks in a row.",
   "homeInsightStreakAction": "See the habit",
   "homeInsightSpending": "Your spending is up {percent}% on the same days last month.",
-  "homeInsightSpendingAction": "See the breakdown"
+  "homeInsightSpendingAction": "See the breakdown",
+  "settingsGroupDebug": "Debug tools",
+  "debugSampleTitle": "Fill 60 days of sample data",
+  "debugSampleHint": "Debug builds only. Adds sample habits, check-ins and transactions.",
+  "debugSampleDone": "Sample data added.",
+  "debugSampleExists": "Sample data is already there."
 }
