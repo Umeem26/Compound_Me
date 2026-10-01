@@ -116,3 +116,41 @@ python tool/qa/qa_phase5.py layout    # 360 dp + font 1.3 + dark
 
 S-30 is shot for last month: it is complete whatever day of the month the
 emulator is on.
+
+## Phase 6
+
+The audit itself runs in `flutter test` (`test/audit/`: design rules, screens
+at text scale 1,3 in both languages, error states). What needs the emulator
+or the release build:
+
+```sh
+# 1.000 transactions, history scroll in profile mode; writes
+# build/history_scroll.timeline_summary.json and build/baseline_scroll.timeline_summary.json
+# (a plain ListView on the same emulator, to read the raster times against).
+flutter drive --profile --no-dds --driver=test_driver/perf_driver.dart --target=integration_test/perf_history_test.dart -d emulator-5554
+
+# Cold start in profile mode: build/start_up_info.json
+# (timeToFirstFrameRasterizedMicros, three runs).
+flutter run --profile --trace-startup --no-dds -d emulator-5554
+
+# Signed release build (needs android/key.properties, see 06 §5), then the
+# R8 smoke test: onboarding, transaction, check-in, Insights, About, force
+# stop and relaunch, logcat without crashes. Uninstall a debug build first.
+flutter build apk --release
+adb uninstall com.umem.compound_me
+adb install build/app/outputs/flutter-apk/app-release.apk
+python tool/qa/qa_phase6.py release
+
+# The two portfolio videos (docs/v2/media, 20 s at most each).
+python tool/qa/qa_phase6.py video-flow-b
+python tool/qa/qa_phase6.py video-habit
+```
+
+16 KB page size, on the release APK (Android build-tools 35.0.0 or newer):
+
+```sh
+zipalign -c -P 16 -v 4 build/app/outputs/flutter-apk/app-release.apk
+```
+
+and every 64-bit `.so` must have LOAD segments aligned to at least 0x4000
+(`p_align`, as in the Android documentation's `check_elf_alignment.sh`).

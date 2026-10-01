@@ -10,6 +10,7 @@ Paket ini adalah acuan rebuild total CompoundMe v2.0, dari icon sampai end-to-en
 | 04 | [Brand Assets](04-brand-assets.md) | Kenapa icon/splash v1 rusak, logo mark baru, daftar aset, konfigurasi `flutter_launcher_icons` & `flutter_native_splash` | Fase 0 |
 | 05 | [Arsitektur & Data](05-architecture-and-data.md) | Keputusan teknis, struktur folder, skema Drift, rumus streak & compound, l10n, tooling | Claude Code |
 | 06 | [Rencana Eksekusi](06-execution-plan.md) | 7 fase, prompt siap tempel untuk Claude Code, definition of done, checklist tes manual | Kamu (Umem) |
+| 07 | [Laporan Audit Fase 6](07-audit-fase-6.md) | Temuan audit desain, aksesibilitas, performa, rilis dan 16 KB dengan statusnya | Review rilis |
 
 File pendukung di root paket:
 - `CLAUDE.md` → taruh di root repo, dibaca otomatis oleh Claude Code.
