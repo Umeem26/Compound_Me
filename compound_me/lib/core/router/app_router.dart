@@ -116,6 +116,18 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.insights,
                 builder: (context, state) => const InsightsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'transactions',
+                    builder: (context, state) {
+                      final query = state.uri.queryParameters;
+                      return TransactionsScreen(
+                        month: YearMonth.tryParse(query['month']),
+                        categoryId: query['category'],
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

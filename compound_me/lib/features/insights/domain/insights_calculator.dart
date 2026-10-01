@@ -92,4 +92,24 @@ abstract final class InsightsCalculator {
     if (thisMonth == null || lastMonth == null) return null;
     return (thisMonth - lastMonth) * 100;
   }
+
+  /// Days the user has been recording, counted from [firstRecord] to
+  /// [today] inclusive; 0 without any record. Insights wait for [minDays]
+  /// (PRD F-09).
+  static int recordedDays({
+    required LocalDate? firstRecord,
+    required LocalDate today,
+  }) {
+    if (firstRecord == null || firstRecord.isAfter(today)) return 0;
+    return firstRecord.daysUntil(today) + 1;
+  }
+
+  /// Days of data before Insights show anything.
+  static const minDays = 7;
+
+  /// Change from [before] to [now] in percent; null when [before] is 0.
+  static double? percentChange({required Money before, required Money now}) {
+    if (before <= 0) return null;
+    return (now - before) / before * 100;
+  }
 }

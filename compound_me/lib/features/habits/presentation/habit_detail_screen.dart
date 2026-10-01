@@ -15,6 +15,7 @@ import 'package:compound_me/features/habits/presentation/habit_editor_screen.dar
 import 'package:compound_me/features/habits/presentation/habit_labels.dart';
 import 'package:compound_me/features/habits/presentation/habit_providers.dart';
 import 'package:compound_me/features/insights/domain/insights_calculator.dart';
+import 'package:compound_me/features/insights/presentation/simulator_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -433,7 +434,8 @@ class _Calendar extends ConsumerWidget {
   }
 }
 
-/// "Biaya bulan ini Rp 310.000 · proyeksi setahun ±Rp 4,0 jt" (S-22).
+/// "Biaya bulan ini Rp 310.000 · proyeksi setahun ±Rp 4,0 jt" with the
+/// simulator button (S-22).
 class _CostCard extends ConsumerWidget {
   const _CostCard({required this.progress, required this.today});
 
@@ -474,6 +476,12 @@ class _CostCard extends ConsumerWidget {
             style: AppTextStyles.bodySmall.tabular.copyWith(
               color: colors.textSecondary,
             ),
+          ),
+          const SizedBox(height: AppSpacing.space3),
+          SecondaryButton(
+            label: l10n.habitSimulate,
+            expand: false,
+            onPressed: () => unawaited(showSimulatorSheet(context, habit.id)),
           ),
         ],
       ),

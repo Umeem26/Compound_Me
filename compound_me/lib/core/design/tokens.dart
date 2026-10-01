@@ -299,6 +299,15 @@ abstract final class AppSizes {
   static const double skeletonLine = 16;
   static const double skeletonAmount = 180;
   static const double appIcon = 72;
+  static const double proportionBar = 8;
+  static const double donut = 176;
+  static const double donutRing = 28;
+  static const double donutGap = 2;
+  static const double progressRing = 48;
+  static const double progressRingStroke = 4;
+  static const double sliderTrack = 6;
+  static const double sliderThumb = 12;
+  static const double legendDot = 12;
 }
 
 abstract final class AppOpacity {

@@ -1431,5 +1431,344 @@
   "habitArchivedBanner": "Kebiasaan ini diarsipkan.",
   "@habitArchivedBanner": {
     "description": "Banner on an archived habit."
+  },
+  "insightsDaysProgress": "{current} dari {total} hari",
+  "@insightsDaysProgress": {
+    "description": "Progress toward the first week of data.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsPeriodThis": "bulan ini",
+  "@insightsPeriodThis": {
+    "description": "Period phrase for the current month."
+  },
+  "insightsPeriodIn": "di {month}",
+  "@insightsPeriodIn": {
+    "description": "Period phrase for another month, e.g. 'di Agustus'.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsShareCaption": "pengeluaranmu {period} dari kebiasaan yang ingin kamu kurangi · {amount}",
+  "@insightsShareCaption": {
+    "description": "Caption under the share percentage on the main insight card.",
+    "placeholders": {
+      "period": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsNoSpending": "Belum ada pengeluaran {period}.",
+  "@insightsNoSpending": {
+    "description": "Shown when the month has no expenses.",
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsNoReduceTitle": "Belum ada kebiasaan Kurangi",
+  "@insightsNoReduceTitle": {
+    "description": "Insights card when there is no reduce habit."
+  },
+  "insightsNoReduceBody": "Tambahkan satu untuk melihat berapa biayanya dalam setahun.",
+  "@insightsNoReduceBody": {
+    "description": "Insights card when there is no reduce habit."
+  },
+  "insightsNoReduceAction": "Tambah kebiasaan",
+  "@insightsNoReduceAction": {
+    "description": "Opens the new habit form from Insights."
+  },
+  "insightsReduceSection": "Kebiasaan yang dikurangi",
+  "@insightsReduceSection": {
+    "description": "Section title of reduce habits."
+  },
+  "insightsReduceSubtitle": "±{perWeek}x/minggu\nProyeksi Rp {yearly}/th",
+  "@insightsReduceSubtitle": {
+    "description": "Pace and yearly projection of a reduce habit.",
+    "placeholders": {
+      "perWeek": {
+        "type": "String"
+      },
+      "yearly": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsBuildSection": "Kebiasaan yang dibangun",
+  "@insightsBuildSection": {
+    "description": "Section title of build habits."
+  },
+  "insightsConsistency": "Konsistensi",
+  "@insightsConsistency": {
+    "description": "Label of a build habit's consistency."
+  },
+  "percentValue": "{percent}%",
+  "@percentValue": {
+    "description": "A percentage.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsTrendPoints": "{points} poin",
+  "@insightsTrendPoints": {
+    "description": "Change in percentage points against last month.",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsTrendUp": "naik {points} poin dibanding bulan lalu",
+  "@insightsTrendUp": {
+    "description": "Spoken form of an upward trend.",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsTrendDown": "turun {points} poin dibanding bulan lalu",
+  "@insightsTrendDown": {
+    "description": "Spoken form of a downward trend.",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsTrendFlat": "Tetap",
+  "@insightsTrendFlat": {
+    "description": "No change against last month."
+  },
+  "insightsTrendFlatSpoken": "sama dengan bulan lalu",
+  "@insightsTrendFlatSpoken": {
+    "description": "Spoken form of no change."
+  },
+  "insightsCategorySection": "Pengeluaran per kategori",
+  "@insightsCategorySection": {
+    "description": "Section title of the donut chart."
+  },
+  "insightsDonutCenter": "Total",
+  "@insightsDonutCenter": {
+    "description": "Label in the middle of the donut."
+  },
+  "insightsCategoryOpen": "Lihat transaksi {category}",
+  "@insightsCategoryOpen": {
+    "description": "Spoken action of a category row.",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "simTitle": "Kalau {habit} dikurangi…",
+  "@simTitle": {
+    "description": "Title of the simulator sheet.",
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
+  "simPace": "Rata-rata ±{perWeek} kali/minggu (4 minggu terakhir) × {cost}",
+  "@simPace": {
+    "description": "Pace and cost behind the simulation.",
+    "placeholders": {
+      "perWeek": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "simNoPace": "Belum ada check-in dalam 4 minggu terakhir, jadi belum ada yang bisa dihemat.",
+  "@simNoPace": {
+    "description": "Simulator without a pace."
+  },
+  "simReduceLabel": "Kurangi",
+  "@simReduceLabel": {
+    "description": "Label of the reduction slider."
+  },
+  "simPercentSpoken": "{percent} persen",
+  "@simPercentSpoken": {
+    "description": "Spoken value of the slider.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "simSaveLabel": "Hemat per tahun",
+  "@simSaveLabel": {
+    "description": "Label above the yearly savings."
+  },
+  "approxAmount": "±{amount}",
+  "@approxAmount": {
+    "description": "An estimated amount.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "simInvestToggle": "Tabung & kembangkan",
+  "@simInvestToggle": {
+    "description": "Toggle that shows the compound projection."
+  },
+  "simInvestHint": "Anggap uang yang dihemat ditabung setiap bulan.",
+  "@simInvestHint": {
+    "description": "Explains the save and grow toggle."
+  },
+  "simRateLabel": "Bunga per tahun (%)",
+  "@simRateLabel": {
+    "description": "Label of the interest rate field."
+  },
+  "simRateInvalid": "Isi angka antara 0 dan 100.",
+  "@simRateInvalid": {
+    "description": "Error of the interest rate field."
+  },
+  "simHorizon": "{years, plural, =1{1 tahun} other{{years} tahun}}",
+  "@simHorizon": {
+    "description": "A number of years.",
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "simDisclaimer": "Simulasi, bukan saran keuangan.",
+  "@simDisclaimer": {
+    "description": "Permanent disclaimer under every projection."
+  },
+  "simLimitHint": "Batas mingguan sesuai simulasi: {limit} kali",
+  "@simLimitHint": {
+    "description": "The limit the button would set.",
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "simSetLimit": "Atur batas mingguan",
+  "@simSetLimit": {
+    "description": "Writes the simulated limit to the habit."
+  },
+  "simLimitSet": "Batas mingguan diatur ke {limit} kali",
+  "@simLimitSet": {
+    "description": "Snackbar after setting the limit.",
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "simLimitFailed": "Batas mingguan belum bisa diatur.",
+  "@simLimitFailed": {
+    "description": "Error after setting the limit."
+  },
+  "habitSimulate": "Simulasikan",
+  "@habitSimulate": {
+    "description": "Opens the simulator from the habit detail."
+  },
+  "homeInsightReduce": "{habit} sudah {amount} bulan ini.",
+  "@homeInsightReduce": {
+    "description": "Home insight about a reduce habit.",
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "homeInsightReduceAction": "Lihat dampak",
+  "@homeInsightReduceAction": {
+    "description": "Opens the simulator."
+  },
+  "homeInsightStreakDays": "{habit}: {count} hari berturut-turut.",
+  "@homeInsightStreakDays": {
+    "description": "Home insight about a daily streak.",
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeInsightStreakWeeks": "{habit}: {count} minggu berturut-turut.",
+  "@homeInsightStreakWeeks": {
+    "description": "Home insight about a weekly streak.",
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeInsightStreakAction": "Lihat kebiasaan",
+  "@homeInsightStreakAction": {
+    "description": "Opens the habit detail."
+  },
+  "homeInsightSpending": "Pengeluaranmu naik {percent}% dibanding periode yang sama bulan lalu.",
+  "@homeInsightSpending": {
+    "description": "Home insight about rising spending.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homeInsightSpendingAction": "Lihat rinciannya",
+  "@homeInsightSpendingAction": {
+    "description": "Opens Insights."
+  },
+  "settingsGroupDebug": "Alat debug",
+  "@settingsGroupDebug": {
+    "description": "Debug-only group in Settings."
+  },
+  "debugSampleTitle": "Isi data contoh 60 hari",
+  "@debugSampleTitle": {
+    "description": "Debug-only row."
+  },
+  "debugSampleHint": "Hanya di build debug. Menambah kebiasaan, check-in, dan transaksi contoh.",
+  "@debugSampleHint": {
+    "description": "Debug-only row."
+  },
+  "debugSampleDone": "Data contoh terisi.",
+  "@debugSampleDone": {
+    "description": "Debug-only snackbar."
+  },
+  "debugSampleExists": "Data contoh sudah ada.",
+  "@debugSampleExists": {
+    "description": "Debug-only snackbar."
+  },
+  "insightsMonthPicker": "Wawasan {month}, ganti bulan",
+  "@insightsMonthPicker": {
+    "description": "Spoken label of the month picker in Insights.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -19,6 +19,8 @@ class AppTextField extends StatelessWidget {
     this.autofocus = false,
     this.textInputAction = TextInputAction.done,
     this.textCapitalization = TextCapitalization.sentences,
+    this.keyboardType,
+    this.inputFormatters = const [],
     this.onChanged,
     this.onSubmitted,
     super.key,
@@ -34,6 +36,10 @@ class AppTextField extends StatelessWidget {
   final bool autofocus;
   final TextInputAction textInputAction;
   final TextCapitalization textCapitalization;
+  final TextInputType? keyboardType;
+
+  /// Applied after the [maxLength] limit.
+  final List<TextInputFormatter> inputFormatters;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
 
@@ -62,10 +68,12 @@ class AppTextField extends StatelessWidget {
           autofocus: autofocus,
           textInputAction: textInputAction,
           textCapitalization: textCapitalization,
+          keyboardType: keyboardType,
           onChanged: onChanged,
           onSubmitted: onSubmitted,
           inputFormatters: [
             if (maxLength != null) LengthLimitingTextInputFormatter(maxLength),
+            ...inputFormatters,
           ],
           style: AppTextStyles.body.copyWith(
             color: enabled ? colors.textPrimary : colors.textSecondary,

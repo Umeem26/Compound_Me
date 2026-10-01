@@ -152,7 +152,7 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 - **Sembunyikan saldo:** kalau toggle di S-43 aktif, saldo tertutup (`Rp ••••••`, pembaca layar "Saldo disembunyikan") setiap app dibuka. Ikon mata membukanya untuk sesi itu saja, tanpa mengubah pengaturan. S-41 (total dan saldo per dompet) mengikuti keadaan yang sama. Nominal transaksi dan ringkasan bulan tidak disembunyikan.
 - **Ringkasan bulan:** kartu 3 kolom Masuk · Keluar · Selisih (`PeriodSummaryCard`, komponen yang sama dengan S-13) di bawah total saldo. Pemilih bulan berupa chip kecil di header kartu (default bulan ini; pilihan dari bulan transaksi tertua sampai bulan ini). Tetap satu baris di lebar 360 dp dan ukuran teks 1,3: nominal mengecil, tidak terpotong. Total saldo selalu saldo saat ini (tidak terpengaruh bulan).
 - **Strip kebiasaan:** hanya kebiasaan yang terjadwal hari ini, urutan: belum selesai dulu. Tap "Semua" → tab Kebiasaan. Kalau tidak ada kebiasaan: kartu kecil "Tambah kebiasaan pertamamu" → S-21.
-- **Kartu insight:** satu saja, dipilih dari aturan sederhana (prioritas): (1) kebiasaan Kurangi dengan biaya bulan ini terbesar, (2) streak kebiasaan Bangun tertinggi ≥ 7, (3) pengeluaran naik > 20% vs periode yang sama bulan lalu. Tidak muncul kalau data < 7 hari.
+- **Kartu insight:** satu saja, dipilih dari aturan sederhana (prioritas): (1) kebiasaan Kurangi dengan biaya bulan ini terbesar, (2) streak kebiasaan Bangun tertinggi ≥ 7, (3) pengeluaran naik > 20% vs periode yang sama bulan lalu (tanggal 1 sampai hari ini di kedua bulan). Tidak muncul kalau data < 7 hari atau tidak ada yang memenuhi. Streak mingguan dihitung 7 hari per minggu, jadi satu minggu sudah memenuhi "≥ 7". Tap: (1) membuka S-31, (2) S-22, (3) tab Wawasan.
 - **Transaksi terbaru:** maksimal 10, dikelompokkan per hari. Tap → S-12.
 - **Pull to refresh:** tidak perlu (data lokal reaktif). Semua bagian reaktif lewat stream Drift.
 - **Empty:** belum ada transaksi → EmptyState "Belum ada transaksi" + tombol "Catat transaksi pertama" (buka S-11).
@@ -241,7 +241,7 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 - Header: ikon besar, nama, jenis + jadwal.
 - 3 statistik dalam satu baris: **Streak** (dengan ikon api), **Terbaik**, **Konsistensi 30 hari** (%). Kebiasaan Kurangi: statistik ketiga = **Minggu ini** (jumlah/batas); tanpa batas mingguan, streak "–" dan ada kartu "Atur batas mingguan untuk mulai streak" → S-21.
 - `HabitCalendar` bulan ini (geser atau panah untuk bulan lain, mulai Senin) dengan legenda: selesai, hari longgar, terlewat. Hari longgar dan terlewat hanya untuk kebiasaan harian/hari tertentu; kebiasaan N kali seminggu dan Kurangi hanya menandai hari check-in (Kurangi: "Tercatat").
-- Khusus Kurangi: kartu "Biaya bulan ini Rp 310.000 · proyeksi setahun ±Rp 4,0 jt". Tombol "Simulasikan" → S-31 disembunyikan sampai Fase 5 (tidak ada tombol yang belum berfungsi).
+- Khusus Kurangi: kartu "Biaya bulan ini Rp 310.000 · proyeksi setahun ±Rp 4,0 jt" dengan tombol "Simulasikan" → S-31 (aktif sejak Fase 5).
 - Daftar check-in terakhir (tanggal, jumlah, dan untuk Kurangi total transaksi terkait), 10 terbaru.
 - Menu ⋯: Edit, Arsipkan (Pulihkan untuk yang diarsipkan; arsip punya snackbar urungkan).
 
@@ -278,15 +278,19 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 - Periode mengikuti pemilih bulan di kanan atas.
 - Semua angka bisa di-tap: kebiasaan → S-31 (Kurangi) atau S-22 (Bangun), kategori → S-13 dengan filter.
 - **Empty (data < 7 hari):** EmptyState "Wawasan muncul setelah seminggu mencatat" + progres "3 dari 7 hari" (ring kecil). Jangan tampilkan grafik kosong.
+- **Hari data** = hari sejak transaksi atau check-in pertama sampai hari ini, hari ini ikut dihitung (catatan pertama 2 hari lalu = "3 dari 7 hari"). Tidak ada catatan = 0.
+- Tanpa kebiasaan Kurangi, kartu utama diganti kartu "Belum ada kebiasaan Kurangi" dengan tombol ke form kebiasaan baru. Bulan tanpa pengeluaran: teks "Belum ada pengeluaran bulan ini" di kartu utama dan di bagian kategori, tanpa donut.
+- Tap kategori (donut atau baris) membuka S-13 di dalam tab Wawasan (`/insights/transactions?month=&category=`), jadi back kembali ke Wawasan. Tap kebiasaan Bangun membuka S-22 (tab Kebiasaan).
+- Tren Bangun: ikon panah + "12 poin" (dibaca "naik 12 poin dibanding bulan lalu"); turun memakai warna peringatan, bukan merah.
 
 ### S-31 Simulator kebiasaan (sheet)
 - Judul: "Kalau Kopi dikurangi…"
 - Baris info: rata-rata ±3,1 kali/minggu (4 minggu terakhir) × Rp 25.000.
 - Slider "Kurangi" 0–100% (langkah 10%), label nilai di atasnya.
-- Hasil utama: "Hemat ±Rp 2,0 jt per tahun" (`amountHero` kecil, `gold800`/`gold300`).
-- Toggle "Tabung & kembangkan": field suku bunga per tahun (default 0%, chip cepat 0% · 3% · 5%), hasil 1/3/5 tahun dalam 3 kolom. Rumus: setoran bulanan tetap dengan bunga majemuk bulanan (lihat `05-architecture-and-data.md §6`).
-- Disclaimer permanen di bawah: "Simulasi, bukan saran keuangan."
-- Tombol "Atur batas mingguan" → mengisi batas per minggu di kebiasaan sesuai hasil slider (opsional).
+- Hasil utama: "Hemat per tahun" + "±Rp 1.950.000" (`amountHero`, `gold800`/`gold300`), nominal penuh karena angka yang dihitung harus bisa dicocokkan dengan perhitungan manual. Mengecil (`FittedBox`) di ukuran teks 1,3.
+- Toggle "Tabung & kembangkan": field suku bunga per tahun (default 0%, chip cepat 0% · 3% · 5%, input 0–100), hasil 1/3/5 tahun sebagai tiga baris dengan nominal penuh (tiga kolom tidak muat di ukuran teks 1,3). Rumus: setoran bulanan tetap dengan bunga majemuk bulanan (lihat `05-architecture-and-data.md §6`).
+- Disclaimer permanen di bawah, di luar area yang bisa digulir sehingga selalu terlihat: "Simulasi, bukan saran keuangan."
+- Tombol "Atur batas mingguan" → mengisi batas per minggu di kebiasaan sesuai hasil slider (rata-rata per minggu × (1 − persen), dibulatkan), dengan snackbar "Urungkan". Teks di atas tombol menyebut batas yang akan diisi. Tombol tersembunyi kalau belum ada check-in 4 minggu terakhir.
 
 ### S-40 Profil
 - Header: avatar inisial (lingkaran `teal50`, huruf `teal700`), nama (tap untuk ubah).
