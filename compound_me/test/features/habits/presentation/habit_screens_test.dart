@@ -462,6 +462,11 @@ void main() {
       final grace = _labelled('Minggu, 20 September 2026, Hari longgar');
       await _scrollTo(tester, grace);
       expect(grace, findsOneWidget);
+      // Its own node for screen readers, not merged into the month.
+      expect(
+        find.bySemanticsLabel('Minggu, 20 September 2026, Hari longgar'),
+        findsOneWidget,
+      );
       expect(find.text('Hari longgar'), findsOneWidget, reason: 'legend');
       final monday = tester.getCenter(_labelled('Senin'));
       final sunday = tester.getCenter(_labelled('Minggu'));

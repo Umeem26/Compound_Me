@@ -219,6 +219,7 @@ Hal yang hanya bisa dinilai manusia di HP sungguhan. Semua checklist fase lain s
 - [ ] Haptic terasa pas (keypad, check-in, hapus) di HP sungguhan, karena emulator tidak bergetar.
 - [ ] Rasa haptic check-in kebiasaan (getar ringan saat ring terisi, tidak ada getar saat dibatalkan) di HP sungguhan (Fase 4).
 - [ ] Tap cepat berkali-kali pada HabitChip dan tombol check di HP sungguhan: jumlah transaksi sama dengan jumlah check-in, saldo benar (Fase 4).
+- [ ] Tombol back saat keyboard terbuka otomatis di form baru (kebiasaan, dompet) di HP sungguhan: back pertama menutup keyboard, bukan form. Di emulator lewat adb, back langsung menutup form (Fase 4, juga form dompet Fase 2).
 
 **Checklist kamu (uji pengguna kecil):**
 - [ ] Minta 3–5 teman (persona target) mencoba tanpa penjelasan: onboarding, catat kopi, cari kebiasaan termahal. Catat di mana mereka ragu.

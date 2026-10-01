@@ -62,6 +62,9 @@ class MonthGrid extends StatelessWidget {
           );
 
     return GestureDetector(
+      // The arrows carry month changes for screen readers; a swipe action
+      // here would make the whole grid one node.
+      excludeFromSemantics: true,
       onHorizontalDragEnd: (details) {
         final velocity = details.primaryVelocity ?? 0;
         if (velocity > 0) onPrevious?.call();
@@ -79,6 +82,7 @@ class MonthGrid extends StatelessWidget {
                   arrow(AppIcons.caretLeft, labels.previous, onPrevious),
                   Expanded(
                     child: Semantics(
+                      container: true,
                       header: true,
                       liveRegion: true,
                       child: Text(
@@ -94,24 +98,27 @@ class MonthGrid extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.space2),
-              Row(
-                children: [
-                  for (var i = 0; i < 7; i++)
-                    SizedBox(
-                      width: width,
-                      child: Semantics(
-                        label: labels.weekdaysFull[i],
-                        excludeSemantics: true,
-                        child: Text(
-                          labels.weekdaysShort[i],
-                          style: AppTextStyles.caption.copyWith(
-                            color: colors.textTertiary,
+              // Each day reads its full date, so the header row is visual.
+              ExcludeSemantics(
+                child: Row(
+                  children: [
+                    for (var i = 0; i < 7; i++)
+                      SizedBox(
+                        width: width,
+                        child: Semantics(
+                          label: labels.weekdaysFull[i],
+                          excludeSemantics: true,
+                          child: Text(
+                            labels.weekdaysShort[i],
+                            style: AppTextStyles.caption.copyWith(
+                              color: colors.textTertiary,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: AppSpacing.space1),
               for (var row = 0; row < rows; row++)
@@ -207,6 +214,7 @@ class HabitCalendar extends StatelessWidget {
           dayBuilder: (context, day, size) {
             final style = styleOf(day);
             return Semantics(
+              container: true,
               label: dayLabel(day, style),
               excludeSemantics: true,
               child: _DayCell(
@@ -400,6 +408,7 @@ class _DatePickerState extends State<_DatePicker> {
         }
 
         return Semantics(
+          container: true,
           button: true,
           enabled: enabled,
           selected: selected,
