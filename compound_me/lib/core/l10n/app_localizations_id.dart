@@ -1020,4 +1020,192 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get habitArchivedBanner => 'Kebiasaan ini diarsipkan.';
+
+  @override
+  String insightsDaysProgress(int current, int total) {
+    return '$current dari $total hari';
+  }
+
+  @override
+  String get insightsPeriodThis => 'bulan ini';
+
+  @override
+  String insightsPeriodIn(String month) {
+    return 'di $month';
+  }
+
+  @override
+  String insightsShareCaption(String period, String amount) {
+    return 'pengeluaranmu $period dari kebiasaan yang ingin kamu kurangi · $amount';
+  }
+
+  @override
+  String insightsNoSpending(String period) {
+    return 'Belum ada pengeluaran $period.';
+  }
+
+  @override
+  String get insightsNoReduceTitle => 'Belum ada kebiasaan Kurangi';
+
+  @override
+  String get insightsNoReduceBody =>
+      'Tambahkan satu untuk melihat berapa biayanya dalam setahun.';
+
+  @override
+  String get insightsNoReduceAction => 'Tambah kebiasaan';
+
+  @override
+  String get insightsReduceSection => 'Kebiasaan yang dikurangi';
+
+  @override
+  String insightsReduceSubtitle(String perWeek, String yearly) {
+    return '±${perWeek}x/minggu · $yearly/th';
+  }
+
+  @override
+  String get insightsBuildSection => 'Kebiasaan yang dibangun';
+
+  @override
+  String get insightsConsistency => 'Konsistensi';
+
+  @override
+  String percentValue(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String insightsTrendPoints(int points) {
+    return '$points poin';
+  }
+
+  @override
+  String insightsTrendUp(int points) {
+    return 'naik $points poin dibanding bulan lalu';
+  }
+
+  @override
+  String insightsTrendDown(int points) {
+    return 'turun $points poin dibanding bulan lalu';
+  }
+
+  @override
+  String get insightsTrendFlat => 'Tetap';
+
+  @override
+  String get insightsTrendFlatSpoken => 'sama dengan bulan lalu';
+
+  @override
+  String get insightsCategorySection => 'Pengeluaran per kategori';
+
+  @override
+  String get insightsDonutCenter => 'Total';
+
+  @override
+  String insightsCategoryOpen(String category) {
+    return 'Lihat transaksi $category';
+  }
+
+  @override
+  String simTitle(String habit) {
+    return 'Kalau $habit dikurangi…';
+  }
+
+  @override
+  String simPace(String perWeek, String cost) {
+    return 'Rata-rata ±$perWeek kali/minggu (4 minggu terakhir) × $cost';
+  }
+
+  @override
+  String get simNoPace =>
+      'Belum ada check-in dalam 4 minggu terakhir, jadi belum ada yang bisa dihemat.';
+
+  @override
+  String get simReduceLabel => 'Kurangi';
+
+  @override
+  String simPercentSpoken(int percent) {
+    return '$percent persen';
+  }
+
+  @override
+  String get simSaveLabel => 'Hemat per tahun';
+
+  @override
+  String approxAmount(String amount) {
+    return '±$amount';
+  }
+
+  @override
+  String get simInvestToggle => 'Tabung & kembangkan';
+
+  @override
+  String get simInvestHint => 'Anggap uang yang dihemat ditabung setiap bulan.';
+
+  @override
+  String get simRateLabel => 'Bunga per tahun (%)';
+
+  @override
+  String get simRateInvalid => 'Isi angka antara 0 dan 100.';
+
+  @override
+  String simHorizon(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years tahun',
+      one: '1 tahun',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get simDisclaimer => 'Simulasi, bukan saran keuangan.';
+
+  @override
+  String simLimitHint(int limit) {
+    return 'Batas mingguan sesuai simulasi: $limit kali';
+  }
+
+  @override
+  String get simSetLimit => 'Atur batas mingguan';
+
+  @override
+  String simLimitSet(int limit) {
+    return 'Batas mingguan diatur ke $limit kali';
+  }
+
+  @override
+  String get simLimitFailed => 'Batas mingguan belum bisa diatur.';
+
+  @override
+  String get habitSimulate => 'Simulasikan';
+
+  @override
+  String homeInsightReduce(String habit, String amount) {
+    return '$habit sudah $amount bulan ini.';
+  }
+
+  @override
+  String get homeInsightReduceAction => 'Lihat dampak';
+
+  @override
+  String homeInsightStreakDays(String habit, int count) {
+    return '$habit: $count hari berturut-turut.';
+  }
+
+  @override
+  String homeInsightStreakWeeks(String habit, int count) {
+    return '$habit: $count minggu berturut-turut.';
+  }
+
+  @override
+  String get homeInsightStreakAction => 'Lihat kebiasaan';
+
+  @override
+  String homeInsightSpending(int percent) {
+    return 'Pengeluaranmu naik $percent% dibanding periode yang sama bulan lalu.';
+  }
+
+  @override
+  String get homeInsightSpendingAction => 'Lihat rinciannya';
 }

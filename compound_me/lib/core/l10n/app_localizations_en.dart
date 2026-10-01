@@ -1050,4 +1050,192 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get habitArchivedBanner => 'This habit is archived.';
+
+  @override
+  String insightsDaysProgress(int current, int total) {
+    return '$current of $total days';
+  }
+
+  @override
+  String get insightsPeriodThis => 'this month';
+
+  @override
+  String insightsPeriodIn(String month) {
+    return 'in $month';
+  }
+
+  @override
+  String insightsShareCaption(String period, String amount) {
+    return 'of your spending $period came from habits you want to cut back · $amount';
+  }
+
+  @override
+  String insightsNoSpending(String period) {
+    return 'No spending $period yet.';
+  }
+
+  @override
+  String get insightsNoReduceTitle => 'No Reduce habit yet';
+
+  @override
+  String get insightsNoReduceBody => 'Add one to see what it costs in a year.';
+
+  @override
+  String get insightsNoReduceAction => 'Add a habit';
+
+  @override
+  String get insightsReduceSection => 'Habits you cut back';
+
+  @override
+  String insightsReduceSubtitle(String perWeek, String yearly) {
+    return '±${perWeek}x/week · $yearly/yr';
+  }
+
+  @override
+  String get insightsBuildSection => 'Habits you build';
+
+  @override
+  String get insightsConsistency => 'Consistency';
+
+  @override
+  String percentValue(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String insightsTrendPoints(int points) {
+    return '$points pts';
+  }
+
+  @override
+  String insightsTrendUp(int points) {
+    return 'up $points points from last month';
+  }
+
+  @override
+  String insightsTrendDown(int points) {
+    return 'down $points points from last month';
+  }
+
+  @override
+  String get insightsTrendFlat => 'Same';
+
+  @override
+  String get insightsTrendFlatSpoken => 'same as last month';
+
+  @override
+  String get insightsCategorySection => 'Spending by category';
+
+  @override
+  String get insightsDonutCenter => 'Total';
+
+  @override
+  String insightsCategoryOpen(String category) {
+    return 'See $category transactions';
+  }
+
+  @override
+  String simTitle(String habit) {
+    return 'If you cut back $habit…';
+  }
+
+  @override
+  String simPace(String perWeek, String cost) {
+    return 'About $perWeek times a week (last 4 weeks) × $cost';
+  }
+
+  @override
+  String get simNoPace =>
+      'No check-ins in the last 4 weeks, so there is nothing to save yet.';
+
+  @override
+  String get simReduceLabel => 'Cut back';
+
+  @override
+  String simPercentSpoken(int percent) {
+    return '$percent percent';
+  }
+
+  @override
+  String get simSaveLabel => 'Saved per year';
+
+  @override
+  String approxAmount(String amount) {
+    return '~$amount';
+  }
+
+  @override
+  String get simInvestToggle => 'Save & grow';
+
+  @override
+  String get simInvestHint =>
+      'Assume the money you save is put aside every month.';
+
+  @override
+  String get simRateLabel => 'Interest per year (%)';
+
+  @override
+  String get simRateInvalid => 'Enter a number from 0 to 100.';
+
+  @override
+  String simHorizon(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years years',
+      one: '1 year',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get simDisclaimer => 'A simulation, not financial advice.';
+
+  @override
+  String simLimitHint(int limit) {
+    return 'Weekly limit from this simulation: $limit times';
+  }
+
+  @override
+  String get simSetLimit => 'Set weekly limit';
+
+  @override
+  String simLimitSet(int limit) {
+    return 'Weekly limit set to $limit times';
+  }
+
+  @override
+  String get simLimitFailed => 'Couldn\'t set the weekly limit.';
+
+  @override
+  String get habitSimulate => 'Simulate';
+
+  @override
+  String homeInsightReduce(String habit, String amount) {
+    return '$habit has cost $amount this month.';
+  }
+
+  @override
+  String get homeInsightReduceAction => 'See the impact';
+
+  @override
+  String homeInsightStreakDays(String habit, int count) {
+    return '$habit: $count days in a row.';
+  }
+
+  @override
+  String homeInsightStreakWeeks(String habit, int count) {
+    return '$habit: $count weeks in a row.';
+  }
+
+  @override
+  String get homeInsightStreakAction => 'See the habit';
+
+  @override
+  String homeInsightSpending(int percent) {
+    return 'Your spending is up $percent% on the same days last month.';
+  }
+
+  @override
+  String get homeInsightSpendingAction => 'See the breakdown';
 }

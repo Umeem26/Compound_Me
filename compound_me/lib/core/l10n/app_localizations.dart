@@ -1933,6 +1933,282 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Kebiasaan ini diarsipkan.'**
   String get habitArchivedBanner;
+
+  /// Progress toward the first week of data.
+  ///
+  /// In id, this message translates to:
+  /// **'{current} dari {total} hari'**
+  String insightsDaysProgress(int current, int total);
+
+  /// Period phrase for the current month.
+  ///
+  /// In id, this message translates to:
+  /// **'bulan ini'**
+  String get insightsPeriodThis;
+
+  /// Period phrase for another month, e.g. 'di Agustus'.
+  ///
+  /// In id, this message translates to:
+  /// **'di {month}'**
+  String insightsPeriodIn(String month);
+
+  /// Caption under the share percentage on the main insight card.
+  ///
+  /// In id, this message translates to:
+  /// **'pengeluaranmu {period} dari kebiasaan yang ingin kamu kurangi · {amount}'**
+  String insightsShareCaption(String period, String amount);
+
+  /// Shown when the month has no expenses.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada pengeluaran {period}.'**
+  String insightsNoSpending(String period);
+
+  /// Insights card when there is no reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kebiasaan Kurangi'**
+  String get insightsNoReduceTitle;
+
+  /// Insights card when there is no reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan satu untuk melihat berapa biayanya dalam setahun.'**
+  String get insightsNoReduceBody;
+
+  /// Opens the new habit form from Insights.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah kebiasaan'**
+  String get insightsNoReduceAction;
+
+  /// Section title of reduce habits.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan yang dikurangi'**
+  String get insightsReduceSection;
+
+  /// Pace and yearly projection of a reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'±{perWeek}x/minggu · {yearly}/th'**
+  String insightsReduceSubtitle(String perWeek, String yearly);
+
+  /// Section title of build habits.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan yang dibangun'**
+  String get insightsBuildSection;
+
+  /// Label of a build habit's consistency.
+  ///
+  /// In id, this message translates to:
+  /// **'Konsistensi'**
+  String get insightsConsistency;
+
+  /// A percentage.
+  ///
+  /// In id, this message translates to:
+  /// **'{percent}%'**
+  String percentValue(int percent);
+
+  /// Change in percentage points against last month.
+  ///
+  /// In id, this message translates to:
+  /// **'{points} poin'**
+  String insightsTrendPoints(int points);
+
+  /// Spoken form of an upward trend.
+  ///
+  /// In id, this message translates to:
+  /// **'naik {points} poin dibanding bulan lalu'**
+  String insightsTrendUp(int points);
+
+  /// Spoken form of a downward trend.
+  ///
+  /// In id, this message translates to:
+  /// **'turun {points} poin dibanding bulan lalu'**
+  String insightsTrendDown(int points);
+
+  /// No change against last month.
+  ///
+  /// In id, this message translates to:
+  /// **'Tetap'**
+  String get insightsTrendFlat;
+
+  /// Spoken form of no change.
+  ///
+  /// In id, this message translates to:
+  /// **'sama dengan bulan lalu'**
+  String get insightsTrendFlatSpoken;
+
+  /// Section title of the donut chart.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengeluaran per kategori'**
+  String get insightsCategorySection;
+
+  /// Label in the middle of the donut.
+  ///
+  /// In id, this message translates to:
+  /// **'Total'**
+  String get insightsDonutCenter;
+
+  /// Spoken action of a category row.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat transaksi {category}'**
+  String insightsCategoryOpen(String category);
+
+  /// Title of the simulator sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalau {habit} dikurangi…'**
+  String simTitle(String habit);
+
+  /// Pace and cost behind the simulation.
+  ///
+  /// In id, this message translates to:
+  /// **'Rata-rata ±{perWeek} kali/minggu (4 minggu terakhir) × {cost}'**
+  String simPace(String perWeek, String cost);
+
+  /// Simulator without a pace.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada check-in dalam 4 minggu terakhir, jadi belum ada yang bisa dihemat.'**
+  String get simNoPace;
+
+  /// Label of the reduction slider.
+  ///
+  /// In id, this message translates to:
+  /// **'Kurangi'**
+  String get simReduceLabel;
+
+  /// Spoken value of the slider.
+  ///
+  /// In id, this message translates to:
+  /// **'{percent} persen'**
+  String simPercentSpoken(int percent);
+
+  /// Label above the yearly savings.
+  ///
+  /// In id, this message translates to:
+  /// **'Hemat per tahun'**
+  String get simSaveLabel;
+
+  /// An estimated amount.
+  ///
+  /// In id, this message translates to:
+  /// **'±{amount}'**
+  String approxAmount(String amount);
+
+  /// Toggle that shows the compound projection.
+  ///
+  /// In id, this message translates to:
+  /// **'Tabung & kembangkan'**
+  String get simInvestToggle;
+
+  /// Explains the save and grow toggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Anggap uang yang dihemat ditabung setiap bulan.'**
+  String get simInvestHint;
+
+  /// Label of the interest rate field.
+  ///
+  /// In id, this message translates to:
+  /// **'Bunga per tahun (%)'**
+  String get simRateLabel;
+
+  /// Error of the interest rate field.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi angka antara 0 dan 100.'**
+  String get simRateInvalid;
+
+  /// A number of years.
+  ///
+  /// In id, this message translates to:
+  /// **'{years, plural, =1{1 tahun} other{{years} tahun}}'**
+  String simHorizon(int years);
+
+  /// Permanent disclaimer under every projection.
+  ///
+  /// In id, this message translates to:
+  /// **'Simulasi, bukan saran keuangan.'**
+  String get simDisclaimer;
+
+  /// The limit the button would set.
+  ///
+  /// In id, this message translates to:
+  /// **'Batas mingguan sesuai simulasi: {limit} kali'**
+  String simLimitHint(int limit);
+
+  /// Writes the simulated limit to the habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur batas mingguan'**
+  String get simSetLimit;
+
+  /// Snackbar after setting the limit.
+  ///
+  /// In id, this message translates to:
+  /// **'Batas mingguan diatur ke {limit} kali'**
+  String simLimitSet(int limit);
+
+  /// Error after setting the limit.
+  ///
+  /// In id, this message translates to:
+  /// **'Batas mingguan belum bisa diatur.'**
+  String get simLimitFailed;
+
+  /// Opens the simulator from the habit detail.
+  ///
+  /// In id, this message translates to:
+  /// **'Simulasikan'**
+  String get habitSimulate;
+
+  /// Home insight about a reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'{habit} sudah {amount} bulan ini.'**
+  String homeInsightReduce(String habit, String amount);
+
+  /// Opens the simulator.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat dampak'**
+  String get homeInsightReduceAction;
+
+  /// Home insight about a daily streak.
+  ///
+  /// In id, this message translates to:
+  /// **'{habit}: {count} hari berturut-turut.'**
+  String homeInsightStreakDays(String habit, int count);
+
+  /// Home insight about a weekly streak.
+  ///
+  /// In id, this message translates to:
+  /// **'{habit}: {count} minggu berturut-turut.'**
+  String homeInsightStreakWeeks(String habit, int count);
+
+  /// Opens the habit detail.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat kebiasaan'**
+  String get homeInsightStreakAction;
+
+  /// Home insight about rising spending.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengeluaranmu naik {percent}% dibanding periode yang sama bulan lalu.'**
+  String homeInsightSpending(int percent);
+
+  /// Opens Insights.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat rinciannya'**
+  String get homeInsightSpendingAction;
 }
 
 class _AppLocalizationsDelegate

@@ -13,6 +13,7 @@ export 'components/chips.dart';
 export 'components/coach_mark.dart';
 export 'components/empty_state.dart';
 export 'components/habits.dart';
+export 'components/insights.dart';
 export 'components/period_summary.dart';
 export 'components/pickers.dart';
 export 'components/segmented_toggle.dart';

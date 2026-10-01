@@ -8,6 +8,14 @@ abstract final class AppRoutes {
   static String habit(String id) => '/habits/$id';
   static String habitEdit(String id) => '/habits/$id/edit';
   static const insights = '/insights';
+
+  /// S-13 inside the Wawasan tab, so back returns to Wawasan (S-30 donut).
+  static String insightsTransactions({
+    required String month,
+    String? category,
+  }) =>
+      '/insights/transactions?month=$month'
+      '${category == null ? '' : '&category=$category'}';
   static const me = '/me';
   static const wallets = '/me/wallets';
   static const walletNew = '/me/wallets/new';
