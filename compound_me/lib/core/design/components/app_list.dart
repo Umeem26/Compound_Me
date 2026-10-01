@@ -219,9 +219,6 @@ class RowPicker extends StatelessWidget {
     super.key,
   });
 
-  /// Widest a label gets, as a share of the row.
-  static const _labelMaxShare = 0.55;
-
   final String label;
   final String value;
   final VoidCallback? onTap;
@@ -230,6 +227,60 @@ class RowPicker extends StatelessWidget {
 
   /// Shows [value] as a placeholder, e.g. "Tambah catatan".
   final bool valueMuted;
+
+  /// Past this text scale the label sits above the value, so a long label
+  /// never squeezes the value out (text scale 1,3 on 360 dp).
+  static const _stackedTextScale = 1.15;
+
+  Widget _row(BuildContext context, AppColors colors) {
+    final labelText = Text(
+      label,
+      style: AppTextStyles.body.copyWith(color: colors.textSecondary),
+    );
+    final valueStyle = valueMuted
+        ? AppTextStyles.body.copyWith(color: colors.textTertiary)
+        : AppTextStyles.bodyStrong.copyWith(color: colors.textPrimary);
+    final caret = Icon(
+      AppIcons.caretRight,
+      size: AppSizes.iconSm,
+      color: colors.textTertiary,
+    );
+    final stacked =
+        MediaQuery.textScalerOf(context).scale(1) > _stackedTextScale;
+    return Row(
+      children: [
+        if (leading != null) ...[
+          leading!,
+          const SizedBox(width: AppSpacing.space3),
+        ],
+        if (stacked)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                labelText,
+                if (value.isNotEmpty) Text(value, style: valueStyle),
+              ],
+            ),
+          )
+        else ...[
+          labelText,
+          const SizedBox(width: AppSpacing.space3),
+          Expanded(
+            child: Text(
+              value,
+              style: valueStyle,
+              textAlign: TextAlign.end,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+        const SizedBox(width: AppSpacing.space1),
+        caret,
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -254,51 +305,7 @@ class RowPicker extends StatelessWidget {
                 horizontal: flat ? AppSpacing.space1 : AppSpacing.space4,
                 vertical: AppSpacing.space2,
               ),
-              child: LayoutBuilder(
-                // The label wraps past this share of the row, so a long one
-                // (text scale 1,3) never pushes the value out.
-                builder: (context, box) => Row(
-                  children: [
-                    if (leading != null) ...[
-                      leading!,
-                      const SizedBox(width: AppSpacing.space3),
-                    ],
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: box.maxWidth * _labelMaxShare,
-                      ),
-                      child: Text(
-                        label,
-                        style: AppTextStyles.body.copyWith(
-                          color: colors.textSecondary,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.space3),
-                    Expanded(
-                      child: Text(
-                        value,
-                        style: valueMuted
-                            ? AppTextStyles.body.copyWith(
-                                color: colors.textTertiary,
-                              )
-                            : AppTextStyles.bodyStrong.copyWith(
-                                color: colors.textPrimary,
-                              ),
-                        textAlign: TextAlign.end,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.space1),
-                    Icon(
-                      AppIcons.caretRight,
-                      size: AppSizes.iconSm,
-                      color: colors.textTertiary,
-                    ),
-                  ],
-                ),
-              ),
+              child: _row(context, colors),
             ),
           ),
         ),

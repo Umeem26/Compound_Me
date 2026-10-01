@@ -130,6 +130,7 @@ void main() {
       );
       _errorSites.clear();
       final report = FlutterError.onError;
+      addTearDown(() => FlutterError.onError = report);
       FlutterError.onError = (details) {
         _errorSites.add(
           details
@@ -173,20 +174,27 @@ void main() {
       await goTo(tester, AppRoutes.home);
       await tester.tap(find.bySemanticsLabel(addLabel));
       await tester.pumpAndSettle();
+      expect(find.byType(BottomSheet), findsOneWidget);
       _expectClean(tester, 'add transaction sheet');
       await _closeSheet(tester);
 
       // The recent transactions sit below the fold at this text size.
       await tester.drag(find.byType(Scrollable).first, const Offset(0, -900));
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byType(TransactionTile).first);
+      await tester.pumpAndSettle();
       await tester.tap(find.byType(TransactionTile).first);
       await tester.pumpAndSettle();
+      expect(find.byType(BottomSheet), findsOneWidget);
       _expectClean(tester, 'transaction detail');
       await _closeSheet(tester);
 
       await goTo(tester, AppRoutes.insights);
+      await tester.ensureVisible(find.byType(InsightHabitTile).first);
+      await tester.pumpAndSettle();
       await tester.tap(find.byType(InsightHabitTile).first);
       await tester.pumpAndSettle();
+      expect(find.byType(BottomSheet), findsOneWidget);
       _expectClean(tester, 'simulator');
     });
 

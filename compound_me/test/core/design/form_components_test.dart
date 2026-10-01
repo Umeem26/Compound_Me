@@ -93,7 +93,10 @@ void main() {
 
     expect(find.text('25.000'), findsOneWidget);
     expect(find.text('Rp'), findsOneWidget);
-    expect(find.bySemanticsLabel('Rp 25.000'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('twenty-five thousand rupiah'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('AppTextField shows the label and an error', (tester) async {

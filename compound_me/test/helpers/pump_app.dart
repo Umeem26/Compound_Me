@@ -9,6 +9,7 @@ import 'package:compound_me/features/wallets/domain/wallet.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -21,7 +22,8 @@ const pixel9Ratio = 2.625;
 
 /// Builds the full app the way bootstrap does, with in-memory storage.
 /// By default onboarding is done and its hint dismissed; [prefs] adds or
-/// overrides stored preferences.
+/// overrides stored preferences. [overrides] swap providers, e.g. to make a
+/// stream fail.
 ///
 /// [seed] fills the database before the onboarding flag is synced with it,
 /// as bootstrap does. Without it, an onboarded app gets the one wallet
@@ -40,6 +42,7 @@ Future<AppDatabase> pumpApp(
   DateTime Function()? clock,
   Size physicalSize = pixel9,
   double devicePixelRatio = pixel9Ratio,
+  List<Override> overrides = const [],
 }) async {
   tester.view
     ..physicalSize = physicalSize
@@ -92,6 +95,7 @@ Future<AppDatabase> pumpApp(
           clockProvider.overrideWithValue(clock)
         else if (now != null)
           clockProvider.overrideWithValue(() => now),
+        ...overrides,
       ],
       child: const CompoundMeApp(),
     ),
