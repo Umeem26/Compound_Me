@@ -1,8 +1,8 @@
 import 'package:compound_me/core/database/app_database.dart';
 import 'package:compound_me/core/utils/validation.dart';
 import 'package:compound_me/features/habits/domain/habit.dart';
+import 'package:compound_me/features/habits/domain/habit_templates.dart';
 import 'package:compound_me/features/onboarding/data/drift_onboarding_setup.dart';
-import 'package:compound_me/features/onboarding/domain/habit_templates.dart';
 import 'package:compound_me/features/onboarding/domain/onboarding_setup.dart';
 import 'package:compound_me/features/wallets/domain/wallet.dart';
 import 'package:flutter_test/flutter_test.dart';

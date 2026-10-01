@@ -277,24 +277,3 @@ Future<T?> showOptionSheet<T>(
     );
   },
 );
-
-/// Calendar in a sheet (S-11 date row). Returns the picked day at local
-/// midnight, or null when dismissed.
-Future<DateTime?> showDateSheet(
-  BuildContext context, {
-  required String title,
-  required DateTime initial,
-  required DateTime first,
-  required DateTime last,
-}) => showAppSheet<DateTime>(
-  context,
-  builder: (context) => SheetBody(
-    title: title,
-    child: CalendarDatePicker(
-      initialDate: initial,
-      firstDate: first,
-      lastDate: last,
-      onDateChanged: (day) => Navigator.of(context).pop(day),
-    ),
-  ),
-);

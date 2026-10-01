@@ -204,7 +204,7 @@ State: pressed = warna 1 tingkat lebih gelap + skala 0,98 (`motionFast`, 120 ms)
 ### 7.4 Kebiasaan
 - **`HabitChip`** (strip Beranda): lingkaran 56 dp dengan ikon kebiasaan, ring progres 3 dp di sekelilingnya, nama di bawah (`caption`, 1 baris). Belum = ring `border`, ikon warna kebiasaan di latar `surface`. Selesai = lingkaran terisi `teal700` (gelap: `teal400`) dengan ikon putih (gelap: `teal900`). Kurangi yang sudah tercatat = ring `teal700` + badge angka jumlah. Animasi ring terisi 250 ms + haptic ringan. Emas **tidak** dipakai untuk status selesai supaya tetap jadi aksen langka (streak, angka hemat).
 - **`HabitTile`** (tab Kebiasaan): tinggi 72, radius `radiusMd`, ikon kiri, nama + jadwal/biaya, di kanan tombol check 44 dp (lingkaran). Info streak kecil dengan ikon api Phosphor `gold800`/`gold300` (bukan emoji).
-- **`HabitCalendar`**: grid bulan 7 kolom, sel 36 dp. Selesai = lingkaran `teal700`, hari longgar = lingkaran outline `gold500`, terlewat = titik `border`, tidak terjadwal = kosong.
+- **`HabitCalendar`**: grid bulan 7 kolom mulai Senin (`MonthGrid`, juga dipakai kalender tanggal S-11), sel 36 dp. Selesai = lingkaran `teal700`, hari longgar = lingkaran outline `gold500`, terlewat = titik `border`, tidak terjadwal = kosong.
 
 ### 7.5 Input
 - **`AmountKeypad`**: grid 3×4 (1–9, `000`, 0, hapus), tombol 56 dp tinggi dengan jarak 8, teks `titleMedium`, latar tombol `surfaceMuted`, radius `radiusMd`. Long-press hapus = kosongkan. Haptic `selectionClick` per tap.

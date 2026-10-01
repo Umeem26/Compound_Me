@@ -73,6 +73,7 @@ class DriftTransactionRepository implements TransactionRepository {
             entry: row.readTable(t).toDomain(),
             category: row.readTable(c).toDomain(),
             walletName: row.readTable(w).name,
+            habitId: row.readTableOrNull(h)?.id,
             habitName: row.readTableOrNull(h)?.name,
           ),
       ],

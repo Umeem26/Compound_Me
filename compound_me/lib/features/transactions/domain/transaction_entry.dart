@@ -139,12 +139,16 @@ class TransactionListItem {
     required this.entry,
     required this.category,
     required this.walletName,
+    this.habitId,
     this.habitName,
   });
 
   final TransactionEntry entry;
   final Category category;
   final String walletName;
+
+  /// The habit of a check-in expense, while its log still exists.
+  final String? habitId;
   final String? habitName;
 }
 

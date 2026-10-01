@@ -63,4 +63,18 @@ extension DateLabels on AppLocalizations {
     withYear ? 'MMMM y' : 'MMMM',
     localeName,
   ).format(DateTime(year, month));
+
+  /// "Jumat, 25 September 2026", read out for calendar days.
+  String fullDate(LocalDate day) =>
+      DateFormat('EEEE, d MMMM y', localeName).format(day.startLocal);
+
+  /// Weekday names Monday first, short ("S", "S", "R", ...) and full.
+  List<String> weekdayNames({required bool short}) => [
+    // 2024-01-01 was a Monday.
+    for (var i = 0; i < 7; i++)
+      DateFormat(
+        short ? 'EEEEE' : 'EEEE',
+        localeName,
+      ).format(DateTime(2024, 1, 1 + i)),
+  ];
 }

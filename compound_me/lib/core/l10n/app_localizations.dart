@@ -1441,6 +1441,498 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Transaksi bulan itu muncul di sini setelah dicatat.'**
   String get txMonthEmptyBody;
+
+  /// Habit kind: do more of it (PRD §5).
+  ///
+  /// In id, this message translates to:
+  /// **'Bangun'**
+  String get habitKindBuild;
+
+  /// Habit kind: do less of it, it costs money (PRD §5).
+  ///
+  /// In id, this message translates to:
+  /// **'Kurangi'**
+  String get habitKindReduce;
+
+  /// Button and tooltip that open the new habit form.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat kebiasaan'**
+  String get habitCreate;
+
+  /// Opens the starter habits.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dari template'**
+  String get habitFromTemplate;
+
+  /// Title of the starter habits sheet.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dari template'**
+  String get habitTemplatesTitle;
+
+  /// Habits list filter: scheduled today.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari ini'**
+  String get habitsFilterToday;
+
+  /// Habits list filter: every habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get habitsFilterAll;
+
+  /// Tooltip of the ⋯ menu.
+  ///
+  /// In id, this message translates to:
+  /// **'Menu lainnya'**
+  String get habitsMore;
+
+  /// Menu item that turns on reordering.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur urutan'**
+  String get habitsReorder;
+
+  /// Ends reordering.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get habitsReorderDone;
+
+  /// Shown when nothing is scheduled today.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada kebiasaan terjadwal hari ini.'**
+  String get habitsNoneToday;
+
+  /// Streak in days.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} hari'**
+  String streakDays(int count);
+
+  /// Streak in weeks.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} minggu'**
+  String streakWeeks(int count);
+
+  /// Cost of one occurrence of a reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'{amount} per kali'**
+  String habitCostPer(String amount);
+
+  /// Occurrences this week without a limit.
+  ///
+  /// In id, this message translates to:
+  /// **'minggu ini {count}'**
+  String habitThisWeek(int count);
+
+  /// Occurrences this week against the weekly limit.
+  ///
+  /// In id, this message translates to:
+  /// **'minggu ini {count}/{limit}'**
+  String habitThisWeekOf(int count, int limit);
+
+  /// Reduce habit without a weekly limit: it has no streak yet.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur batas mingguan untuk mulai streak'**
+  String get habitSetLimitCta;
+
+  /// Screen reader label of an open check-in.
+  ///
+  /// In id, this message translates to:
+  /// **'{name}, belum check-in hari ini'**
+  String habitCheckInOpen(String name);
+
+  /// Screen reader label of a done check-in.
+  ///
+  /// In id, this message translates to:
+  /// **'{name}, sudah check-in hari ini'**
+  String habitCheckInDone(String name);
+
+  /// Screen reader label of a reduce check-in with its count.
+  ///
+  /// In id, this message translates to:
+  /// **'{name}, sudah check-in {count} kali hari ini'**
+  String habitCheckInCount(String name, int count);
+
+  /// Snackbar after a check-in.
+  ///
+  /// In id, this message translates to:
+  /// **'Dicatat'**
+  String get habitLogged;
+
+  /// Snackbar after undoing a check-in with a tap.
+  ///
+  /// In id, this message translates to:
+  /// **'Check-in dibatalkan'**
+  String get habitUnlogged;
+
+  /// Stepper sheet of a reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah hari ini'**
+  String get habitCountToday;
+
+  /// A number of occurrences.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kali'**
+  String habitCountValue(int count);
+
+  /// Cost of today's occurrences.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} × {cost} = {total}'**
+  String habitCountCost(int count, String cost, String total);
+
+  /// The stepper reached its limit.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {max} kali per hari.'**
+  String habitCountMax(int max);
+
+  /// Tooltip of a stepper minus button.
+  ///
+  /// In id, this message translates to:
+  /// **'Kurangi satu'**
+  String get stepperDecrease;
+
+  /// Tooltip of a stepper plus button.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah satu'**
+  String get stepperIncrease;
+
+  /// Home section with the check-in strip.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan hari ini'**
+  String get homeHabitsTitle;
+
+  /// Opens the habits tab.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get homeHabitsAll;
+
+  /// Home card without any habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah kebiasaan pertamamu'**
+  String get homeHabitsFirst;
+
+  /// Title of the habit form when creating.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan baru'**
+  String get habitNewTitle;
+
+  /// Title of the habit form when editing.
+  ///
+  /// In id, this message translates to:
+  /// **'Edit kebiasaan'**
+  String get habitEditTitle;
+
+  /// Label above the build/reduce cards.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis'**
+  String get habitKindField;
+
+  /// Explains a build habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Ingin diperbanyak, misalnya olahraga atau baca buku.'**
+  String get habitKindBuildHint;
+
+  /// Explains a reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Punya biaya dan ingin dikurangi, misalnya kopi kekinian.'**
+  String get habitKindReduceHint;
+
+  /// Name field of the habit form.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kebiasaan'**
+  String get fieldHabitName;
+
+  /// Placeholder of the habit name.
+  ///
+  /// In id, this message translates to:
+  /// **'Misalnya: Baca 10 halaman'**
+  String get habitNameHint;
+
+  /// Label above the schedule options.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadwal'**
+  String get habitScheduleField;
+
+  /// Schedule option: chosen weekdays.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari tertentu'**
+  String get scheduleSpecificDays;
+
+  /// Schedule option: a number of times per week.
+  ///
+  /// In id, this message translates to:
+  /// **'N kali seminggu'**
+  String get scheduleTimesOption;
+
+  /// Label of the times per week stepper.
+  ///
+  /// In id, this message translates to:
+  /// **'Target per minggu'**
+  String get habitTimesPerWeekField;
+
+  /// Screen reader value of the times per week stepper.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kali seminggu'**
+  String habitTimesPerWeekValue(int count);
+
+  /// No weekday chosen.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih minimal satu hari.'**
+  String get habitDaysError;
+
+  /// Cost row of a reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Biaya per kali'**
+  String get habitCostField;
+
+  /// Cost row before a cost is set.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur biaya'**
+  String get habitCostSet;
+
+  /// Reduce habit without a cost.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi biaya lebih dari Rp 0.'**
+  String get habitCostError;
+
+  /// Reduce habit without a wallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dompet.'**
+  String get habitWalletError;
+
+  /// Category row of a reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get habitCategoryField;
+
+  /// Reduce habit without a category.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori pengeluaran.'**
+  String get habitCategoryError;
+
+  /// Weekly limit stepper of a reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Batas per minggu'**
+  String get habitLimitField;
+
+  /// Weekly limit not set.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa batas'**
+  String get habitLimitNone;
+
+  /// Screen reader value of the weekly limit.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kali'**
+  String habitLimitValue(int count);
+
+  /// Explains the weekly limit.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu dengan kejadian di bawah batas dihitung berhasil dan menjaga streak.'**
+  String get habitLimitHelper;
+
+  /// Archives a habit with check-ins.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan kebiasaan'**
+  String get habitArchive;
+
+  /// Explains archiving a habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat dan transaksinya tetap tersimpan.'**
+  String get habitArchiveHint;
+
+  /// Deletes a habit without check-ins.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus kebiasaan'**
+  String get habitDelete;
+
+  /// Explains deleting a habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada check-in, jadi bisa dihapus.'**
+  String get habitDeleteHint;
+
+  /// Snackbar after archiving a habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan diarsipkan'**
+  String get habitArchivedDone;
+
+  /// Snackbar after deleting a habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan dihapus'**
+  String get habitDeletedDone;
+
+  /// Title when a habit with check-ins would change kind.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis tidak bisa diganti'**
+  String get habitKindLockedTitle;
+
+  /// Explains why the kind is fixed.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan ini sudah punya check-in, jadi riwayat dan transaksinya tetap di jenis sekarang. Buat kebiasaan baru untuk jenis {kind}.'**
+  String habitKindLockedBody(String kind);
+
+  /// Opens a new habit form with the other kind.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat kebiasaan baru'**
+  String get habitKindLockedAction;
+
+  /// Current streak stat.
+  ///
+  /// In id, this message translates to:
+  /// **'Streak'**
+  String get habitStatStreak;
+
+  /// Best streak stat.
+  ///
+  /// In id, this message translates to:
+  /// **'Terbaik'**
+  String get habitStatBest;
+
+  /// Build habit consistency stat.
+  ///
+  /// In id, this message translates to:
+  /// **'Konsistensi 30 hari'**
+  String get habitStatConsistency;
+
+  /// Reduce habit occurrences this week.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu ini'**
+  String get habitStatThisWeek;
+
+  /// A stat without a value.
+  ///
+  /// In id, this message translates to:
+  /// **'–'**
+  String get habitStatNone;
+
+  /// A whole percentage.
+  ///
+  /// In id, this message translates to:
+  /// **'{value}%'**
+  String percent(int value);
+
+  /// Calendar legend: checked in.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get legendDone;
+
+  /// Calendar legend: a reduce habit happened.
+  ///
+  /// In id, this message translates to:
+  /// **'Tercatat'**
+  String get legendLogged;
+
+  /// Calendar legend: a forgiven miss.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari longgar'**
+  String get legendGrace;
+
+  /// Calendar legend: a missed scheduled day.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlewat'**
+  String get legendMissed;
+
+  /// Calendar day: today, still open.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum check-in'**
+  String get legendOpen;
+
+  /// Screen reader label of a calendar day.
+  ///
+  /// In id, this message translates to:
+  /// **'{date}, {status}'**
+  String calendarDay(String date, String status);
+
+  /// Calendar arrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan sebelumnya'**
+  String get monthPrevious;
+
+  /// Calendar arrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan berikutnya'**
+  String get monthNext;
+
+  /// Reduce habit cost card.
+  ///
+  /// In id, this message translates to:
+  /// **'Biaya bulan ini'**
+  String get habitCostMonth;
+
+  /// Yearly projection of a reduce habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Proyeksi setahun ±Rp {amount} dengan pola sekarang'**
+  String habitCostYear(String amount);
+
+  /// Section of the habit detail.
+  ///
+  /// In id, this message translates to:
+  /// **'Check-in terakhir'**
+  String get habitRecentTitle;
+
+  /// Habit detail without check-ins.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada check-in.'**
+  String get habitRecentEmpty;
+
+  /// Banner on an archived habit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kebiasaan ini diarsipkan.'**
+  String get habitArchivedBanner;
 }
 
 class _AppLocalizationsDelegate

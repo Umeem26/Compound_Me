@@ -1,4 +1,5 @@
 import 'package:compound_me/core/design/design.dart';
+import 'package:compound_me/core/l10n/date_labels.dart';
 import 'package:compound_me/core/l10n/l10n.dart';
 
 /// Translated labels that design components take as parameters.
@@ -19,6 +20,14 @@ extension DesignLabels on AppLocalizations {
 
   BalanceVisibilityLabels get balanceVisibilityLabels =>
       (show: balanceShow, hide: balanceHide, hidden: balanceHidden);
+
+  MonthGridLabels get monthGridLabels => (
+    title: (month) => monthLabel(month.year, month.month),
+    weekdaysShort: weekdayNames(short: true),
+    weekdaysFull: weekdayNames(short: false),
+    previous: monthPrevious,
+    next: monthNext,
+  );
 
   PeriodSummaryLabels get periodSummaryLabels =>
       (income: txIncome, expense: txExpense, net: txNet);

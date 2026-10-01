@@ -1,6 +1,6 @@
 import 'package:compound_me/core/l10n/l10n.dart';
 import 'package:compound_me/features/habits/domain/habit.dart';
-import 'package:compound_me/features/onboarding/domain/habit_templates.dart';
+import 'package:compound_me/features/habits/domain/habit_templates.dart';
 
 String templateName(AppLocalizations l10n, HabitTemplate template) =>
     switch (template) {

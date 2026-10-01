@@ -278,6 +278,14 @@ abstract final class AppSizes {
   static const double iconBadgeLarge = 56;
   static const double transactionTile = 64;
   static const double chip = 40;
+  static const double calendarDay = 36;
+  static const double calendarDot = 4;
+  static const double habitChip = 56;
+  static const double habitChipRing = 3;
+  static const double habitChipLabel = 72;
+  static const double checkButton = 44;
+  static const double habitTile = 72;
+  static const double badge = 20;
   static const double iconButtonTonal = 40;
   static const double avatar = 64;
   static const double avatarSmall = 40;

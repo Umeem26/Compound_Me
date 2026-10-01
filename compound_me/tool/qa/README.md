@@ -62,3 +62,31 @@ python tool/qa/qa_phase3.py screens --docs --out ../docs/v2/screens
 Every `qa_phase3.py` check clears the app's data and seeds it through the
 UI (onboarding with Tunai Rp 1.000.000, then transactions through the
 form, two of them dated yesterday with the calendar sheet).
+
+## Phase 4
+
+```sh
+# Fresh app: Home without habits, S-20 empty, templates, S-21 from a
+# template (light + dark). Clears the app's data.
+python tool/qa/qa_phase4.py empty --docs --out ../docs/v2/screens
+
+# a-e: clean data, "Kopi Rp 25.000, GoPay, Makanan" → check-in lands in
+# GoPay, long-press count 2 then 1, one missed day kept as a grace day,
+# five fast taps stay consistent. `flutter drive --keep-app-running`
+# leaves the app's data on the device for the screenshots below
+# (`flutter test` would uninstall it).
+flutter drive --keep-app-running --driver=test_driver/integration_test.dart \
+  --target=integration_test/phase4_checklist_test.dart -d emulator-5554
+
+# flutter drive installs its own test build: put the app back (data stays)
+flutter build apk --debug
+adb install -r build/app/outputs/flutter-apk/app-debug.apk
+
+python tool/qa/qa_phase4.py stepper   # long-press the Home chip twice
+python tool/qa/qa_phase4.py screens --docs --out ../docs/v2/screens
+python tool/qa/qa_phase4.py layout    # 360 dp + font 1.3 + dark
+```
+
+On the emulator, pressing back while a form's autofocused keyboard is up
+closes the form (the Phase 2 wallet form does the same), so the scripts
+scroll above the keyboard instead. Fase 6 checks this on a real phone.

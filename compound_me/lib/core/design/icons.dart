@@ -50,6 +50,11 @@ abstract final class AppIcons {
   static const IconData plusMinus = IconData(0xe3d8, fontFamily: _regular);
   static const IconData calendarBlank = IconData(0xe10a, fontFamily: _regular);
   static const IconData notePencil = IconData(0xe34c, fontFamily: _regular);
+  static const IconData flame = IconData(0xe624, fontFamily: _regular);
+  static const IconData flameFill = IconData(0xe624, fontFamily: _fill);
+  static const IconData minus = IconData(0xe32a, fontFamily: _regular);
+  static const IconData dotsThree = IconData(0xe1fe, fontFamily: _regular);
+  static const IconData arrowsDownUp = IconData(0xe098, fontFamily: _regular);
   static const IconData magnifyingGlass = IconData(
     0xe30c,
     fontFamily: _regular,

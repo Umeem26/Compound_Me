@@ -737,4 +737,287 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get txMonthEmptyBody =>
       'Transaksi bulan itu muncul di sini setelah dicatat.';
+
+  @override
+  String get habitKindBuild => 'Bangun';
+
+  @override
+  String get habitKindReduce => 'Kurangi';
+
+  @override
+  String get habitCreate => 'Buat kebiasaan';
+
+  @override
+  String get habitFromTemplate => 'Pilih dari template';
+
+  @override
+  String get habitTemplatesTitle => 'Pilih dari template';
+
+  @override
+  String get habitsFilterToday => 'Hari ini';
+
+  @override
+  String get habitsFilterAll => 'Semua';
+
+  @override
+  String get habitsMore => 'Menu lainnya';
+
+  @override
+  String get habitsReorder => 'Atur urutan';
+
+  @override
+  String get habitsReorderDone => 'Selesai';
+
+  @override
+  String get habitsNoneToday => 'Tidak ada kebiasaan terjadwal hari ini.';
+
+  @override
+  String streakDays(int count) {
+    return '$count hari';
+  }
+
+  @override
+  String streakWeeks(int count) {
+    return '$count minggu';
+  }
+
+  @override
+  String habitCostPer(String amount) {
+    return '$amount per kali';
+  }
+
+  @override
+  String habitThisWeek(int count) {
+    return 'minggu ini $count';
+  }
+
+  @override
+  String habitThisWeekOf(int count, int limit) {
+    return 'minggu ini $count/$limit';
+  }
+
+  @override
+  String get habitSetLimitCta => 'Atur batas mingguan untuk mulai streak';
+
+  @override
+  String habitCheckInOpen(String name) {
+    return '$name, belum check-in hari ini';
+  }
+
+  @override
+  String habitCheckInDone(String name) {
+    return '$name, sudah check-in hari ini';
+  }
+
+  @override
+  String habitCheckInCount(String name, int count) {
+    return '$name, sudah check-in $count kali hari ini';
+  }
+
+  @override
+  String get habitLogged => 'Dicatat';
+
+  @override
+  String get habitUnlogged => 'Check-in dibatalkan';
+
+  @override
+  String get habitCountToday => 'Jumlah hari ini';
+
+  @override
+  String habitCountValue(int count) {
+    return '$count kali';
+  }
+
+  @override
+  String habitCountCost(int count, String cost, String total) {
+    return '$count × $cost = $total';
+  }
+
+  @override
+  String habitCountMax(int max) {
+    return 'Maksimal $max kali per hari.';
+  }
+
+  @override
+  String get stepperDecrease => 'Kurangi satu';
+
+  @override
+  String get stepperIncrease => 'Tambah satu';
+
+  @override
+  String get homeHabitsTitle => 'Kebiasaan hari ini';
+
+  @override
+  String get homeHabitsAll => 'Semua';
+
+  @override
+  String get homeHabitsFirst => 'Tambah kebiasaan pertamamu';
+
+  @override
+  String get habitNewTitle => 'Kebiasaan baru';
+
+  @override
+  String get habitEditTitle => 'Edit kebiasaan';
+
+  @override
+  String get habitKindField => 'Jenis';
+
+  @override
+  String get habitKindBuildHint =>
+      'Ingin diperbanyak, misalnya olahraga atau baca buku.';
+
+  @override
+  String get habitKindReduceHint =>
+      'Punya biaya dan ingin dikurangi, misalnya kopi kekinian.';
+
+  @override
+  String get fieldHabitName => 'Nama kebiasaan';
+
+  @override
+  String get habitNameHint => 'Misalnya: Baca 10 halaman';
+
+  @override
+  String get habitScheduleField => 'Jadwal';
+
+  @override
+  String get scheduleSpecificDays => 'Hari tertentu';
+
+  @override
+  String get scheduleTimesOption => 'N kali seminggu';
+
+  @override
+  String get habitTimesPerWeekField => 'Target per minggu';
+
+  @override
+  String habitTimesPerWeekValue(int count) {
+    return '$count kali seminggu';
+  }
+
+  @override
+  String get habitDaysError => 'Pilih minimal satu hari.';
+
+  @override
+  String get habitCostField => 'Biaya per kali';
+
+  @override
+  String get habitCostSet => 'Atur biaya';
+
+  @override
+  String get habitCostError => 'Isi biaya lebih dari Rp 0.';
+
+  @override
+  String get habitWalletError => 'Pilih dompet.';
+
+  @override
+  String get habitCategoryField => 'Kategori';
+
+  @override
+  String get habitCategoryError => 'Pilih kategori pengeluaran.';
+
+  @override
+  String get habitLimitField => 'Batas per minggu';
+
+  @override
+  String get habitLimitNone => 'Tanpa batas';
+
+  @override
+  String habitLimitValue(int count) {
+    return '$count kali';
+  }
+
+  @override
+  String get habitLimitHelper =>
+      'Minggu dengan kejadian di bawah batas dihitung berhasil dan menjaga streak.';
+
+  @override
+  String get habitArchive => 'Arsipkan kebiasaan';
+
+  @override
+  String get habitArchiveHint => 'Riwayat dan transaksinya tetap tersimpan.';
+
+  @override
+  String get habitDelete => 'Hapus kebiasaan';
+
+  @override
+  String get habitDeleteHint => 'Belum ada check-in, jadi bisa dihapus.';
+
+  @override
+  String get habitArchivedDone => 'Kebiasaan diarsipkan';
+
+  @override
+  String get habitDeletedDone => 'Kebiasaan dihapus';
+
+  @override
+  String get habitKindLockedTitle => 'Jenis tidak bisa diganti';
+
+  @override
+  String habitKindLockedBody(String kind) {
+    return 'Kebiasaan ini sudah punya check-in, jadi riwayat dan transaksinya tetap di jenis sekarang. Buat kebiasaan baru untuk jenis $kind.';
+  }
+
+  @override
+  String get habitKindLockedAction => 'Buat kebiasaan baru';
+
+  @override
+  String get habitStatStreak => 'Streak';
+
+  @override
+  String get habitStatBest => 'Terbaik';
+
+  @override
+  String get habitStatConsistency => 'Konsistensi 30 hari';
+
+  @override
+  String get habitStatThisWeek => 'Minggu ini';
+
+  @override
+  String get habitStatNone => '–';
+
+  @override
+  String percent(int value) {
+    return '$value%';
+  }
+
+  @override
+  String get legendDone => 'Selesai';
+
+  @override
+  String get legendLogged => 'Tercatat';
+
+  @override
+  String get legendGrace => 'Hari longgar';
+
+  @override
+  String get legendMissed => 'Terlewat';
+
+  @override
+  String get legendOpen => 'Belum check-in';
+
+  @override
+  String calendarDay(String date, String status) {
+    return '$date, $status';
+  }
+
+  @override
+  String get monthPrevious => 'Bulan sebelumnya';
+
+  @override
+  String get monthNext => 'Bulan berikutnya';
+
+  @override
+  String get habitCostMonth => 'Biaya bulan ini';
+
+  @override
+  String habitCostYear(String amount) {
+    return 'Proyeksi setahun ±Rp $amount dengan pola sekarang';
+  }
+
+  @override
+  String get habitRecentTitle => 'Check-in terakhir';
+
+  @override
+  String get habitRecentEmpty => 'Belum ada check-in.';
+
+  @override
+  String get habitArchivedBanner => 'Kebiasaan ini diarsipkan.';
 }

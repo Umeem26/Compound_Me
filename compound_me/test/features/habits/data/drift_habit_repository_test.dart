@@ -427,4 +427,83 @@ void main() {
       );
     });
   });
+
+  group('phase 4 queries', () {
+    test(
+      'all logs of every habit, oldest first, without undone ones',
+      () async {
+        final a = await habits.create(reading);
+        final b = await habits.create(coffee());
+        await habits.setCount(a, today, 1);
+        await habits.setCount(b, today.addDays(-1), 2);
+        await habits.setCount(b, today, 1);
+        await habits.setCount(b, today, 0);
+
+        final logs = await habits.watchAllLogs().first;
+        expect(
+          [for (final l in logs) (l.habitId, l.date, l.count)],
+          [(b, today.addDays(-1), 2), (a, today, 1)],
+        );
+      },
+    );
+
+    test('check-ins decide whether the kind can change', () async {
+      final id = await habits.create(reading);
+      expect(await habits.hasCheckIns(id), isFalse);
+      await habits.setCount(id, today, 1);
+      expect(await habits.hasCheckIns(id), isTrue);
+      await habits.setCount(id, today, 0);
+      expect(await habits.hasCheckIns(id), isFalse, reason: 'undone');
+    });
+
+    test('check-ins come newest first with what they cost', () async {
+      final id = await habits.create(coffee());
+      await habits.setCount(id, today.addDays(-2), 1);
+      await habits.setCount(id, today, 2);
+      final expenses = await activeCheckInExpenses();
+      await transactions.softDelete(expenses.first.id);
+
+      final checkIns = await habits.watchCheckIns(id).first;
+      expect(
+        [for (final c in checkIns) (c.date, c.count, c.spent)],
+        [(today, 1, 25000), (today.addDays(-2), 1, 25000)],
+      );
+      expect(await habits.watchCheckIns(id, limit: 1).first, hasLength(1));
+    });
+
+    test('money spent through a habit within dates', () async {
+      final id = await habits.create(coffee());
+      await habits.setCount(id, LocalDate(2026, 8, 31), 1);
+      await habits.setCount(id, LocalDate(2026, 9, 2), 2);
+      await habits.setCount(id, today, 1);
+
+      final spent = await habits
+          .watchSpent(id, from: LocalDate(2026, 9, 1), to: today)
+          .first;
+      expect(spent, 75000);
+      expect(
+        await habits
+            .watchSpent(
+              id,
+              from: LocalDate(2026, 1, 1),
+              to: LocalDate(2026, 1, 2),
+            )
+            .first,
+        0,
+      );
+    });
+
+    test('undo puts a deleted habit back as it was', () async {
+      final id = await habits.create(coffee());
+      final before = (await habits.findById(id))!;
+      await habits.delete(id);
+      await habits.undoDelete(before);
+
+      final after = (await habits.findById(id))!;
+      expect(after.name, before.name);
+      expect(after.costPerOccurrence, 25000);
+      expect(after.weeklyLimit, 3);
+      expect(after.createdAt, before.createdAt);
+    });
+  });
 }
