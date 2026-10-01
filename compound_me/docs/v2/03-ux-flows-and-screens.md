@@ -183,13 +183,14 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 
 - Default: Pengeluaran, kategori = terakhir dipakai untuk tipe itu (terpilih), dompet = terakhir dipakai, tanggal = sekarang.
 - Tap "Catatan" → field teks muncul, keypad angka disembunyikan sementara (keyboard sistem).
+- Tap "Tanggal" → kalender dalam sheet (mulai Senin, sampai hari ini); jam tetap.
 - Nominal maksimal 12 digit. Tombol Simpan nonaktif kalau nominal 0 atau kategori belum ada.
 - **Mode edit** (dari S-12): judul "Edit transaksi", data terisi, tombol "Simpan perubahan". Transaksi dari kebiasaan: kategori/dompet/nominal (dan catatan) bisa diedit, tanpa memutus tautan ke log; tipe dan tanggal terkunci karena terikat ke check-in hari itu.
 - Setelah simpan: sheet tertutup, snackbar "Tersimpan · Urungkan" (urungkan = transaksi baru dihapus lagi, atau hasil edit dikembalikan).
 - Sheet ini mematikan tarik-tutup (`showAppSheet(enableDrag: false)`), jadi tidak ada handle. Tutup lewat X di header, tombol back, atau ketuk di luar sheet; dengan input terisi → konfirmasi "Buang perubahan?" (`UnsavedChangesGuard`). Picker kecil (opsi, tanggal) tetap boleh ditarik.
 
 ### S-12 Detail transaksi (sheet kecil)
-- Ikon kategori besar, nominal `titleLarge`, kategori, dompet, tanggal lengkap, catatan, label "Dari kebiasaan: Kopi" (tap → S-22).
+- Ikon kategori besar, nominal `titleLarge`, kategori, dompet, tanggal lengkap, catatan, label "Dari kebiasaan: Kopi" (tap → S-22, aktif sejak Fase 4; kalau log-nya sudah hilang, label tanpa nama dan tidak bisa di-tap).
 - Aksi: "Edit" (Secondary) dan "Hapus" (ikon, danger). Hapus → tutup sheet + snackbar undo. Kalau dari kebiasaan: sheet konfirmasi "Ini juga membatalkan check-in Kopi hari itu."
 
 ### S-13 Riwayat transaksi
@@ -222,23 +223,27 @@ Tab Wawasan → Kartu utama "Kebiasaan Kurangi = 18% pengeluaran bulan ini"
 ```
 
 - Segmented: **Hari ini** (hanya yang terjadwal hari ini) / **Semua** (termasuk yang tidak terjadwal, plus bagian "Diarsipkan" terlipat di bawah).
-- Kebiasaan Kurangi menampilkan "minggu ini 3/4" kalau ada batas mingguan (warna `warning` saat mencapai batas, `danger` saat lewat).
+- Kebiasaan Kurangi menampilkan "minggu ini 3/4" kalau ada batas mingguan (warna `warning` saat mencapai batas, `danger` saat lewat). Tanpa batas mingguan tidak ada streak, jadi tile menampilkan ajakan "Atur batas mingguan untuk mulai streak" yang membuka S-21 (review PR #7).
+- Kebiasaan Bangun menampilkan streak dengan ikon api (`accentText`) kalau ≥ 1.
+- Check-in: haptic ringan + snackbar "Dicatat · Urungkan"; membatalkan dengan tap juga bisa diurungkan ("Check-in dibatalkan · Urungkan"). Stepper Kurangi menampilkan jumlah sebenarnya walau > 10, tombol + nonaktif saat ≥ 10 (06 §5, Fase 1).
 - Tap tile = S-22. Tap tombol check = check-in (toggle). Long-press tombol check pada Kurangi = stepper.
 - Reorder dengan drag handle (mode "Atur urutan" dari menu ⋯).
-- Empty: "Mulai dari satu kebiasaan" + tombol "Buat kebiasaan" + link "Pilih dari template".
+- Empty: "Mulai dari satu kebiasaan" + tombol "Buat kebiasaan" + link "Pilih dari template" (8 template onboarding dengan kartu yang sama; memilih satu membuka S-21 yang sudah terisi).
 
 ### S-21 Buat / edit kebiasaan (layar penuh)
 - Langkah dalam satu layar scroll (bukan wizard): Jenis (kartu Bangun / Kurangi) → Nama → Ikon & warna (grid preset) → Jadwal (Setiap hari / Hari tertentu [chip S S R K J S M] / N kali per minggu [stepper 1–7]) → khusus Kurangi: Biaya per kejadian (AmountDisplay kecil + keypad di sheet), Dompet, Kategori, Batas per minggu (opsional) → Pengingat (P1, sembunyikan di 2.0).
-- Validasi inline. Tombol "Simpan" menempel di bawah.
+- Validasi inline. Tombol "Simpan" menempel di bawah (di body, jadi naik di atas keyboard). Chip hari mulai Senin (satu definisi awal minggu di seluruh app). Batas per minggu memakai stepper "Tanpa batas" → 0 → 1 … (maks. 70).
+- Ditutup lewat X/back dengan perubahan → "Buang perubahan?" (`UnsavedChangesGuard`).
+- Ganti jenis pada kebiasaan yang sudah punya check-in tidak bisa (riwayat dan transaksinya terikat ke jenisnya): tap kartu jenis lain → sheet "Jenis tidak bisa diganti" + "Buat kebiasaan baru" yang membuka S-21 baru dengan jenis itu dan isian yang sama.
 - Edit: tambah aksi "Arsipkan" di bawah (bukan hapus, supaya riwayat & transaksi tetap utuh). Hapus permanen hanya kalau kebiasaan belum punya log.
 
 ### S-22 Detail kebiasaan
 - Header: ikon besar, nama, jenis + jadwal.
-- 3 statistik dalam satu baris: **Streak** (dengan ikon api), **Terbaik**, **Konsistensi 30 hari** (%).
-- `HabitCalendar` bulan ini (geser untuk bulan lain) dengan legenda: selesai, hari longgar, terlewat.
-- Khusus Kurangi: kartu "Biaya bulan ini Rp 310.000 · proyeksi setahun ±Rp 4,0 jt" + tombol "Simulasikan" → S-31.
-- Daftar check-in terakhir (tanggal, jumlah, transaksi terkait).
-- Menu ⋯: Edit, Arsipkan.
+- 3 statistik dalam satu baris: **Streak** (dengan ikon api), **Terbaik**, **Konsistensi 30 hari** (%). Kebiasaan Kurangi: statistik ketiga = **Minggu ini** (jumlah/batas); tanpa batas mingguan, streak "–" dan ada kartu "Atur batas mingguan untuk mulai streak" → S-21.
+- `HabitCalendar` bulan ini (geser atau panah untuk bulan lain, mulai Senin) dengan legenda: selesai, hari longgar, terlewat. Hari longgar dan terlewat hanya untuk kebiasaan harian/hari tertentu; kebiasaan N kali seminggu dan Kurangi hanya menandai hari check-in (Kurangi: "Tercatat").
+- Khusus Kurangi: kartu "Biaya bulan ini Rp 310.000 · proyeksi setahun ±Rp 4,0 jt". Tombol "Simulasikan" → S-31 disembunyikan sampai Fase 5 (tidak ada tombol yang belum berfungsi).
+- Daftar check-in terakhir (tanggal, jumlah, dan untuk Kurangi total transaksi terkait), 10 terbaru.
+- Menu ⋯: Edit, Arsipkan (Pulihkan untuk yang diarsipkan; arsip punya snackbar urungkan).
 
 ### S-30 Wawasan
 
