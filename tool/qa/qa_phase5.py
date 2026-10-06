@@ -10,7 +10,7 @@
 `empty` clears the app's data. `screens` and `layout` use the sample data
 the checklist filled in. Light screenshots of every new screen, dark ones
 of S-30 and S-31 only; --docs names them phase-5-<screen>-<theme>.png for
-docs/v2/screens. S-30 is shown for last month, which is complete whatever
+docs/process/phase-screens. S-30 is shown for last month, which is complete whatever
 day of the month the emulator is on.
 """
 import argparse

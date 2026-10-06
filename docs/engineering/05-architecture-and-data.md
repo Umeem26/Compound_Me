@@ -211,7 +211,7 @@ Unit test wajib: periode tanpa data, pembagian dengan nol, r = 0, contoh angka y
 - Package Android `com.umem.compound_me`: `namespace`, `applicationId`, **baris `package` di `MainActivity.kt`**, dan proguard keep rule harus sama. (Crash `ClassNotFoundException` v1 berasal dari sini.)
 - `initializeDateFormatting` sebelum dipakai (crash `LocaleDataException` v1).
 - Check-in harus aman dari tap ganda (guard in-flight) dan atomik.
-- Jangan commit `compound_me/.metadata` hasil tooling kecuali memang upgrade Flutter.
+- Jangan commit `.metadata` hasil tooling kecuali memang upgrade Flutter.
 - Uji di emulator setelah perubahan native (ikon, splash, manifest), bukan hanya `flutter test`.
 
 ## 8. Persiapan sync (P2), dikerjakan sekarang agar murah nanti

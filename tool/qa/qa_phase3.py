@@ -370,7 +370,7 @@ def main():
     parser.add_argument('check', choices=['flow-b', 'hide-balance', 'history', 'screens', 'layout', 'all'])
     parser.add_argument('--out', default=os.path.join('build', 'qa', 'phase3'))
     parser.add_argument('--docs', action='store_true',
-                        help='name screenshots phase-3-<screen>-<theme>.png for docs/v2/screens')
+                        help='name screenshots phase-3-<screen>-<theme>.png for docs/process/phase-screens')
     args = parser.parse_args()
     if args.check in ('flow-b', 'all'):
         flow_b()

@@ -9,7 +9,7 @@ debug build before, the signing key differs). `release` clears the app's
 data and walks onboarding with two habit templates, a transaction, a
 check-in, Insights, About, a force stop and a relaunch, then reads logcat
 for crashes (missing keep rules, drift, sqlite3). The videos are written to
---out (docs/v2/media).
+--out (docs/media).
 """
 import argparse
 import os

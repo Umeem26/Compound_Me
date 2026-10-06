@@ -2,7 +2,7 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
-/// Raw palette from docs/v2/02-design-system.md §3. Widgets must go through
+/// Raw palette from docs/design/02-design-system.md §3. Widgets must go through
 /// the theme-aware [AppColors] instead of reading these directly.
 abstract final class AppPalette {
   static const teal50 = Color(0xFFE6F2F0);

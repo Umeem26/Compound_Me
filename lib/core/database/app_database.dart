@@ -19,7 +19,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'app_database.g.dart';
 
 /// v2 database ("generation 2", fresh file `compoundme.db`), schema from
-/// docs/v2/05-architecture-and-data.md §3.
+/// docs/engineering/05-architecture-and-data.md §3.
 @DriftDatabase(tables: [Wallets, Categories, Transactions, Habits, HabitLogs])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());

@@ -7,7 +7,7 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// The upload key lives outside the repository (docs/v2/06-execution-plan.md,
+// The upload key lives outside the repository (docs/process/06-execution-plan.md,
 // phase 6). Without android/key.properties a release build is signed with
 // the debug key, so CI and fresh clones still build.
 val keyProperties = Properties().apply {

@@ -1,5 +1,7 @@
 # CompoundMe v2.0 — Rencana Eksekusi & Prompt Claude Code
 
+> Catatan: proyek Flutter sekarang ada di root repo (dulu `compound_me/`) dan dokumen dipecah ke `docs/product`, `docs/design`, `docs/engineering`, `docs/process`. Path lama di §0 dan Fase 0 bersifat historis.
+
 | | |
 |---|---|
 | Status | Siap dipakai |
@@ -19,7 +21,7 @@
    └── compound_me/              ← proyek Flutter (lib/, android/, ...)
    ```
    > `assets/brand/` dan `tool/` nanti dipindah ke dalam `compound_me/` oleh Claude Code di Fase 0, karena `pubspec.yaml` ada di sana.
-2. Dari canvas Claude Design "CompoundMe v2 — UI Mockup", ekspor tiap artboard sebagai PNG ke `docs/v2/mockups/` (nama file = ID layar, mis. `S-10-beranda.png`). Claude Code tidak bisa membuka link canvas, jadi gambar ini yang jadi referensi visualnya.
+2. Dari canvas Claude Design "CompoundMe v2 — UI Mockup", ekspor tiap artboard sebagai PNG ke `docs/design/mockups/` (nama file = ID layar, mis. `S-10-beranda.png`). Claude Code tidak bisa membuka link canvas, jadi gambar ini yang jadi referensi visualnya.
 3. Commit dokumen dulu langsung di `main`: `docs: add CompoundMe v2 product & design specs`.
 4. Di VS Code, buka panel Claude Code. **Gunakan plan mode** (Shift+Tab sampai mode "plan") di awal setiap fase supaya Claude Code menyusun rencana dulu, lalu kamu setujui.
 
@@ -30,9 +32,9 @@ Prompt fase (plan mode, atau rencana ditulis di deskripsi PR) → setujui
 → Claude Code eksekusi di branch v2/phase-N-...
 → flutter analyze (0 issue) + flutter test (hijau) + jalan di emulator
 → Checklist fase dijalankan OTOMATIS di emulator sebelum PR:
-    integration test  compound_me/integration_test/phaseN_checklist_test.dart
-    skrip adb         compound_me/tool/qa/qa_phaseN.py (force stop, font 1,3, mode gelap, intent)
-  hasilnya ditulis sebagai tabel lulus/gagal di PR (cara pakai: compound_me/tool/qa/README.md)
+    integration test  integration_test/phaseN_checklist_test.dart
+    skrip adb         tool/qa/qa_phaseN.py (force stop, font 1,3, mode gelap, intent)
+  hasilnya ditulis sebagai tabel lulus/gagal di PR (cara pakai: tool/qa/README.md)
 → Claude Code ambil screenshot layar baru (adb) dan buat PR (JANGAN merge)
 → Kamu: review PR + tabel QA → kirim catatan ke Cowork untuk review
 → Revisi kalau perlu → merge
@@ -42,7 +44,7 @@ Checklist tiap fase di §2 adalah daftar yang dijalankan otomatis itu. Yang hany
 
 Perintah screenshot yang bisa dipakai Claude Code:
 ```
-adb exec-out screencap -p > docs/v2/screens/phase-N-<nama-layar>.png
+adb exec-out screencap -p > docs/process/phase-screens/phase-N-<nama-layar>.png
 ```
 
 ## 2. Fase-fase
@@ -54,7 +56,7 @@ adb exec-out screencap -p > docs/v2/screens/phase-N-<nama-layar>.png
 
 **Prompt:**
 ```
-Baca CLAUDE.md, lalu docs/v2/01-PRD.md, 02-design-system.md, 04-brand-assets.md, dan 05-architecture-and-data.md. Lihat juga gambar di docs/v2/mockups/ sebagai referensi rasa tampilan (angka pasti tetap dari dokumen). Kita mulai rebuild CompoundMe v2 Fase 0 (lihat docs/v2/06-execution-plan.md bagian Fase 0).
+Baca CLAUDE.md, lalu docs/product/01-PRD.md, 02-design-system.md, 04-brand-assets.md, dan 05-architecture-and-data.md. Lihat juga gambar di docs/design/mockups/ sebagai referensi rasa tampilan (angka pasti tetap dari dokumen). Kita mulai rebuild CompoundMe v2 Fase 0 (lihat docs/process/06-execution-plan.md bagian Fase 0).
 
 Buat rencana dulu, jangan eksekusi sebelum saya setujui.
 
@@ -71,7 +73,7 @@ Lingkup Fase 0:
 10. GitHub Actions: analyze + test di setiap PR.
 11. Tambah widget test: bottom nav berpindah tab, EmptyState tampil di tiap tab, tema gelap tidak crash.
 
-Definition of done: flutter analyze 0 issue, flutter test hijau, app jalan di emulator Pixel 9 terang dan gelap, screenshot icon di launcher + splash + 4 tab disimpan di docs/v2/screens/, lalu push dan buat PR ke main tanpa merge. Tulis ringkasan dan keputusan yang kamu ambil sendiri.
+Definition of done: flutter analyze 0 issue, flutter test hijau, app jalan di emulator Pixel 9 terang dan gelap, screenshot icon di launcher + splash + 4 tab disimpan di docs/process/phase-screens/, lalu push dan buat PR ke main tanpa merge. Tulis ringkasan dan keputusan yang kamu ambil sendiri.
 ```
 
 **Checklist tes manual kamu:**
@@ -87,7 +89,7 @@ Definition of done: flutter analyze 0 issue, flutter test hijau, app jalan di em
 
 **Prompt:**
 ```
-Lanjut Fase 1 sesuai docs/v2/06-execution-plan.md. Baca ulang docs/v2/05-architecture-and-data.md §3 dan §4. Buat rencana dulu.
+Lanjut Fase 1 sesuai docs/process/06-execution-plan.md. Baca ulang docs/engineering/05-architecture-and-data.md §3 dan §4. Buat rencana dulu.
 
 Lingkup:
 1. Skema Drift lengkap (wallets, categories, transactions, habits, habit_logs) persis sesuai §3: UUID, createdAt/updatedAt, soft delete/arsip, CHECK constraint, index, PRAGMA foreign_keys = ON di beforeOpen, seed kategori default di onCreate (nameKey + ARB id/en).
@@ -106,7 +108,7 @@ DoD: analyze 0 issue, test hijau, laporkan coverage. Push dan buat PR tanpa merg
 
 **Prompt:**
 ```
-Lanjut Fase 2. Baca docs/v2/03-ux-flows-and-screens.md bagian S-01, S-40, S-41, S-42, S-43 dan Flow A, serta PRD F-02, F-06, F-07, F-10, F-11 beserta acceptance criteria-nya. Buat rencana dulu.
+Lanjut Fase 2. Baca docs/design/03-ux-flows-and-screens.md bagian S-01, S-40, S-41, S-42, S-43 dan Flow A, serta PRD F-02, F-06, F-07, F-10, F-11 beserta acceptance criteria-nya. Buat rencana dulu.
 
 Implementasikan layar-layar itu persis mengikuti design system (hanya token dan komponen dari lib/core/design, tanpa angka lepas, tanpa gradasi, tanpa emoji). Termasuk:
 - Onboarding lengkap dengan penyimpanan progres per langkah dan redirect router.
@@ -192,7 +194,7 @@ DoD + screenshot (dengan data contoh). PR tanpa merge.
 
 **Prompt:**
 ```
-Fase 6 (polish). Lakukan audit terhadap docs/v2/02-design-system.md §10 (daftar larangan AI slop) dan 03-ux-flows-and-screens.md §4–§5 di SEMUA layar, lalu perbaiki temuannya. Buat rencana dulu berisi daftar temuan.
+Fase 6 (polish). Lakukan audit terhadap docs/design/02-design-system.md §10 (daftar larangan AI slop) dan 03-ux-flows-and-screens.md §4–§5 di SEMUA layar, lalu perbaiki temuannya. Buat rencana dulu berisi daftar temuan.
 
 Termasuk:
 - Grep angka lepas (Color(0x, Colors., fontSize:, EdgeInsets dengan angka) di luar lib/core/design → harus 0.
@@ -243,7 +245,7 @@ Hal yang hanya bisa dinilai manusia di HP sungguhan. Semua checklist fase lain s
 
 Pakai prompt koreksi yang spesifik, jangan "perbaiki UI-nya":
 ```
-Layar <S-xx> belum sesuai docs/v2/02-design-system.md: <sebutkan: ukuran judul terlalu besar / ada gradasi di X / jarak antar kartu tidak 16>. Perbaiki hanya itu, jangan ubah layar lain, lalu kirim screenshot sebelum/sesudah.
+Layar <S-xx> belum sesuai docs/design/02-design-system.md: <sebutkan: ukuran judul terlalu besar / ada gradasi di X / jarak antar kartu tidak 16>. Perbaiki hanya itu, jangan ubah layar lain, lalu kirim screenshot sebelum/sesudah.
 ```
 
 ## 5. Log keputusan eksekusi

@@ -11,7 +11,7 @@
 `empty` clears the app's data. `screens` and `layout` use what the
 checklist built: Kopi (reduce, GoPay, checked in today) and Baca (build,
 ten days with one grace day). Light and dark screenshots; --docs names
-them phase-4-<screen>-<theme>.png for docs/v2/screens.
+them phase-4-<screen>-<theme>.png for docs/process/phase-screens.
 """
 import argparse
 import os

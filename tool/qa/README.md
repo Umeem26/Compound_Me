@@ -10,7 +10,7 @@ intents). Results go into the PR as a pass/fail table.
 - Emulator Pixel 9 (API 35) running: `emulator -avd Pixel_9`.
 - Python 3.9+ and adb. The scripts find adb through `ADB`, `ANDROID_HOME`,
   `ANDROID_SDK_ROOT` or the default Windows SDK path.
-- Run everything from `compound_me/`.
+- Run everything from the repository root.
 
 ## Phase 2
 
@@ -55,8 +55,8 @@ adb install -r build/app/outputs/flutter-apk/app-debug.apk
 # layout at 360 dp + font 1.3 (summary card in one row, no overflow).
 python tool/qa/qa_phase3.py all
 
-# The screenshots for docs/v2/screens (font 1.0, light and dark):
-python tool/qa/qa_phase3.py screens --docs --out ../docs/v2/screens
+# The screenshots for docs/process/phase-screens (font 1.0, light and dark):
+python tool/qa/qa_phase3.py screens --docs --out docs/process/phase-screens
 ```
 
 Every `qa_phase3.py` check clears the app's data and seeds it through the
@@ -68,7 +68,7 @@ form, two of them dated yesterday with the calendar sheet).
 ```sh
 # Fresh app: Home without habits, S-20 empty, templates, S-21 from a
 # template (light + dark). Clears the app's data.
-python tool/qa/qa_phase4.py empty --docs --out ../docs/v2/screens
+python tool/qa/qa_phase4.py empty --docs --out docs/process/phase-screens
 
 # a-e: clean data, "Kopi Rp 25.000, GoPay, Makanan" → check-in lands in
 # GoPay, long-press count 2 then 1, one missed day kept as a grace day,
@@ -83,7 +83,7 @@ flutter build apk --debug
 adb install -r build/app/outputs/flutter-apk/app-debug.apk
 
 python tool/qa/qa_phase4.py stepper   # long-press the Home chip twice
-python tool/qa/qa_phase4.py screens --docs --out ../docs/v2/screens
+python tool/qa/qa_phase4.py screens --docs --out docs/process/phase-screens
 python tool/qa/qa_phase4.py layout    # 360 dp + font 1.3 + dark
 ```
 
@@ -96,7 +96,7 @@ scroll above the keyboard instead. Fase 6 checks this on a real phone.
 ```sh
 # Fresh app: Wawasan under a week of data, "0 dari 7 hari" (light).
 # Clears the app's data.
-python tool/qa/qa_phase5.py empty --docs --out ../docs/v2/screens
+python tool/qa/qa_phase5.py empty --docs --out docs/process/phase-screens
 
 # a-e: clean data and "3 dari 7 hari" after one expense two days back,
 # the debug sample data (60 days, only in debug builds) from Settings and
@@ -110,7 +110,7 @@ flutter build apk --debug
 adb install -r build/app/outputs/flutter-apk/app-debug.apk
 
 # S-30, S-31, the Home card and S-22 in light mode, S-30 and S-31 in dark
-python tool/qa/qa_phase5.py screens --docs --out ../docs/v2/screens
+python tool/qa/qa_phase5.py screens --docs --out docs/process/phase-screens
 python tool/qa/qa_phase5.py layout    # 360 dp + font 1.3 + dark
 ```
 
@@ -141,7 +141,7 @@ adb uninstall com.umem.compound_me
 adb install build/app/outputs/flutter-apk/app-release.apk
 python tool/qa/qa_phase6.py release
 
-# The two portfolio videos (docs/v2/media, 20 s at most each).
+# The two portfolio videos (docs/media, 20 s at most each).
 python tool/qa/qa_phase6.py video-flow-b
 python tool/qa/qa_phase6.py video-habit
 ```

@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
 
-/// Type scale from docs/v2/02-design-system.md §4. Styles carry no color;
+/// Type scale from docs/design/02-design-system.md §4. Styles carry no color;
 /// widgets apply a role color from `context.tokens.colors`.
 abstract final class AppTextStyles {
   static const String fontFamily = 'PlusJakartaSans';
